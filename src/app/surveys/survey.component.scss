@@ -5,3 +5,5 @@
 mat-card { border-radius: 12px; }
 mat-card { margin-top: 24px; }
 .nav { margin-top: 24px; }
+.summary { display:flex; flex-direction: column; gap: 8px; }
+.summary-item { display:flex; align-items:flex-start; justify-content: space-between; gap: 16px; padding: 8px 0; border-bottom: 1px solid var(--surface-border); }

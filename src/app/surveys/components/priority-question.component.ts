@@ -6,7 +6,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-priority-question',
   templateUrl: './priority-question.component.html',
-  styleUrls: ['./priority-question.component.scss']
+  styleUrls: ['./priority-question.component.scss'],
 })
 export class PriorityQuestionComponent {
   @Input() question!: MWQuestion;
@@ -25,6 +25,7 @@ export class PriorityQuestionComponent {
     moveItemInArray(values, e.previousIndex, e.currentIndex);
     this.arr().clear();
     for (const v of values) this.arr().push(new FormControl(v));
+    const list = this.question.priorityList ?? [];
+    moveItemInArray(list, e.previousIndex, e.currentIndex);
   }
 }
-

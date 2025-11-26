@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card *ngIf="!showSummary">
   <h2>{{ formDef.name }}</h2>
   <p>{{ formDef.description }}</p>
 
@@ -12,7 +12,22 @@
       <button mat-button type="button" (click)="prev()" [disabled]="currentPage===0">Back</button>
       <span>Page {{ currentPage + 1 }} of {{ formDef.pages.length }}</span>
       <button mat-raised-button color="primary" type="button" (click)="next()" *ngIf="currentPage < formDef.pages.length - 1">Next</button>
-      <button mat-raised-button color="accent" type="submit" *ngIf="currentPage === formDef.pages.length - 1">Submit</button>
+      <button mat-stroked-button type="button" (click)="showSummary = true" *ngIf="currentPage === formDef.pages.length - 1">Review</button>
     </div>
   </form>
+</mat-card>
+
+<mat-card *ngIf="showSummary">
+  <h2>Review</h2>
+  <p>Confirm your answers before submitting.</p>
+  <div class="summary">
+    <div class="summary-item" *ngFor="let key of (form.value | keyvalue)">
+      <strong>{{ key.key }}</strong>
+      <span>{{ key.value | json }}</span>
+    </div>
+  </div>
+  <div class="nav">
+    <button mat-button type="button" (click)="prev()">Back</button>
+    <button mat-raised-button color="accent" type="button" (click)="submit()">Submit</button>
+  </div>
 </mat-card>

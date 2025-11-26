@@ -20,6 +20,7 @@ export class SurveyComponent {
   formDef!: MWForm;
   form: FormGroup;
   currentPage = 0;
+  showSummary = false;
 
   constructor(private fb: FormBuilder, private state: FormStateService) {
     this.formDef = this.state.getForm();
@@ -202,9 +203,14 @@ export class SurveyComponent {
     const page = this.formDef.pages[this.currentPage];
     const targetIndex = this.resolveNextPageIndex(page) ?? this.currentPage + 1;
     if (targetIndex < this.formDef.pages.length) this.currentPage = targetIndex;
+    else this.showSummary = true;
   }
 
   prev() {
+    if (this.showSummary) {
+      this.showSummary = false;
+      return;
+    }
     if (this.currentPage > 0) this.currentPage--;
   }
 
@@ -214,6 +220,7 @@ export class SurveyComponent {
       alert('Submitted: ' + JSON.stringify(this.form.value, null, 2));
     } else {
       this.form.markAllAsTouched();
+      this.showSummary = false;
     }
   }
 }
