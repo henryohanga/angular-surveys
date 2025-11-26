@@ -4,37 +4,12 @@
 
   <form [formGroup]="form" (ngSubmit)="submit()">
     <ng-container *ngFor="let el of formDef.pages[0].elements">
-      <ng-container [ngSwitch]="el.question.type">
-
-        <div *ngSwitchCase="'text'">
-          <mat-form-field appearance="outline" class="full">
-            <mat-label>{{ el.question.text }}</mat-label>
-            <input matInput [formControlName]="el.question.id" />
-          </mat-form-field>
-        </div>
-
-        <div *ngSwitchCase="'textarea'">
-          <mat-form-field appearance="outline" class="full">
-            <mat-label>{{ el.question.text }}</mat-label>
-            <textarea matInput rows="4" [formControlName]="el.question.id"></textarea>
-          </mat-form-field>
-        </div>
-
-        <div *ngSwitchCase="'radio'">
-          <label class="q-label" [attr.for]="el.question.id">{{ el.question.text }}</label>
-          <mat-radio-group [formControlName]="el.question.id">
-            <mat-radio-button *ngFor="let a of radioOptions(el)" [value]="a.value">{{ a.value }}</mat-radio-button>
-          </mat-radio-group>
-        </div>
-
-        <div *ngSwitchCase="'checkbox'">
-          <label class="q-label" [attr.for]="el.question.id">{{ el.question.text }}</label>
-          <div class="checkbox-group">
-            <mat-checkbox *ngFor="let a of checkboxOptions(el)" (change)="toggleCheckbox(el.question.id, a.value, $event)">{{ a.value }}</mat-checkbox>
-          </div>
-        </div>
-
-      </ng-container>
+      <app-text-question *ngIf="el.question.type==='text'" [question]="el.question" [form]="form"></app-text-question>
+      <app-textarea-question *ngIf="el.question.type==='textarea'" [question]="el.question" [form]="form"></app-textarea-question>
+      <app-radio-question *ngIf="el.question.type==='radio'" [question]="el.question" [form]="form"></app-radio-question>
+      <app-checkbox-question *ngIf="el.question.type==='checkbox'" [question]="el.question" [form]="form"></app-checkbox-question>
+      <app-grid-question *ngIf="el.question.type==='grid'" [question]="el.question" [form]="form"></app-grid-question>
+      <app-priority-question *ngIf="el.question.type==='priority'" [question]="el.question" [form]="form"></app-priority-question>
       <hr />
     </ng-container>
 

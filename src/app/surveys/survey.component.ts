@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DEMO_FORM } from './demo-data';
-import { MWElement, MWForm, MWOfferedAnswer } from './models';
+import { MWForm } from './models';
 
 @Component({
   selector: 'app-survey',
@@ -35,29 +35,34 @@ export class SurveyComponent {
         case 'checkbox':
           this.form.addControl(key, this.fb.array([]));
           break;
+        case 'grid': {
+          const group = this.fb.group({});
+          const grid = q.grid!;
+          for (const row of grid.rows) {
+            if (grid.cellInputType === 'radio') {
+              group.addControl(row.id, new FormControl(''));
+            } else {
+              group.addControl(row.id, this.fb.array([]));
+            }
+          }
+          this.form.addControl(key, group);
+          break;
+        }
+        case 'priority': {
+          const arr = this.fb.array([]);
+          for (const item of q.priorityList ?? []) {
+            arr.push(new FormControl(item.value));
+          }
+          this.form.addControl(key, arr);
+          break;
+        }
         default:
           this.form.addControl(key, new FormControl(''));
       }
     }
   }
 
-  checkboxOptions(el: MWElement) {
-    return el.question.offeredAnswers ?? [];
-  }
-
-  toggleCheckbox(key: string, value: string, event: { checked: boolean }) {
-    const arr = this.form.get(key) as FormArray;
-    if (event.checked) {
-      arr.push(new FormControl(value));
-    } else {
-      const index = arr.controls.findIndex(c => c.value === value);
-      if (index > -1) arr.removeAt(index);
-    }
-  }
-
-  radioOptions(el: MWElement): MWOfferedAnswer[] {
-    return el.question.offeredAnswers ?? [];
-  }
+  
 
   submit() {
     if (this.form.valid) {

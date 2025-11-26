@@ -1,0 +1,6 @@
+.grid { display: grid; grid-template-columns: 200px repeat(4, 1fr); gap: 8px; }
+.header, .row { display: contents; }
+.cell { padding: 4px; }
+.row-label { font-weight: 600; }
+.radio-row { display: grid; grid-template-columns: repeat(4, 1fr); }
+.checkbox-row { display: grid; grid-template-columns: repeat(4, 1fr); }

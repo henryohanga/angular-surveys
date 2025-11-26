@@ -1,0 +1,27 @@
+<div [formGroup]="form" *ngIf="grid as g">
+  <div class="grid">
+    <div class="header">
+      <div class="cell"></div>
+      <div class="cell" *ngFor="let c of g.cols">{{ c.label }}</div>
+    </div>
+    <div class="row" *ngFor="let r of g.rows">
+      <div class="cell row-label">{{ r.label }}</div>
+      <div class="cells" [formGroup]="form.get(question.id)">
+        <ng-container [ngSwitch]="g.cellInputType">
+          <ng-container *ngSwitchCase="'radio'">
+            <mat-radio-group [formControlName]="r.id" class="radio-row">
+              <mat-radio-button *ngFor="let c of g.cols" [value]="c.id"></mat-radio-button>
+            </mat-radio-group>
+          </ng-container>
+          <ng-container *ngSwitchCase="'checkbox'">
+            <div class="checkbox-row">
+              <mat-checkbox *ngFor="let c of g.cols"
+                            (change)="toggleCheckboxRow(r.id, c.id, $event.checked)"></mat-checkbox>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+

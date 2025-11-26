@@ -5,6 +5,7 @@ import { SurveyComponent } from './surveys/survey.component';
 
 const routes: Routes = [
   { path: 'surveys', component: SurveyComponent },
+  { path: 'surveys/material', component: SurveyComponent },
   { path: '', redirectTo: 'surveys', pathMatch: 'full' },
 ];
 

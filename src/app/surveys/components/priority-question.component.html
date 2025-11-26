@@ -1,0 +1,10 @@
+<div [formGroup]="form">
+  <label class="q-label" [attr.for]="question.id">{{ question.text }}</label>
+  <div cdkDropList (cdkDropListDropped)="drop($event)" class="priority-list">
+    <div class="priority-item" *ngFor="let it of items()" cdkDrag>
+      <span class="handle">⋮⋮</span>
+      {{ it.value }}
+    </div>
+  </div>
+</div>
+

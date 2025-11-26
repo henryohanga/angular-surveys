@@ -1,0 +1,6 @@
+<div [formGroup]="form">
+  <label class="q-label" [attr.for]="question.id">{{ question.text }}</label>
+  <mat-radio-group [formControlName]="question.id">
+    <mat-radio-button *ngFor="let a of answers()" [value]="a.value">{{ a.value }}</mat-radio-button>
+  </mat-radio-group>
+</div>

@@ -1,0 +1,6 @@
+<div [formGroup]="form">
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>{{ question.text }}</mat-label>
+    <textarea matInput rows="4" [formControlName]="question.id"></textarea>
+  </mat-form-field>
+</div>

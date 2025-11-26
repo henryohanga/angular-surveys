@@ -1,0 +1,6 @@
+<div [formGroup]="form">
+  <label class="q-label" [attr.for]="question.id">{{ question.text }}</label>
+  <div class="checkbox-group">
+    <mat-checkbox *ngFor="let a of answers()" (change)="toggle(a.value, $event.checked)">{{ a.value }}</mat-checkbox>
+  </div>
+</div>
