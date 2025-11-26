@@ -1,12 +1,22 @@
 .question-dialog {
-  width: 680px;
+  width: 720px;
   max-width: 95vw;
-  max-height: 90vh;
+  height: 85vh;
+  max-height: 85vh;
   display: flex;
   flex-direction: column;
-  background: var(--surface);
+  background: var(--surface, #ffffff);
   border-radius: 16px;
   overflow: hidden;
+
+  @media (min-width: 1200px) {
+    width: 780px;
+  }
+
+  @media (min-width: 1600px) {
+    width: 850px;
+    height: 80vh;
+  }
 }
 
 // Header
@@ -21,6 +31,7 @@
     var(--primary-dark, #1a237e) 100%
   );
   color: white;
+  flex-shrink: 0;
 }
 
 .header-content {
@@ -73,7 +84,9 @@
 .dialog-body {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 24px;
+  min-height: 0; // Important for flex overflow
 }
 
 // Form Sections
@@ -614,6 +627,7 @@
   padding: 16px 24px;
   background: var(--supporting);
   border-top: 1px solid var(--surface-border);
+  flex-shrink: 0;
 }
 
 .cancel-btn {

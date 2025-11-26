@@ -129,6 +129,7 @@
           class="options-list"
           cdkDropList
           (cdkDropListDropped)="dropOption($event)"
+          formArrayName="offeredAnswers"
         >
           <div
             *ngFor="let answer of offeredAnswers.controls; let i = index"
@@ -327,7 +328,7 @@
                   <mat-icon>add</mat-icon>
                 </button>
               </div>
-              <div class="column-items">
+              <div class="column-items" formArrayName="rows">
                 <div
                   *ngFor="let row of gridRows.controls; let i = index"
                   class="grid-item"
@@ -358,7 +359,7 @@
                   <mat-icon>add</mat-icon>
                 </button>
               </div>
-              <div class="column-items">
+              <div class="column-items" formArrayName="cols">
                 <div
                   *ngFor="let col of gridCols.controls; let i = index"
                   class="grid-item"
@@ -408,6 +409,7 @@
           class="options-list"
           cdkDropList
           (cdkDropListDropped)="dropPriority($event)"
+          formArrayName="priorityList"
         >
           <div
             *ngFor="let item of priorityList.controls; let i = index"
