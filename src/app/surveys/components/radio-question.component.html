@@ -1,6 +1,13 @@
 <div [formGroup]="form">
   <label class="q-label" [attr.for]="question.id">{{ question.text }}</label>
-  <mat-radio-group [formControlName]="question.id">
+  <mat-radio-group [formControlName]="question.id" (change)="onRadioChange($event.value)">
     <mat-radio-button *ngFor="let a of answers()" [value]="a.value">{{ a.value }}</mat-radio-button>
+    <ng-container *ngIf="question.otherAnswer">
+      <mat-radio-button [value]="'__other__'">Other</mat-radio-button>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Other</mat-label>
+        <input matInput [value]="otherValue" (input)="onOtherInput($event)" />
+      </mat-form-field>
+    </ng-container>
   </mat-radio-group>
 </div>

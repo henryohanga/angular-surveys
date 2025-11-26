@@ -91,6 +91,19 @@ export class BuilderComponent {
   updateNamedPage(namedPage: boolean) {
     this.state.updatePageMeta(this.selectedPage, { namedPage });
   }
+
+  setPageGoTo(goToPage: number | null) {
+    this.state.updatePageFlow(this.selectedPage, { goToPage, nextPage: !goToPage ? this.formDef.pages[this.selectedPage].pageFlow?.nextPage : false });
+  }
+
+  setPageNext(nextPage: boolean) {
+    this.state.updatePageFlow(this.selectedPage, { nextPage, goToPage: nextPage ? null : this.formDef.pages[this.selectedPage].pageFlow?.goToPage });
+  }
+
+  pageNumbers(): number[] {
+    return this.formDef.pages.map(p => p.number);
+  }
+ 
   exportToFile() {
     const data = this.state.exportJson();
     const blob = new Blob([data], { type: 'application/json' });

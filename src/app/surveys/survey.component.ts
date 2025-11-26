@@ -1,12 +1,20 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { MWForm } from './models';
 import { FormStateService } from '../builder/form-state.service';
 
 @Component({
   selector: 'app-survey',
   templateUrl: './survey.component.html',
-  styleUrls: ['./survey.component.scss']
+  styleUrls: ['./survey.component.scss'],
 })
 export class SurveyComponent {
   formDef!: MWForm;
@@ -26,13 +34,22 @@ export class SurveyComponent {
         const key = q.id;
         switch (q.type) {
           case 'text':
-            this.form.addControl(key, new FormControl('', q.required ? Validators.required : []));
+            this.form.addControl(
+              key,
+              new FormControl('', q.required ? Validators.required : [])
+            );
             break;
           case 'textarea':
-            this.form.addControl(key, new FormControl('', q.required ? Validators.required : []));
+            this.form.addControl(
+              key,
+              new FormControl('', q.required ? Validators.required : [])
+            );
             break;
           case 'radio':
-            this.form.addControl(key, new FormControl('', q.required ? Validators.required : []));
+            this.form.addControl(
+              key,
+              new FormControl('', q.required ? Validators.required : [])
+            );
             break;
           case 'checkbox':
             {
@@ -74,12 +91,14 @@ export class SurveyComponent {
   private minSelectedValidator(min: number): ValidatorFn {
     return (control: AbstractControl) => {
       const arr = control as FormArray;
-      return arr.length >= min ? null : { minSelected: { required: min, actual: arr.length } };
+      return arr.length >= min
+        ? null
+        : { minSelected: { required: min, actual: arr.length } };
     };
   }
 
   private pageQuestionIds(index: number): string[] {
-    return this.formDef.pages[index].elements.map(e => e.question.id);
+    return this.formDef.pages[index].elements.map((e) => e.question.id);
   }
 
   private validatePage(index: number): boolean {
@@ -101,12 +120,18 @@ export class SurveyComponent {
     let targetIndex = this.currentPage + 1;
     for (const el of page.elements) {
       const q = el.question;
-      if (q.type === 'radio' && q.offeredAnswers && q.pageFlowModifier !== false) {
+      if (
+        q.type === 'radio' &&
+        q.offeredAnswers &&
+        q.pageFlowModifier !== false
+      ) {
         const selected = this.form.get(q.id)?.value as string;
-        const found = q.offeredAnswers.find(a => a.value === selected);
+        const found = q.offeredAnswers.find((a) => a.value === selected);
         const flow = found?.pageFlow;
         if (flow?.goToPage) {
-          const idx = this.formDef.pages.findIndex(p => p.number === flow.goToPage);
+          const idx = this.formDef.pages.findIndex(
+            (p) => p.number === flow.goToPage
+          );
           if (idx >= 0) {
             targetIndex = idx;
             break;
@@ -118,10 +143,14 @@ export class SurveyComponent {
       if (q.type === 'checkbox' && q.offeredAnswers && q.pageFlowModifier) {
         const selectedControl = this.form.get(q.id);
         const selectedArr = (selectedControl?.value as string[]) || [];
-        const first = q.offeredAnswers.find(a => selectedArr?.includes(a.value));
+        const first = q.offeredAnswers.find((a) =>
+          selectedArr?.includes(a.value)
+        );
         const flow = first?.pageFlow;
         if (flow?.goToPage) {
-          const idx = this.formDef.pages.findIndex(p => p.number === flow.goToPage);
+          const idx = this.formDef.pages.findIndex(
+            (p) => p.number === flow.goToPage
+          );
           if (idx >= 0) {
             targetIndex = idx;
             break;
@@ -131,14 +160,22 @@ export class SurveyComponent {
         }
       }
     }
+    if (targetIndex === this.currentPage + 1 && page.pageFlow) {
+      if (page.pageFlow.goToPage) {
+        const idx = this.formDef.pages.findIndex(
+          (p) => p.number === page.pageFlow!.goToPage
+        );
+        if (idx >= 0) targetIndex = idx;
+      } else if (page.pageFlow.nextPage) {
+        targetIndex = this.currentPage + 1;
+      }
+    }
     if (targetIndex < this.formDef.pages.length) this.currentPage = targetIndex;
   }
 
   prev() {
     if (this.currentPage > 0) this.currentPage--;
   }
-
-  
 
   submit() {
     if (this.form.valid) {

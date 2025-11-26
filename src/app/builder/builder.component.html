@@ -19,6 +19,15 @@
         <textarea matInput rows="3" [ngModel]="formDef.pages[selectedPage].description" (ngModelChange)="updatePageDescription($event)"></textarea>
       </mat-form-field>
       <mat-checkbox [ngModel]="formDef.pages[selectedPage].namedPage" (ngModelChange)="updateNamedPage($event)">Named page</mat-checkbox>
+      <h3>Page Flow</h3>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Go to page</mat-label>
+        <mat-select [ngModel]="formDef.pages[selectedPage].pageFlow?.goToPage" (ngModelChange)="setPageGoTo($event)">
+          <mat-option [value]="null">None</mat-option>
+          <mat-option *ngFor="let n of pageNumbers()" [value]="n">Page {{ n }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-checkbox [ngModel]="formDef.pages[selectedPage].pageFlow?.nextPage" (ngModelChange)="setPageNext($event)">Next page</mat-checkbox>
       <h3>Import / Export</h3>
       <button mat-stroked-button color="primary" (click)="exportJson()">Export JSON</button>
       <button mat-stroked-button color="accent" (click)="importJson()">Import JSON</button>

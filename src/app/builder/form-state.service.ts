@@ -98,4 +98,11 @@ export class FormStateService {
     this.state.pages[pageIndex] = { ...p, ...partial };
     this.saveToLocalStorage();
   }
+
+  updatePageFlow(pageIndex: number, flow: Partial<MWPage['pageFlow']>) {
+    const p = this.state.pages[pageIndex];
+    const next = { ...p.pageFlow, ...flow };
+    this.state.pages[pageIndex] = { ...p, pageFlow: next };
+    this.saveToLocalStorage();
+  }
 }
