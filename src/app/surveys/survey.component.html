@@ -3,16 +3,16 @@
   <p>{{ formDef.description }}</p>
 
   <form [formGroup]="form" (ngSubmit)="submit()">
-    <ng-container *ngFor="let el of formDef.pages[0].elements">
-      <app-text-question *ngIf="el.question.type==='text'" [question]="el.question" [form]="form"></app-text-question>
-      <app-textarea-question *ngIf="el.question.type==='textarea'" [question]="el.question" [form]="form"></app-textarea-question>
-      <app-radio-question *ngIf="el.question.type==='radio'" [question]="el.question" [form]="form"></app-radio-question>
-      <app-checkbox-question *ngIf="el.question.type==='checkbox'" [question]="el.question" [form]="form"></app-checkbox-question>
-      <app-grid-question *ngIf="el.question.type==='grid'" [question]="el.question" [form]="form"></app-grid-question>
-      <app-priority-question *ngIf="el.question.type==='priority'" [question]="el.question" [form]="form"></app-priority-question>
+    <ng-container *ngFor="let el of formDef.pages[currentPage].elements">
+      <app-question-host [question]="el.question" [form]="form"></app-question-host>
       <hr />
     </ng-container>
 
-    <button mat-raised-button color="primary" type="submit">Submit</button>
+    <div class="nav">
+      <button mat-button type="button" (click)="prev()" [disabled]="currentPage===0">Back</button>
+      <span>Page {{ currentPage + 1 }} of {{ formDef.pages.length }}</span>
+      <button mat-raised-button color="primary" type="button" (click)="next()" *ngIf="currentPage < formDef.pages.length - 1">Next</button>
+      <button mat-raised-button color="accent" type="submit" *ngIf="currentPage === formDef.pages.length - 1">Submit</button>
+    </div>
   </form>
 </mat-card>

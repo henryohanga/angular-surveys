@@ -16,6 +16,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTableModule } from '@angular/material/table';
 import { GridQuestionComponent } from './components/grid-question.component';
 import { PriorityQuestionComponent } from './components/priority-question.component';
+import { QuestionHostComponent } from './components/question-host.component';
+import { QUESTION_COMPONENTS } from './registry';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,7 @@ import { PriorityQuestionComponent } from './components/priority-question.compon
     CheckboxQuestionComponent,
     GridQuestionComponent,
     PriorityQuestionComponent,
+    QuestionHostComponent,
   ],
   imports: [
     CommonModule,
@@ -47,6 +50,20 @@ import { PriorityQuestionComponent } from './components/priority-question.compon
     GridQuestionComponent,
     PriorityQuestionComponent,
     SurveyComponent,
+    QuestionHostComponent,
+  ]
+  ,providers: [
+    {
+      provide: QUESTION_COMPONENTS,
+      useValue: {
+        text: TextQuestionComponent,
+        textarea: TextareaQuestionComponent,
+        radio: RadioQuestionComponent,
+        checkbox: CheckboxQuestionComponent,
+        grid: GridQuestionComponent,
+        priority: PriorityQuestionComponent,
+      }
+    }
   ]
 })
 export class SurveysModule {}
