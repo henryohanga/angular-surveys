@@ -419,13 +419,12 @@ import { MWForm, MWQuestion } from '../surveys/models';
   styles: [
     `
       .preview-dialog {
-        width: 900px;
-        max-width: 95vw;
-        height: 85vh;
+        width: 100%;
+        height: 100%;
         display: flex;
         flex-direction: column;
-        background: var(--surface);
-        border-radius: 16px;
+        background: var(--surface, #ffffff);
+        border-radius: 12px;
         overflow: hidden;
       }
 

@@ -244,7 +244,7 @@
 }
 
 .survey-meta {
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm);
   border-radius: var(--radius-sm);
 }
 
@@ -275,7 +275,8 @@
 }
 
 .desc-input {
-  width: 100%;
+  // width: 100%;
+  max-width: 100%;
   font-size: var(--font-body);
   color: var(--text-secondary);
   border: 1px solid var(--surface-border);
@@ -294,35 +295,48 @@
 .questions-container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--spacing-lg);
   min-height: 200px;
+  padding: var(--spacing-sm);
 }
 
 .question-card {
   display: flex;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   overflow: hidden;
   transition: all 0.2s ease;
+  border: 2px solid var(--surface-border);
+  background: var(--surface);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .question-card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary);
+  transform: translateY(-1px);
 }
 
 .drag-handle {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  background: var(--supporting);
+  width: 40px;
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-dark, #303f9f) 100%
+  );
   cursor: grab;
-  color: var(--text-secondary);
+  color: white;
   transition: all 0.2s ease;
 }
 
 .drag-handle:hover {
-  background: var(--primary-ghost);
-  color: var(--primary);
+  background: linear-gradient(
+    135deg,
+    var(--primary-hover) 0%,
+    var(--primary) 100%
+  );
 }
 
 .drag-handle:active {
@@ -331,7 +345,12 @@
 
 .question-content {
   flex: 1;
-  padding: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-left: 3px solid transparent;
+}
+
+.question-card:hover .question-content {
+  border-left-color: var(--primary);
 }
 
 .question-header {
@@ -392,6 +411,9 @@
   font-weight: 500;
   color: var(--text-primary);
   margin-bottom: var(--spacing-md);
+  line-height: 1.5;
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--surface-border);
 }
 
 /* Question Preview */

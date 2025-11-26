@@ -238,9 +238,9 @@ export class BuilderComponent implements OnInit {
     };
 
     const dialogRef = this.dialog.open(QuestionDialogComponent, {
-      width: '640px',
+      width: '680px',
       maxWidth: '95vw',
-      maxHeight: '90vh',
+      maxHeight: '85vh',
       data: dialogData,
       panelClass: 'question-dialog-container',
       autoFocus: false,
@@ -410,9 +410,9 @@ export class BuilderComponent implements OnInit {
   // Preview functionality
   openPreview() {
     this.dialog.open(SurveyPreviewDialogComponent, {
-      width: '90vw',
-      maxWidth: '900px',
-      maxHeight: '90vh',
+      width: '800px',
+      maxWidth: '95vw',
+      maxHeight: '85vh',
       data: { form: this.formDef },
       panelClass: 'preview-dialog-container',
     });
