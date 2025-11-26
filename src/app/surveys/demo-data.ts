@@ -54,6 +54,7 @@ export const DEMO_FORM: MWForm = {
                 id: 'a2',
                 orderNo: 2,
                 value: 'bbbb',
+                pageFlow: { goToPage: 2 },
               },
             ],
             otherAnswer: true,

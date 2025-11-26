@@ -9,6 +9,7 @@ export type MWTextType =
 export interface MWPageFlow {
   nextPage?: boolean;
   label?: string;
+  goToPage?: number;
 }
 
 export interface MWOfferedAnswer {

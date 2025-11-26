@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { SurveysModule } from '../surveys.module';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { PriorityQuestionComponent } from './priority-question.component';
 
 describe('PriorityQuestionComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SurveysModule],
+      imports: [SurveysModule, NoopAnimationsModule],
     }).compileComponents();
   });
 
@@ -15,4 +16,3 @@ describe('PriorityQuestionComponent', () => {
     expect(comp).toBeTruthy();
   });
 });
-

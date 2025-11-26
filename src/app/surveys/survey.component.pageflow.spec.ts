@@ -1,0 +1,29 @@
+import { TestBed } from '@angular/core/testing';
+import { SurveysModule } from './surveys.module';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { FormControl } from '@angular/forms';
+import { SurveyComponent } from './survey.component';
+
+describe('SurveyComponent page flow', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [SurveysModule, NoopAnimationsModule],
+    }).compileComponents();
+  });
+
+  it('jumps to page via radio pageFlow', () => {
+    const fixture = TestBed.createComponent(SurveyComponent);
+    const comp = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(comp.currentPage).toBe(0);
+    comp.form.get('short-text')?.setValue('a');
+    comp.form.get('long-text')?.setValue('b');
+    const cb = comp.form.get('checkbox-question');
+    const arr = cb as any;
+    arr.push(new FormControl('aaaa'));
+    comp.form.get('radio-question')?.setValue('bbbb');
+    comp.next();
+    expect(comp.currentPage).toBe(1);
+  });
+});

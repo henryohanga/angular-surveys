@@ -95,9 +95,42 @@ export class SurveyComponent {
   }
 
   next() {
-    if (this.validatePage(this.currentPage)) {
-      if (this.currentPage < this.formDef.pages.length - 1) this.currentPage++;
+    if (!this.validatePage(this.currentPage)) return;
+    const page = this.formDef.pages[this.currentPage];
+    let targetIndex = this.currentPage + 1;
+    for (const el of page.elements) {
+      const q = el.question;
+      if (q.type === 'radio' && q.offeredAnswers && q.pageFlowModifier !== false) {
+        const selected = this.form.get(q.id)?.value as string;
+        const found = q.offeredAnswers.find(a => a.value === selected);
+        const flow = found?.pageFlow;
+        if (flow?.goToPage) {
+          const idx = this.formDef.pages.findIndex(p => p.number === flow.goToPage);
+          if (idx >= 0) {
+            targetIndex = idx;
+            break;
+          }
+        } else if (flow?.nextPage) {
+          targetIndex = this.currentPage + 1;
+        }
+      }
+      if (q.type === 'checkbox' && q.offeredAnswers && q.pageFlowModifier) {
+        const selectedControl = this.form.get(q.id);
+        const selectedArr = (selectedControl?.value as string[]) || [];
+        const first = q.offeredAnswers.find(a => selectedArr?.includes(a.value));
+        const flow = first?.pageFlow;
+        if (flow?.goToPage) {
+          const idx = this.formDef.pages.findIndex(p => p.number === flow.goToPage);
+          if (idx >= 0) {
+            targetIndex = idx;
+            break;
+          }
+        } else if (flow?.nextPage) {
+          targetIndex = this.currentPage + 1;
+        }
+      }
     }
+    if (targetIndex < this.formDef.pages.length) this.currentPage = targetIndex;
   }
 
   prev() {
