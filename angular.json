@@ -102,18 +102,7 @@
             "scripts": []
           }
         },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "angular-surveys:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "angular-surveys:serve:production"
-            }
-          }
-        },
+        
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
