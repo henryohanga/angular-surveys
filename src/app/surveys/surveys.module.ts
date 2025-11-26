@@ -18,6 +18,8 @@ import { GridQuestionComponent } from './components/grid-question.component';
 import { PriorityQuestionComponent } from './components/priority-question.component';
 import { QuestionHostComponent } from './components/question-host.component';
 import { QUESTION_COMPONENTS } from './registry';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MaterialSurveyComponent } from './material-survey.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import { QUESTION_COMPONENTS } from './registry';
     GridQuestionComponent,
     PriorityQuestionComponent,
     QuestionHostComponent,
+    MaterialSurveyComponent,
   ],
   imports: [
     CommonModule,
@@ -41,6 +44,7 @@ import { QUESTION_COMPONENTS } from './registry';
     MatCardModule,
     DragDropModule,
     MatTableModule,
+    MatToolbarModule,
   ],
   exports: [
     TextQuestionComponent,
@@ -51,6 +55,7 @@ import { QUESTION_COMPONENTS } from './registry';
     PriorityQuestionComponent,
     SurveyComponent,
     QuestionHostComponent,
+    MaterialSurveyComponent,
   ]
   ,providers: [
     {

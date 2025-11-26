@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SurveysModule } from './surveys.module';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { FormControl } from '@angular/forms';
+import { FormArray, FormControl } from '@angular/forms';
 import { SurveyComponent } from './survey.component';
 
 describe('SurveyComponent page flow', () => {
@@ -19,8 +19,8 @@ describe('SurveyComponent page flow', () => {
     expect(comp.currentPage).toBe(0);
     comp.form.get('short-text')?.setValue('a');
     comp.form.get('long-text')?.setValue('b');
-    const cb = comp.form.get('checkbox-question');
-    const arr = cb as any;
+    const cb = comp.form.get('checkbox-question') as FormArray;
+    const arr = cb;
     arr.push(new FormControl('aaaa'));
     comp.form.get('radio-question')?.setValue('bbbb');
     comp.next();

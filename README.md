@@ -12,12 +12,15 @@ This project modernizes an older Angular-based idea with a clean JSON schema, an
 - Unit tests: `npm run test -- --watch=false`
 - E2E tests: `npm run e2e`
 - Build: `npm run build`
+- Builder: open `http://localhost:4200/builder`
 
 ## Features
 
 - JSON-driven survey schema: pages and questions (`text`, `textarea`, `radio`, `checkbox`)
 - Accessible keyboard interactions and Material components
 - Unit tests with Karma/Jasmine and e2e tests with Playwright
+- Dynamic question registry for pluggable question types
+- Multi-page navigation with branching page flow (`goToPage`)
 
 ## Roadmap
 

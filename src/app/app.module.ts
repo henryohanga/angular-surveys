@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { SurveysModule } from './surveys/surveys.module';
+import { BuilderModule } from './builder/builder.module';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { SurveysModule } from './surveys/surveys.module';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    SurveysModule
+    SurveysModule,
+    BuilderModule
   ],
   providers: [
     provideAnimationsAsync()

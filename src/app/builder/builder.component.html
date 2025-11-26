@@ -1,0 +1,22 @@
+<mat-card>
+  <h2>Survey Builder</h2>
+  <div class="layout">
+    <div class="sidebar">
+      <h3>Pages</h3>
+      <mat-nav-list>
+        <a mat-list-item *ngFor="let p of formDef.pages; let i = index" (click)="selectedPage = i" (keyup.enter)="selectedPage = i" tabindex="0">
+          Page {{ p.number }}
+        </a>
+      </mat-nav-list>
+      <button mat-button (click)="addPage()">Add Page</button>
+    </div>
+    <div class="content">
+      <h3>Questions (Page {{ formDef.pages[selectedPage].number }})</h3>
+      <div *ngFor="let el of formDef.pages[selectedPage].elements">
+        <mat-card class="q-item">{{ el.question.text }} ({{ el.question.type }})</mat-card>
+      </div>
+      <button mat-raised-button color="primary" (click)="openEditor()">Add Question</button>
+      <app-question-editor *ngIf="editorOpen" (dismissed)="closeEditor()" (save)="addQuestion($event)"></app-question-editor>
+    </div>
+  </div>
+</mat-card>
