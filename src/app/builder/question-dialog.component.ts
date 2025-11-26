@@ -740,11 +740,11 @@ export class QuestionDialogComponent implements OnInit {
       }),
       priorityList: this.fb.array([]),
       scale: this.fb.group({
-        min: [1],
-        max: [5],
-        step: [1],
-        minLabel: [''],
-        maxLabel: [''],
+        min: [1, [Validators.required, Validators.min(0), Validators.max(100)]],
+        max: [5, [Validators.required, Validators.min(1), Validators.max(100)]],
+        step: [1, [Validators.required, Validators.min(1)]],
+        minLabel: ['', Validators.maxLength(50)],
+        maxLabel: ['', Validators.maxLength(50)],
       }),
     });
   }
@@ -890,7 +890,7 @@ export class QuestionDialogComponent implements OnInit {
       this.fb.group({
         id: 'opt-' + index + '-' + Date.now(),
         orderNo: index,
-        value: '',
+        value: ['', [Validators.required, Validators.maxLength(200)]],
         pageFlow: this.fb.group({
           nextPage: [false],
           goToPage: [null],
@@ -904,7 +904,7 @@ export class QuestionDialogComponent implements OnInit {
     this.offeredAnswers.removeAt(i);
   }
 
-  dropOption(event: any) {
+  dropOption(event: { previousIndex: number; currentIndex: number }) {
     const controls = this.offeredAnswers.controls;
     const item = controls[event.previousIndex];
     controls.splice(event.previousIndex, 1);
@@ -917,7 +917,7 @@ export class QuestionDialogComponent implements OnInit {
       this.fb.group({
         id: 'row-' + index + '-' + Date.now(),
         orderNo: index,
-        label: '',
+        label: ['', [Validators.required, Validators.maxLength(100)]],
       })
     );
   }
@@ -932,7 +932,7 @@ export class QuestionDialogComponent implements OnInit {
       this.fb.group({
         id: 'col-' + index + '-' + Date.now(),
         orderNo: index,
-        label: '',
+        label: ['', [Validators.required, Validators.maxLength(100)]],
       })
     );
   }
@@ -947,7 +947,7 @@ export class QuestionDialogComponent implements OnInit {
       this.fb.group({
         id: 'p' + index + '-' + Date.now(),
         orderNo: index,
-        value: '',
+        value: ['', [Validators.required, Validators.maxLength(200)]],
       })
     );
   }
@@ -956,7 +956,7 @@ export class QuestionDialogComponent implements OnInit {
     this.priorityList.removeAt(i);
   }
 
-  dropPriority(event: any) {
+  dropPriority(event: { previousIndex: number; currentIndex: number }) {
     const controls = this.priorityList.controls;
     const item = controls[event.previousIndex];
     controls.splice(event.previousIndex, 1);

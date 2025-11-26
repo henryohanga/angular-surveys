@@ -492,11 +492,10 @@ export class BuilderComponent implements OnInit {
 
     this.state.addQuestion(this.selectedPage, newQuestion);
 
-    // Open editor for the newly added question
+    // Open dialog to edit the newly added question
     const elements = this.formDef.pages[this.selectedPage].elements;
-    this.editingIndex = elements.length - 1;
-    this.editingInitial = newQuestion;
-    this.openEditor();
+    const newIndex = elements.length - 1;
+    this.openQuestionDialog(newQuestion, newIndex);
   }
 
   private getDefaultQuestionText(type: MWTextType): string {

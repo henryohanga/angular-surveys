@@ -572,8 +572,16 @@
   border-radius: var(--radius-sm);
   padding: var(--spacing-md);
   height: fit-content;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
   position: sticky;
   top: 120px;
+  min-width: 0; /* Prevents flex overflow */
+}
+
+.right-panel * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .empty-properties {
@@ -703,6 +711,8 @@
 .settings-input,
 .settings-textarea {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: var(--spacing-sm) var(--spacing-md);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-sm);

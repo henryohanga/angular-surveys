@@ -81,7 +81,7 @@
     <div
       class="component-list"
       cdkDropList
-      #componentList="cdkDropList"
+      id="componentList"
       [cdkDropListConnectedTo]="['formDropList']"
       [cdkDropListData]="componentItems"
       [cdkDropListSortingDisabled]="true"
@@ -161,7 +161,7 @@
     <div
       class="questions-container"
       cdkDropList
-      #formDropList="cdkDropList"
+      id="formDropList"
       [cdkDropListConnectedTo]="['componentList']"
       [cdkDropListData]="formDef.pages[selectedPage].elements"
       (cdkDropListDropped)="dropFromToolbox($event)"
