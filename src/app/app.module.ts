@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { SurveysModule } from './surveys/surveys.module';
 import { BuilderModule } from './builder/builder.module';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { BuilderModule } from './builder/builder.module';
     BrowserModule,
     AppRoutingModule,
     SurveysModule,
-    BuilderModule
+    BuilderModule,
+    MatButtonModule
   ],
   providers: [
     provideAnimationsAsync()

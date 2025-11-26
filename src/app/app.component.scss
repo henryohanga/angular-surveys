@@ -1,0 +1,57 @@
+:host {
+  display: block;
+}
+
+.site-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand .logo {
+  font-size: 24px;
+}
+
+.brand h2 {
+  margin: 0;
+}
+
+.actions a {
+  margin-left: 8px;
+}
+
+.hero {
+  max-width: 960px;
+  margin: 48px auto;
+  padding: 0 16px;
+  text-align: center;
+}
+
+.hero h1 {
+  margin: 0 0 12px;
+}
+
+.hero p {
+  color: var(--muted-foreground);
+  margin: 0 0 24px;
+}
+
+.hero .cta {
+  display: inline-flex;
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .site-topbar { padding: 12px 16px; }
+  .hero { margin: 32px auto; }
+  .hero .cta { flex-direction: column; }
+}

@@ -26,6 +26,8 @@ describe('SurveyComponent page flow', () => {
     }
     arr.push(new FormControl('aaaa'));
     comp.form.get('radio-question')?.setValue('bbbb');
+    comp.form.markAllAsTouched();
+    comp.form.updateValueAndValidity();
     comp.next();
     expect(comp.currentPage).toBe(1);
   });

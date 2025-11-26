@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { } from '@angular/forms';
 import { FormStateService } from './form-state.service';
 import { MWElement, MWForm, MWQuestion } from '../surveys/models';
@@ -7,7 +8,15 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-builder',
   templateUrl: './builder.component.html',
-  styleUrls: ['./builder.component.scss']
+  styleUrls: ['./builder.component.scss'],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(8px)' }),
+        animate('180ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ])
+    ])
+  ]
 })
 export class BuilderComponent {
   formDef: MWForm;

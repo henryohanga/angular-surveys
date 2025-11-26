@@ -9,7 +9,6 @@ const routes: Routes = [
   { path: 'surveys', component: SurveyComponent },
   { path: 'surveys/material', component: MaterialSurveyComponent },
   { path: 'builder', component: BuilderComponent },
-  { path: '', redirectTo: 'surveys', pathMatch: 'full' },
 ];
 
 @NgModule({

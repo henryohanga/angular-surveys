@@ -1,59 +1,70 @@
-<mat-card>
-  <h2>Survey Builder</h2>
-  <div class="layout">
-    <div class="sidebar">
-      <h3>Pages</h3>
-      <mat-nav-list>
-        <a mat-list-item *ngFor="let p of formDef.pages; let i = index" (click)="selectedPage = i" (keyup.enter)="selectedPage = i" tabindex="0">
-          Page {{ p.number }}
-        </a>
-      </mat-nav-list>
-      <button mat-button (click)="addPage()">Add Page</button>
-      <h3>Page Settings</h3>
-      <mat-form-field appearance="outline" class="full">
-        <mat-label>Name</mat-label>
-        <input matInput [ngModel]="formDef.pages[selectedPage].name" (ngModelChange)="updatePageName($event)" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="full">
-        <mat-label>Description</mat-label>
-        <textarea matInput rows="3" [ngModel]="formDef.pages[selectedPage].description" (ngModelChange)="updatePageDescription($event)"></textarea>
-      </mat-form-field>
-      <mat-checkbox [ngModel]="formDef.pages[selectedPage].namedPage" (ngModelChange)="updateNamedPage($event)">Named page</mat-checkbox>
-      <h3>Page Flow</h3>
-      <mat-form-field appearance="outline" class="full">
-        <mat-label>Go to page</mat-label>
-        <mat-select [ngModel]="formDef.pages[selectedPage].pageFlow?.goToPage" (ngModelChange)="setPageGoTo($event)">
-          <mat-option [value]="null">None</mat-option>
-          <mat-option *ngFor="let n of pageNumbers()" [value]="n">Page {{ n }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-checkbox [ngModel]="formDef.pages[selectedPage].pageFlow?.nextPage" (ngModelChange)="setPageNext($event)">Next page</mat-checkbox>
-      <h3>Import / Export</h3>
-      <button mat-stroked-button color="primary" (click)="exportJson()">Export JSON</button>
-      <button mat-stroked-button color="accent" (click)="importJson()">Import JSON</button>
-      <button mat-stroked-button (click)="exportToFile()">Download JSON</button>
-      <input type="file" accept="application/json" (change)="importFromFile($event)" />
-      <mat-form-field appearance="outline" class="full">
-        <mat-label>JSON</mat-label>
-        <textarea matInput rows="8" [(ngModel)]="importText"></textarea>
-      </mat-form-field>
-      <div *ngIf="importError" class="error">{{ importError }}</div>
-    </div>
-    <div class="content">
-      <h3>Questions (Page {{ formDef.pages[selectedPage].number }})</h3>
-      <div cdkDropList (cdkDropListDropped)="drop($event)">
-        <div *ngFor="let el of formDef.pages[selectedPage].elements; let i = index" cdkDrag>
-          <mat-card class="q-item">
-            {{ el.question.text }} ({{ el.question.type }})
-            <span class="actions">
-              <button mat-button type="button" (click)="editQuestion(i)" (keyup.enter)="editQuestion(i)" tabindex="0">Edit</button>
-              <button mat-button color="warn" type="button" (click)="deleteQuestion(i)" (keyup.enter)="deleteQuestion(i)" tabindex="0">Delete</button>
-            </span>
-          </mat-card>
-        </div>
-      </div>
-      <button mat-raised-button color="primary" (click)="openEditor()">Add Question</button>
-      <app-question-editor *ngIf="editorOpen" [initial]="editingInitial" (dismissed)="closeEditor()" (save)="addQuestion($event)"></app-question-editor>
-    </div>
+<header class="builder-topbar" role="banner" aria-label="Survey Builder header">
+  <div class="brand">
+    <span class="logo" aria-hidden="true">🧩</span>
+    <h2>Survey Builder</h2>
   </div>
-</mat-card>
+  <nav class="top-actions" aria-label="Header actions">
+    <a mat-button routerLink="/surveys" aria-label="Preview">Preview</a>
+    <button mat-raised-button color="primary" aria-label="Save Survey" (click)="exportToFile()">Save Survey</button>
+    <button class="avatar" aria-label="User menu">H</button>
+  </nav>
+</header>
+
+<section class="builder-layout" aria-label="Survey Builder layout">
+  <aside class="left-panel" aria-label="Pages and Import Export">
+    <h3>Pages</h3>
+    <mat-nav-list>
+      <a mat-list-item *ngFor="let p of formDef.pages; let i = index" (click)="selectedPage = i" (keyup.enter)="selectedPage = i" tabindex="0">
+        Page {{ p.number }}
+      </a>
+    </mat-nav-list>
+    <button mat-stroked-button (click)="addPage()">+ Add Page</button>
+    <h3>Import / Export</h3>
+    <button mat-stroked-button color="primary" (click)="exportJson()">Export JSON</button>
+    <button mat-stroked-button color="accent" (click)="importJson()">Import JSON</button>
+    <button mat-stroked-button (click)="exportToFile()">Download JSON</button>
+    <input type="file" accept="application/json" (change)="importFromFile($event)" aria-label="Upload JSON file" />
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>JSON</mat-label>
+      <textarea matInput rows="8" [(ngModel)]="importText" aria-label="JSON input"></textarea>
+    </mat-form-field>
+    <div *ngIf="importError" class="error" role="alert">{{ importError }}</div>
+  </aside>
+
+  <main class="center-panel" aria-label="Survey editing area">
+    <mat-card class="survey-meta">
+      <input class="title-input" placeholder="Untitled Survey" [value]="formDef.pages[selectedPage].name || ''" (input)="updatePageName($any($event.target).value)" aria-label="Survey title" />
+      <input class="desc-input" placeholder="Survey description..." [value]="formDef.pages[selectedPage].description || ''" (input)="updatePageDescription($any($event.target).value)" aria-label="Survey description" />
+    </mat-card>
+
+    <div cdkDropList (cdkDropListDropped)="drop($event)">
+      <mat-card class="question-card" *ngFor="let el of formDef.pages[selectedPage].elements; let i = index" [@fadeIn]="i" cdkDrag>
+        <div class="question-header">
+          <div class="question-title">Question</div>
+          <div class="question-actions">
+            <button mat-icon-button aria-label="Edit question" (click)="editQuestion(i)"><mat-icon>edit</mat-icon></button>
+            <button mat-icon-button aria-label="Delete question" (click)="deleteQuestion(i)"><mat-icon>delete</mat-icon></button>
+          </div>
+        </div>
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>{{ el.question.text }}</mat-label>
+          <input matInput [placeholder]="el.question.text" disabled />
+        </mat-form-field>
+        <div class="question-footer">
+          <mat-checkbox [checked]="!!el.question.required" (change)="editQuestion(i)" aria-label="Required">Required</mat-checkbox>
+          <span class="type-label" aria-label="Question type">{{ el.question.type }}</span>
+        </div>
+      </mat-card>
+    </div>
+
+    <button class="add-question" type="button" (click)="openEditor()" aria-label="Add Question">+ Add Question</button>
+  </main>
+
+  <aside class="right-panel" aria-label="Properties">
+    <h3>Properties</h3>
+    <p *ngIf="!editorOpen">Select a question to edit properties</p>
+    <div *ngIf="editorOpen" class="editor-host">
+      <app-question-editor [initial]="editingInitial" (save)="addQuestion($event)" (dismissed)="closeEditor()"></app-question-editor>
+    </div>
+  </aside>
+</section>

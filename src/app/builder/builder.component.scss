@@ -1,6 +1,38 @@
-.layout { display: grid; grid-template-columns: 260px 1fr; gap: 16px; }
-.sidebar { border-right: 1px solid #eee; padding-right: 16px; }
-.q-item { margin-bottom: 8px; display:flex; align-items:center; justify-content: space-between; }
-.actions { display:flex; gap: 8px; }
-.full { width: 100%; }
+.builder-topbar { display:flex; align-items:center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--surface-border); background: var(--surface); position: sticky; top: 0; z-index: 10; }
+.builder-topbar .brand { display:flex; align-items:center; gap: 8px; }
+.builder-topbar .logo { font-size: 18px; }
+.builder-topbar .top-actions { display:flex; align-items:center; gap: 12px; }
+.builder-topbar .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: #fff; border: none; }
+
+.builder-layout { display: grid; grid-template-columns: 280px 1fr 320px; gap: 24px; padding: 24px; }
+.left-panel { background: var(--surface); border: 1px solid var(--surface-border); border-radius: 12px; padding: 16px; }
+.center-panel { display:flex; flex-direction: column; gap: 16px; }
+.right-panel { background: var(--surface); border: 1px solid var(--surface-border); border-radius: 12px; padding: 16px; }
+
+.survey-meta { padding: 16px; border-radius: 12px; }
+.title-input { width: 100%; font-size: 20px; font-weight: 600; margin-bottom: 8px; border: 1px solid var(--surface-border); border-radius: 8px; padding: 10px; }
+.desc-input { width: 100%; font-size: 14px; color: var(--muted-foreground); border: 1px solid var(--surface-border); border-radius: 8px; padding: 10px; }
+
+.question-card { margin-bottom: 12px; border-radius: 12px; }
+.question-header { display:flex; align-items:center; justify-content: space-between; margin-bottom: 8px; }
+.question-title { font-weight: 600; }
+.question-actions { display:flex; gap: 8px; }
+.question-footer { display:flex; align-items:center; gap: 12px; }
+.type-select { min-width: 180px; }
+
+.add-question { width: 100%; padding: 12px; border: 1px dashed var(--surface-border); border-radius: 8px; background: transparent; }
+
+.component-list { display:flex; flex-direction: column; gap: 8px; }
+.comp-item { justify-content: flex-start; }
+.pages { display:flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.page-item.active { background: var(--primary-ghost); }
+.add-page { margin-top: 8px; }
+
+.io-title { margin-top: 16px; }
+.io .full { width: 100%; }
 .error { color: #b00020; white-space: pre-line; margin-top: 8px; }
+
+@media (max-width: 1024px) {
+  .builder-layout { grid-template-columns: 1fr; }
+  .left-panel, .right-panel { order: 2; }
+}

@@ -2,3 +2,20 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+:root {
+  --background: #f7f8fb;
+  --surface: #ffffff;
+  --surface-border: #e6e8ef;
+  --primary: #2563eb;
+  --primary-ghost: rgba(37, 99, 235, 0.08);
+  --muted-foreground: #6b7280;
+}
+
+html, body { background: var(--background); }
+
+.q-label { font-weight: 600; color: #374151; }
+
+button:focus, a:focus, input:focus, textarea:focus, mat-select:focus {
+  outline: 3px solid rgba(37, 99, 235, 0.35);
+  outline-offset: 2px;
+}

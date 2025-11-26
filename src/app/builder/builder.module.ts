@@ -7,6 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BuilderComponent } from './builder.component';
 import { QuestionEditorComponent } from './question-editor.component';
@@ -23,6 +25,8 @@ import { QuestionEditorComponent } from './question-editor.component';
     MatSelectModule,
     MatButtonModule,
     MatListModule,
+    MatIconModule,
+    MatCheckboxModule,
     DragDropModule,
   ],
 })

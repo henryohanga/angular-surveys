@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MWForm, MWPage, MWElement, MWQuestion } from '../surveys/models';
 import { DEMO_FORM } from '../surveys/demo-data';
-import Ajv, { JSONSchemaType } from 'ajv';
+import Ajv from 'ajv';
 
 @Injectable({ providedIn: 'root' })
 export class FormStateService {
