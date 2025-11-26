@@ -18,6 +18,41 @@
         <mat-option value="checkbox">Checkbox</mat-option>
       </mat-select>
     </mat-form-field>
+    <div
+      *ngIf="
+        form.get('type')?.value === 'radio' ||
+        form.get('type')?.value === 'checkbox'
+      "
+      aria-labelledby="options-heading"
+    >
+      <h5 class="q-label" id="options-heading">Options</h5>
+      <div formArrayName="offeredAnswers">
+        <div
+          *ngFor="let a of offeredAnswers.controls; let i = index"
+          [formGroupName]="i"
+          class="option-row"
+        >
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Value</mat-label>
+            <input matInput formControlName="value" />
+          </mat-form-field>
+          <button
+            mat-button
+            color="warn"
+            type="button"
+            (click)="removeAnswer(i)"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+      <button mat-stroked-button type="button" (click)="addAnswer()">
+        Add Option
+      </button>
+      <mat-checkbox formControlName="otherAnswer"
+        >Allow other answer</mat-checkbox
+      >
+    </div>
     <button mat-button type="button" (click)="dismissed.emit()">Cancel</button>
     <button mat-raised-button color="primary" type="submit">Add</button>
   </form>

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { } from '@angular/forms';
 import { FormStateService } from './form-state.service';
-import { MWForm, MWQuestion } from '../surveys/models';
+import { MWElement, MWForm, MWQuestion } from '../surveys/models';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-builder',
@@ -13,6 +14,8 @@ export class BuilderComponent {
   selectedPage = 0;
   editorOpen = false;
   importText = '';
+  editingIndex: number | null = null;
+  editingInitial: MWQuestion | null = null;
 
   constructor(private state: FormStateService) {
     this.formDef = this.state.getForm();
@@ -27,8 +30,29 @@ export class BuilderComponent {
   closeEditor() { this.editorOpen = false; }
 
   addQuestion(q: MWQuestion) {
-    this.state.addQuestion(this.selectedPage, q);
+    if (this.editingIndex !== null) {
+      this.state.updateQuestion(this.selectedPage, this.editingIndex, q);
+      this.editingIndex = null;
+      this.editingInitial = null;
+    } else {
+      this.state.addQuestion(this.selectedPage, q);
+    }
     this.closeEditor();
+  }
+
+  editQuestion(i: number) {
+    const el = this.formDef.pages[this.selectedPage].elements[i];
+    this.editingIndex = i;
+    this.editingInitial = el.question;
+    this.openEditor();
+  }
+
+  deleteQuestion(i: number) {
+    this.state.deleteQuestion(this.selectedPage, i);
+  }
+
+  drop(e: CdkDragDrop<MWElement[]>) {
+    this.state.reorderQuestion(this.selectedPage, e.previousIndex, e.currentIndex);
   }
 
   exportJson() {
@@ -41,5 +65,29 @@ export class BuilderComponent {
       this.formDef = this.state.getForm();
       this.selectedPage = 0;
     }
+  }
+
+  exportToFile() {
+    const data = this.state.exportJson();
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'survey.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  importFromFile(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = reader.result as string;
+      this.importText = text;
+      this.importJson();
+    };
+    reader.readAsText(file);
   }
 }

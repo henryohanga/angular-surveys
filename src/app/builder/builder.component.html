@@ -12,6 +12,8 @@
       <h3>Import / Export</h3>
       <button mat-stroked-button color="primary" (click)="exportJson()">Export JSON</button>
       <button mat-stroked-button color="accent" (click)="importJson()">Import JSON</button>
+      <button mat-stroked-button (click)="exportToFile()">Download JSON</button>
+      <input type="file" accept="application/json" (change)="importFromFile($event)" />
       <mat-form-field appearance="outline" class="full">
         <mat-label>JSON</mat-label>
         <textarea matInput rows="8" [(ngModel)]="importText"></textarea>
@@ -19,11 +21,19 @@
     </div>
     <div class="content">
       <h3>Questions (Page {{ formDef.pages[selectedPage].number }})</h3>
-      <div *ngFor="let el of formDef.pages[selectedPage].elements">
-        <mat-card class="q-item">{{ el.question.text }} ({{ el.question.type }})</mat-card>
+      <div cdkDropList (cdkDropListDropped)="drop($event)">
+        <div *ngFor="let el of formDef.pages[selectedPage].elements; let i = index" cdkDrag>
+          <mat-card class="q-item">
+            {{ el.question.text }} ({{ el.question.type }})
+            <span class="actions">
+              <button mat-button type="button" (click)="editQuestion(i)" (keyup.enter)="editQuestion(i)" tabindex="0">Edit</button>
+              <button mat-button color="warn" type="button" (click)="deleteQuestion(i)" (keyup.enter)="deleteQuestion(i)" tabindex="0">Delete</button>
+            </span>
+          </mat-card>
+        </div>
       </div>
       <button mat-raised-button color="primary" (click)="openEditor()">Add Question</button>
-      <app-question-editor *ngIf="editorOpen" (dismissed)="closeEditor()" (save)="addQuestion($event)"></app-question-editor>
+      <app-question-editor *ngIf="editorOpen" [initial]="editingInitial" (dismissed)="closeEditor()" (save)="addQuestion($event)"></app-question-editor>
     </div>
   </div>
 </mat-card>
