@@ -17,6 +17,7 @@ export class FormStateService {
 
   addQuestion(pageIndex: number, q: MWQuestion) {
     const page = this.state.pages[pageIndex];
+    q.id = this.ensureUniqueQuestionId(q.id);
     const el: MWElement = { id: q.id, orderNo: page.elements.length + 1, type: 'question', question: q };
     page.elements.push(el);
     this.saveToLocalStorage();
@@ -45,7 +46,8 @@ export class FormStateService {
 
   updateQuestion(pageIndex: number, index: number, q: MWQuestion) {
     const page = this.state.pages[pageIndex];
-    page.elements[index] = { ...page.elements[index], question: q };
+    q.id = this.ensureUniqueQuestionId(q.id, { pageIndex, index });
+    page.elements[index] = { ...page.elements[index], id: q.id, question: q };
     this.saveToLocalStorage();
   }
 
@@ -62,6 +64,27 @@ export class FormStateService {
     page.elements.splice(to, 0, moved);
     page.elements.forEach((e, i) => e.orderNo = i + 1);
     this.saveToLocalStorage();
+  }
+
+  private ensureUniqueQuestionId(desired: string, exclude?: { pageIndex: number; index: number }): string {
+    const used = new Set<string>();
+    this.state.pages.forEach((p, pi) => {
+      p.elements.forEach((e, ei) => {
+        if (exclude && exclude.pageIndex === pi && exclude.index === ei) return;
+        used.add(e.question.id);
+      });
+    });
+    if (!desired || used.has(desired)) {
+      let base = desired?.trim() || 'question';
+      base = base.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+      let i = 1;
+      let candidate = base;
+      while (used.has(candidate) || candidate.length === 0) {
+        candidate = `${base}-${i++}`;
+      }
+      return candidate;
+    }
+    return desired;
   }
 
   private saveToLocalStorage() {

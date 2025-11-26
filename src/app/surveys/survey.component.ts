@@ -8,7 +8,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { MWForm } from './models';
+import { MWForm, MWPage, MWOfferedAnswer } from './models';
 import { FormStateService } from '../builder/form-state.service';
 
 @Component({
@@ -92,9 +92,13 @@ export class SurveyComponent {
             const grid = q.grid!;
             for (const row of grid.rows) {
               if (grid.cellInputType === 'radio') {
-                group.addControl(row.id, new FormControl(''));
+                const ctrl = new FormControl('');
+                if (q.required) ctrl.addValidators(Validators.required);
+                group.addControl(row.id, ctrl);
               } else {
-                group.addControl(row.id, this.fb.array([]));
+                const arr = this.fb.array([]);
+                if (q.required) arr.addValidators(this.minSelectedValidator(1));
+                group.addControl(row.id, arr);
               }
             }
             this.form.addControl(key, group);
@@ -128,6 +132,58 @@ export class SurveyComponent {
     return this.formDef.pages[index].elements.map((e) => e.question.id);
   }
 
+  private answerFlowTarget(ans?: MWOfferedAnswer): number | null {
+    const flow = ans?.pageFlow;
+    if (!flow) return null;
+    if (typeof flow.goToPage === 'number') {
+      const idx = this.formDef.pages.findIndex(
+        (p) => p.number === flow.goToPage
+      );
+      return idx >= 0 ? idx : null;
+    }
+    if (flow.nextPage === true) return this.currentPage + 1;
+    if (flow.nextPage === false) return this.currentPage; // stay on page
+    return null;
+  }
+
+  private resolveNextPageIndex(page: MWPage): number | null {
+    // element-level overrides (first match wins)
+    for (const el of page.elements) {
+      const q = el.question;
+      if (q.pageFlowModifier) {
+        if (q.type === 'radio' && q.offeredAnswers) {
+          const selected = this.form.get(q.id)?.value as string;
+          const ans = q.offeredAnswers.find((a) => a.value === selected);
+          const target = this.answerFlowTarget(ans);
+          if (target !== null) return target;
+        } else if (q.type === 'checkbox' && q.offeredAnswers) {
+          const selectedArr = (this.form.get(q.id)?.value as string[]) || [];
+          const first = q.offeredAnswers.find((a) =>
+            selectedArr.includes(a.value)
+          );
+          const target = this.answerFlowTarget(first);
+          if (target !== null) return target;
+        }
+      }
+    }
+
+    // page-level flow
+    const flow = page.pageFlow;
+    if (flow) {
+      if (typeof flow.goToPage === 'number') {
+        const idx = this.formDef.pages.findIndex(
+          (p) => p.number === flow.goToPage
+        );
+        return idx >= 0 ? idx : null;
+      }
+      if (flow.nextPage === true) return this.currentPage + 1;
+      if (flow.nextPage === false) return this.currentPage;
+    }
+
+    // default: next page
+    return this.currentPage + 1;
+  }
+
   private validatePage(index: number): boolean {
     const ids = this.pageQuestionIds(index);
     for (const id of ids) {
@@ -144,59 +200,7 @@ export class SurveyComponent {
   next() {
     if (!this.validatePage(this.currentPage)) return;
     const page = this.formDef.pages[this.currentPage];
-    let targetIndex = this.currentPage + 1;
-    for (const el of page.elements) {
-      const q = el.question;
-      if (
-        q.type === 'radio' &&
-        q.offeredAnswers &&
-        q.pageFlowModifier !== false
-      ) {
-        const selected = this.form.get(q.id)?.value as string;
-        const found = q.offeredAnswers.find((a) => a.value === selected);
-        const flow = found?.pageFlow;
-        if (flow?.goToPage) {
-          const idx = this.formDef.pages.findIndex(
-            (p) => p.number === flow.goToPage
-          );
-          if (idx >= 0) {
-            targetIndex = idx;
-            break;
-          }
-        } else if (flow?.nextPage) {
-          targetIndex = this.currentPage + 1;
-        }
-      }
-      if (q.type === 'checkbox' && q.offeredAnswers && q.pageFlowModifier) {
-        const selectedControl = this.form.get(q.id);
-        const selectedArr = (selectedControl?.value as string[]) || [];
-        const first = q.offeredAnswers.find((a) =>
-          selectedArr?.includes(a.value)
-        );
-        const flow = first?.pageFlow;
-        if (flow?.goToPage) {
-          const idx = this.formDef.pages.findIndex(
-            (p) => p.number === flow.goToPage
-          );
-          if (idx >= 0) {
-            targetIndex = idx;
-            break;
-          }
-        } else if (flow?.nextPage) {
-          targetIndex = this.currentPage + 1;
-        }
-      }
-    }
-    if (targetIndex === this.currentPage + 1 && page.pageFlow) {
-      if (page.pageFlow.goToPage) {
-        const idx = this.formDef.pages.findIndex(
-          (p) => p.number === page.pageFlow!.goToPage
-        );
-        if (idx >= 0) targetIndex = idx;
-      } else if (page.pageFlow.nextPage) {
-        targetIndex = this.currentPage + 1;
-      }
-    }
+    const targetIndex = this.resolveNextPageIndex(page) ?? this.currentPage + 1;
     if (targetIndex < this.formDef.pages.length) this.currentPage = targetIndex;
   }
 
