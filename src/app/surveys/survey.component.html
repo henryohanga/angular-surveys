@@ -1,0 +1,43 @@
+<mat-card>
+  <h2>{{ formDef.name }}</h2>
+  <p>{{ formDef.description }}</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <ng-container *ngFor="let el of formDef.pages[0].elements">
+      <ng-container [ngSwitch]="el.question.type">
+
+        <div *ngSwitchCase="'text'">
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>{{ el.question.text }}</mat-label>
+            <input matInput [formControlName]="el.question.id" />
+          </mat-form-field>
+        </div>
+
+        <div *ngSwitchCase="'textarea'">
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>{{ el.question.text }}</mat-label>
+            <textarea matInput rows="4" [formControlName]="el.question.id"></textarea>
+          </mat-form-field>
+        </div>
+
+        <div *ngSwitchCase="'radio'">
+          <label class="q-label" [attr.for]="el.question.id">{{ el.question.text }}</label>
+          <mat-radio-group [formControlName]="el.question.id">
+            <mat-radio-button *ngFor="let a of radioOptions(el)" [value]="a.value">{{ a.value }}</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <div *ngSwitchCase="'checkbox'">
+          <label class="q-label" [attr.for]="el.question.id">{{ el.question.text }}</label>
+          <div class="checkbox-group">
+            <mat-checkbox *ngFor="let a of checkboxOptions(el)" (change)="toggleCheckbox(el.question.id, a.value, $event)">{{ a.value }}</mat-checkbox>
+          </div>
+        </div>
+
+      </ng-container>
+      <hr />
+    </ng-container>
+
+    <button mat-raised-button color="primary" type="submit">Submit</button>
+  </form>
+</mat-card>

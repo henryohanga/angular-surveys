@@ -1,5 +1,42 @@
 # AngularSurveys
 
+Angular 18 application that implements a survey/form builder and renderer inspired by Google Forms.
+
+This project modernizes an older Angular-based idea with a clean JSON schema, an accessible UI, and a path to extend into a full-featured builder. It uses Angular Material and Playwright for e2e.
+
+## Getting Started
+
+- Install dependencies: `npm install`
+- Run dev server: `npm run start` and open `http://localhost:4200/`
+- Lint: `npm run lint`
+- Unit tests: `npm run test -- --watch=false`
+- E2E tests: `npm run e2e`
+- Build: `npm run build`
+
+## Features
+
+- JSON-driven survey schema: pages and questions (`text`, `textarea`, `radio`, `checkbox`)
+- Accessible keyboard interactions and Material components
+- Unit tests with Karma/Jasmine and e2e tests with Playwright
+
+## Roadmap
+
+- Add `grid` and `priority` question types
+- Implement page flow and multi-page navigation
+- Build a drag-and-drop form builder UI
+
+## Contributing
+
+We welcome issues and PRs. See `CONTRIBUTING.md` for guidelines.
+
+## Code of Conduct
+
+Please adhere to our `CODE_OF_CONDUCT.md`.
+
+## License
+
+MIT
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.0.
 
 ## Development server
