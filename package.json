@@ -7,7 +7,7 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "playwright test"
+    "e2e": "playwright test -c e2e/playwright.config.ts"
   },
   "private": true,
   "dependencies": {
@@ -27,9 +27,15 @@
     "@angular-devkit/build-angular": "^18.2.21",
     "@angular/cli": "^18.2.21",
     "@angular/compiler-cli": "^18.2.14",
+    "@angular-eslint/builder": "^18.3.0",
+    "@angular-eslint/schematics": "^18.3.0",
     "@types/node": "^20.10.5",
     "@types/jasmine": "~5.1.0",
     "@playwright/test": "^1.48.2",
+    "angular-eslint": "^18.3.0",
+    "eslint": "^9.14.0",
+    "@eslint/js": "^9.14.0",
+    "typescript-eslint": "^8.12.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.4",
     "karma-chrome-launcher": "~3.1.0",

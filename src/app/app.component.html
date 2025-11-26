@@ -1,6 +1,15 @@
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
+<header class="toolbar" role="banner">
+  <span>{{ title }}</span>
+  <span class="spacer"></span>
+  <nav>
+    <a href="https://angular.dev/" target="_blank" rel="noopener">Angular Docs</a>
+  </nav>
+</header>
+
+<main class="content">
+  <h1>{{ title }} app is running!</h1>
+  <p>Modern Angular starter.</p>
+</main>
 <!-- * * * * * * * * * * and can be replaced. * * * * * * * * * * * -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 <!-- * * * * * * * * * Delete the template below * * * * * * * * * * -->
@@ -375,37 +384,37 @@
   <input type="hidden" #selection>
 
   <div class="card-container">
-    <div class="card card-small" (click)="selection.value = 'component'" tabindex="0">
+    <div class="card card-small" (click)="selection.value = 'component'" (keyup.enter)="selection.value = 'component'" tabindex="0">
         <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
 
       <span>New Component</span>
     </div>
 
-    <div class="card card-small" (click)="selection.value = 'material'" tabindex="0">
+    <div class="card card-small" (click)="selection.value = 'material'" (keyup.enter)="selection.value = 'material'" tabindex="0">
         <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
 
       <span>Angular Material</span>
     </div>
 
-    <div class="card card-small" (click)="selection.value = 'pwa'" tabindex="0">
+    <div class="card card-small" (click)="selection.value = 'pwa'" (keyup.enter)="selection.value = 'pwa'" tabindex="0">
         <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
 
       <span>Add PWA Support</span>
     </div>
 
-    <div class="card card-small" (click)="selection.value = 'dependency'" tabindex="0">
+    <div class="card card-small" (click)="selection.value = 'dependency'" (keyup.enter)="selection.value = 'dependency'" tabindex="0">
       <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
 
       <span>Add Dependency</span>
     </div>
 
-    <div class="card card-small" (click)="selection.value = 'test'" tabindex="0">
+    <div class="card card-small" (click)="selection.value = 'test'" (keyup.enter)="selection.value = 'test'" tabindex="0">
       <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
 
       <span>Run and Watch Tests</span>
     </div>
 
-    <div class="card card-small" (click)="selection.value = 'build'" tabindex="0">
+    <div class="card card-small" (click)="selection.value = 'build'" (keyup.enter)="selection.value = 'build'" tabindex="0">
       <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
 
       <span>Build for Production</span>
