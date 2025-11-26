@@ -92,4 +92,10 @@ export class FormStateService {
     });
     return errors;
   }
+
+  updatePageMeta(pageIndex: number, partial: Partial<MWPage>) {
+    const p = this.state.pages[pageIndex];
+    this.state.pages[pageIndex] = { ...p, ...partial };
+    this.saveToLocalStorage();
+  }
 }

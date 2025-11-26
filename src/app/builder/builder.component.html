@@ -9,6 +9,16 @@
         </a>
       </mat-nav-list>
       <button mat-button (click)="addPage()">Add Page</button>
+      <h3>Page Settings</h3>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Name</mat-label>
+        <input matInput [ngModel]="formDef.pages[selectedPage].name" (ngModelChange)="updatePageName($event)" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Description</mat-label>
+        <textarea matInput rows="3" [ngModel]="formDef.pages[selectedPage].description" (ngModelChange)="updatePageDescription($event)"></textarea>
+      </mat-form-field>
+      <mat-checkbox [ngModel]="formDef.pages[selectedPage].namedPage" (ngModelChange)="updateNamedPage($event)">Named page</mat-checkbox>
       <h3>Import / Export</h3>
       <button mat-stroked-button color="primary" (click)="exportJson()">Export JSON</button>
       <button mat-stroked-button color="accent" (click)="importJson()">Import JSON</button>

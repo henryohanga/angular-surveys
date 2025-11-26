@@ -80,6 +80,17 @@ export class BuilderComponent {
     }
   }
 
+  updatePageName(name: string) {
+    this.state.updatePageMeta(this.selectedPage, { name });
+  }
+
+  updatePageDescription(description: string) {
+    this.state.updatePageMeta(this.selectedPage, { description });
+  }
+
+  updateNamedPage(namedPage: boolean) {
+    this.state.updatePageMeta(this.selectedPage, { namedPage });
+  }
   exportToFile() {
     const data = this.state.exportJson();
     const blob = new Blob([data], { type: 'application/json' });
