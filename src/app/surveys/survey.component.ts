@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { DEMO_FORM } from './demo-data';
 import { MWForm } from './models';
+import { FormStateService } from '../builder/form-state.service';
 
 @Component({
   selector: 'app-survey',
@@ -9,11 +9,12 @@ import { MWForm } from './models';
   styleUrls: ['./survey.component.scss']
 })
 export class SurveyComponent {
-  formDef: MWForm = DEMO_FORM;
+  formDef!: MWForm;
   form: FormGroup;
   currentPage = 0;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private state: FormStateService) {
+    this.formDef = this.state.getForm();
     this.form = this.fb.group({});
     this.buildForm();
   }

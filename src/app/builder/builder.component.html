@@ -9,6 +9,13 @@
         </a>
       </mat-nav-list>
       <button mat-button (click)="addPage()">Add Page</button>
+      <h3>Import / Export</h3>
+      <button mat-stroked-button color="primary" (click)="exportJson()">Export JSON</button>
+      <button mat-stroked-button color="accent" (click)="importJson()">Import JSON</button>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>JSON</mat-label>
+        <textarea matInput rows="8" [(ngModel)]="importText"></textarea>
+      </mat-form-field>
     </div>
     <div class="content">
       <h3>Questions (Page {{ formDef.pages[selectedPage].number }})</h3>

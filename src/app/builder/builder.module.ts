@@ -14,6 +14,7 @@ import { QuestionEditorComponent } from './question-editor.component';
   declarations: [BuilderComponent, QuestionEditorComponent],
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
@@ -24,4 +25,4 @@ import { QuestionEditorComponent } from './question-editor.component';
   ],
 })
 export class BuilderModule {}
-
+import { FormsModule } from '@angular/forms';

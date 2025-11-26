@@ -12,6 +12,7 @@ export class BuilderComponent {
   formDef: MWForm;
   selectedPage = 0;
   editorOpen = false;
+  importText = '';
 
   constructor(private state: FormStateService) {
     this.formDef = this.state.getForm();
@@ -28,5 +29,17 @@ export class BuilderComponent {
   addQuestion(q: MWQuestion) {
     this.state.addQuestion(this.selectedPage, q);
     this.closeEditor();
+  }
+
+  exportJson() {
+    this.importText = this.state.exportJson();
+  }
+
+  importJson() {
+    if (this.importText?.trim()) {
+      this.state.importJson(this.importText);
+      this.formDef = this.state.getForm();
+      this.selectedPage = 0;
+    }
   }
 }
