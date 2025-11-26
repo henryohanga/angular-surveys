@@ -1,0 +1,283 @@
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <mat-icon>auto_awesome</mat-icon>
+      <span>Open Source Survey Builder</span>
+    </div>
+    <h1>
+      Create Beautiful Surveys with
+      <span class="highlight">Angular Surveys</span>
+    </h1>
+    <p class="hero-description">
+      A modern, component-based survey builder for Angular applications. Design
+      powerful forms with drag-and-drop ease, conditional logic, and real-time
+      preview.
+    </p>
+    <div class="hero-actions">
+      <button
+        mat-raised-button
+        color="primary"
+        class="cta-primary"
+        (click)="startBuilding()"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Start Building
+      </button>
+      <button mat-stroked-button class="cta-secondary" (click)="viewDemo()">
+        <mat-icon>play_circle</mat-icon>
+        Try Demo
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-value">10+</span>
+        <span class="stat-label">Question Types</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">∞</span>
+        <span class="stat-label">Pages</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">100%</span>
+        <span class="stat-label">Open Source</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="browser-mockup">
+      <div class="browser-header">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">angular-surveys.app/builder</div>
+      </div>
+      <div class="browser-content">
+        <div class="mockup-sidebar">
+          <div class="mockup-item"></div>
+          <div class="mockup-item"></div>
+          <div class="mockup-item short"></div>
+        </div>
+        <div class="mockup-main">
+          <div class="mockup-card">
+            <div class="mockup-line wide"></div>
+            <div class="mockup-line"></div>
+            <div class="mockup-options">
+              <div class="mockup-option"></div>
+              <div class="mockup-option"></div>
+              <div class="mockup-option"></div>
+            </div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-line wide"></div>
+            <div class="mockup-input"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features" id="features">
+  <div class="section-header">
+    <h2>Everything You Need to Build Great Surveys</h2>
+    <p>Powerful features that make survey creation a breeze</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card" *ngFor="let feature of features">
+      <div class="feature-icon">
+        <mat-icon>{{ feature.icon }}</mat-icon>
+      </div>
+      <h3>{{ feature.title }}</h3>
+      <p>{{ feature.description }}</p>
+    </div>
+  </div>
+</section>
+
+<!-- Question Types Section -->
+<section class="question-types">
+  <div class="section-header">
+    <h2>Rich Question Types</h2>
+    <p>Support for all the question formats you need</p>
+  </div>
+  <div class="types-showcase">
+    <div class="type-item">
+      <mat-icon>text_fields</mat-icon>
+      <span>Text Input</span>
+    </div>
+    <div class="type-item">
+      <mat-icon>notes</mat-icon>
+      <span>Long Text</span>
+    </div>
+    <div class="type-item">
+      <mat-icon>radio_button_checked</mat-icon>
+      <span>Multiple Choice</span>
+    </div>
+    <div class="type-item">
+      <mat-icon>check_box</mat-icon>
+      <span>Checkboxes</span>
+    </div>
+    <div class="type-item">
+      <mat-icon>arrow_drop_down_circle</mat-icon>
+      <span>Dropdown</span>
+    </div>
+    <div class="type-item">
+      <mat-icon>star</mat-icon>
+      <span>Rating Scale</span>
+    </div>
+    <div class="type-item">
+      <mat-icon>grid_on</mat-icon>
+      <span>Matrix Grid</span>
+    </div>
+    <div class="type-item">
+      <mat-icon>low_priority</mat-icon>
+      <span>Ranking</span>
+    </div>
+    <div class="type-item">
+      <mat-icon>calendar_today</mat-icon>
+      <span>Date Picker</span>
+    </div>
+    <div class="type-item">
+      <mat-icon>schedule</mat-icon>
+      <span>Time Picker</span>
+    </div>
+  </div>
+</section>
+
+<!-- Templates Section -->
+<section class="templates" id="templates">
+  <div class="section-header">
+    <h2>Quick Start Templates</h2>
+    <p>Get started faster with pre-built survey templates</p>
+  </div>
+  <div class="templates-grid">
+    <div
+      class="template-card"
+      *ngFor="let template of templates"
+      (click)="useTemplate(template.id)"
+      (keyup.enter)="useTemplate(template.id)"
+      tabindex="0"
+      role="button"
+      [attr.aria-label]="'Use ' + template.name + ' template'"
+    >
+      <div
+        class="template-icon"
+        [style.background-color]="template.color + '15'"
+        [style.color]="template.color"
+      >
+        <mat-icon>{{ template.icon }}</mat-icon>
+      </div>
+      <div class="template-info">
+        <h4>{{ template.name }}</h4>
+        <p>{{ template.description }}</p>
+        <span class="template-meta"
+          >{{ template.questionCount }} questions</span
+        >
+      </div>
+      <mat-icon class="template-arrow">arrow_forward</mat-icon>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works">
+  <div class="section-header">
+    <h2>How It Works</h2>
+    <p>Create professional surveys in three simple steps</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h3>Design Your Survey</h3>
+        <p>
+          Use the drag-and-drop builder to add questions, configure options, and
+          arrange your survey pages.
+        </p>
+      </div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h3>Add Logic & Flow</h3>
+        <p>
+          Set up conditional logic to show or hide questions based on responses.
+          Create branching paths.
+        </p>
+      </div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h3>Preview & Export</h3>
+        <p>
+          Test your survey with the live preview, then export as JSON or
+          integrate into your application.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-content">
+    <h2>Ready to Build Your Survey?</h2>
+    <p>
+      Start creating beautiful, interactive surveys today. No account required.
+    </p>
+    <button
+      mat-raised-button
+      color="primary"
+      class="cta-button"
+      (click)="startBuilding()"
+    >
+      <mat-icon>rocket_launch</mat-icon>
+      Get Started Free
+    </button>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-brand">
+      <div class="brand-logo">
+        <mat-icon>poll</mat-icon>
+        <span>Angular Surveys</span>
+      </div>
+      <p>Modern survey builder for Angular applications</p>
+    </div>
+    <div class="footer-links">
+      <div class="link-group">
+        <h5>Product</h5>
+        <a routerLink="/builder">Builder</a>
+        <a routerLink="/surveys">Demo Survey</a>
+        <a href="#features">Features</a>
+      </div>
+      <div class="link-group">
+        <h5>Resources</h5>
+        <a href="https://github.com/henryohanga/angular-surveys" target="_blank"
+          >GitHub</a
+        >
+        <a
+          href="https://github.com/henryohanga/angular-surveys#readme"
+          target="_blank"
+          >Documentation</a
+        >
+        <a href="https://github.com/mwasiluk/angular-surveys" target="_blank"
+          >Original Project</a
+        >
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>
+      Built with Angular · Inspired by
+      <a href="https://github.com/mwasiluk/angular-surveys" target="_blank"
+        >angular-surveys</a
+      >
+    </p>
+  </div>
+</footer>

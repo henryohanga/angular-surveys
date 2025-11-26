@@ -1,43 +1,123 @@
-<mat-card *ngIf="!showSummary">
-  <h2>{{ formDef.name }}</h2>
-  <p>{{ formDef.description }}</p>
+<!-- Survey Form -->
+<div class="survey-container" *ngIf="!showSummary">
+  <!-- Survey Header -->
+  <div class="survey-header">
+    <h2>{{ formDef.name || "Survey" }}</h2>
+    <p *ngIf="formDef.description">{{ formDef.description }}</p>
+  </div>
 
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    <ng-container *ngFor="let el of formDef.pages[currentPage].elements">
-      <app-question-host [question]="el.question" [form]="form"></app-question-host>
-      <hr />
-    </ng-container>
-
-    <div class="nav">
-      <button mat-button type="button" (click)="prev()" [disabled]="currentPage===0">Back</button>
-      <span>Page {{ currentPage + 1 }} of {{ formDef.pages.length }}</span>
-      <button mat-raised-button color="primary" type="button" (click)="next()" *ngIf="currentPage < formDef.pages.length - 1">Next</button>
-      <button mat-stroked-button type="button" (click)="showSummary = true" *ngIf="currentPage === formDef.pages.length - 1">Review</button>
+  <!-- Progress Bar -->
+  <div class="progress-container">
+    <div class="progress-info">
+      <span class="progress-label">{{
+        formDef.pages[currentPage].name || "Page " + (currentPage + 1)
+      }}</span>
+      <span class="progress-count"
+        >{{ currentPage + 1 }} of {{ formDef.pages.length }}</span
+      >
     </div>
-  </form>
-</mat-card>
+    <div class="progress-bar">
+      <div
+        class="progress-fill"
+        [style.width.%]="((currentPage + 1) / formDef.pages.length) * 100"
+      ></div>
+    </div>
+  </div>
 
-<mat-card *ngIf="showSummary">
-  <h2>Review</h2>
-  <p>Confirm your answers before submitting.</p>
-  <div class="summary">
-    <ng-container *ngFor="let p of formDef.pages">
-      <div class="summary-item" *ngFor="let el of p.elements">
-        <strong>{{ el.question.text }}</strong>
-        <span *ngIf="!el.question.grid">{{ answerLabel(el.question.id, form.get(el.question.id)?.value) }}</span>
-        <span *ngIf="el.question.grid">
-          <div *ngFor="let r of gridRowsFor(el.question.id)">
-            {{ r.label }}: 
-            <span [style.color]="gridRowInvalid(el.question.id, r.id) ? '#b00020' : ''">
-              {{ gridRowValueLabel(el.question.id, r.id) || '—' }}
-            </span>
-          </div>
-        </span>
+  <!-- Questions -->
+  <div class="questions-area">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div
+        class="question-block"
+        *ngFor="let el of formDef.pages[currentPage].elements; let i = index"
+      >
+        <app-question-host
+          [question]="el.question"
+          [form]="form"
+        ></app-question-host>
       </div>
-    </ng-container>
+    </form>
   </div>
+
+  <!-- Navigation -->
   <div class="nav">
-    <button mat-button type="button" (click)="prev()">Back</button>
-    <button mat-raised-button color="accent" type="button" (click)="submit()">Submit</button>
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="prev()"
+      [disabled]="currentPage === 0"
+    >
+      <mat-icon>arrow_back</mat-icon>
+      Back
+    </button>
+    <span class="page-indicator"
+      >Page {{ currentPage + 1 }} of {{ formDef.pages.length }}</span
+    >
+    <div class="nav-buttons">
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        (click)="next()"
+        *ngIf="currentPage < formDef.pages.length - 1"
+      >
+        Next
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+      <button
+        mat-raised-button
+        color="accent"
+        type="button"
+        (click)="showSummary = true"
+        *ngIf="currentPage === formDef.pages.length - 1"
+      >
+        <mat-icon>checklist</mat-icon>
+        Review Answers
+      </button>
+    </div>
   </div>
-</mat-card>
+</div>
+
+<!-- Summary / Review -->
+<div class="survey-container" *ngIf="showSummary">
+  <div class="survey-header">
+    <h2>Review Your Answers</h2>
+    <p>Please confirm your responses before submitting.</p>
+  </div>
+
+  <div class="questions-area">
+    <div class="summary">
+      <ng-container *ngFor="let p of formDef.pages">
+        <div class="summary-item" *ngFor="let el of p.elements">
+          <strong>{{ el.question.text }}</strong>
+          <span *ngIf="!el.question.grid">{{
+            answerLabel(el.question.id, form.get(el.question.id)?.value) || "—"
+          }}</span>
+          <span *ngIf="el.question.grid">
+            <div *ngFor="let r of gridRowsFor(el.question.id)">
+              {{ r.label }}:
+              <span
+                [style.color]="
+                  gridRowInvalid(el.question.id, r.id) ? 'var(--danger)' : ''
+                "
+              >
+                {{ gridRowValueLabel(el.question.id, r.id) || "—" }}
+              </span>
+            </div>
+          </span>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button mat-stroked-button type="button" (click)="prev()">
+      <mat-icon>arrow_back</mat-icon>
+      Edit Responses
+    </button>
+    <button mat-raised-button color="accent" type="button" (click)="submit()">
+      <mat-icon>send</mat-icon>
+      Submit Survey
+    </button>
+  </div>
+</div>

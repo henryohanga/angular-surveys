@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { FormStateService } from './form-state.service';
 import { MWElement, MWForm, MWQuestion, MWTextType } from '../surveys/models';
@@ -6,6 +7,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SurveyPreviewDialogComponent } from './survey-preview-dialog.component';
+import { StorageService, Survey } from '../core/services/storage.service';
 
 interface ComponentItem {
   type: MWTextType;
@@ -39,8 +41,10 @@ interface ComponentItem {
     ]),
   ],
 })
-export class BuilderComponent {
-  formDef: MWForm;
+export class BuilderComponent implements OnInit {
+  formDef!: MWForm;
+  survey: Survey | null = null;
+  surveyId: string | null = null;
   selectedPage = 0;
   editorOpen = false;
   importText = '';
@@ -52,6 +56,7 @@ export class BuilderComponent {
   surveyStatus: 'draft' | 'published' = 'draft';
   lastSaved: Date | null = null;
   showComponentPanel = true;
+  isLoading = true;
 
   // Available input components for drag-and-drop
   componentItems: ComponentItem[] = [
@@ -114,9 +119,42 @@ export class BuilderComponent {
   constructor(
     private state: FormStateService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
-  ) {
-    this.formDef = this.state.getForm();
+    private snackBar: MatSnackBar,
+    private storage: StorageService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
+
+  async ngOnInit() {
+    this.surveyId = this.route.snapshot.paramMap.get('id');
+
+    if (this.surveyId) {
+      // Load existing survey
+      try {
+        this.survey = await this.storage.getSurvey(this.surveyId);
+        if (this.survey) {
+          this.formDef = this.survey.form;
+          this.surveyStatus = this.survey.status;
+          this.lastSaved = this.survey.updatedAt;
+          this.state.importJson(JSON.stringify(this.formDef));
+        } else {
+          this.snackBar.open('Survey not found', 'Close', { duration: 3000 });
+          this.router.navigate(['/dashboard']);
+          return;
+        }
+      } catch {
+        this.snackBar.open('Failed to load survey', 'Close', {
+          duration: 3000,
+        });
+        this.router.navigate(['/dashboard']);
+        return;
+      }
+    } else {
+      // Create new survey or use existing state
+      this.formDef = this.state.getForm();
+    }
+
+    this.isLoading = false;
   }
 
   addPage() {
@@ -255,34 +293,74 @@ export class BuilderComponent {
   }
 
   // Save functionality
-  saveSurvey() {
+  async saveSurvey() {
     this.isSaving = true;
-    // Simulate save operation - in real app would call API
-    setTimeout(() => {
-      // State is auto-saved on each operation via FormStateService
+    try {
+      // Sync formDef with state
+      this.formDef = this.state.getForm();
+
+      if (this.surveyId && this.survey) {
+        // Update existing survey
+        this.survey.form = this.formDef;
+        this.survey = await this.storage.saveSurvey(this.survey);
+      } else {
+        // Create new survey
+        this.survey = await this.storage.createSurvey(this.formDef);
+        this.surveyId = this.survey.id;
+        // Update URL without navigation
+        this.router.navigate(['/builder', this.surveyId], { replaceUrl: true });
+      }
+
       this.lastSaved = new Date();
-      this.isSaving = false;
       this.snackBar.open('Survey saved successfully!', 'Dismiss', {
         duration: 3000,
         horizontalPosition: 'end',
         verticalPosition: 'top',
       });
-    }, 800);
+    } catch {
+      this.snackBar.open('Failed to save survey', 'Close', { duration: 3000 });
+    } finally {
+      this.isSaving = false;
+    }
   }
 
   // Publish functionality
-  publishSurvey() {
+  async publishSurvey() {
+    // Save first if needed
+    if (!this.surveyId) {
+      await this.saveSurvey();
+    }
+
+    if (!this.surveyId) return;
+
     this.isPublishing = true;
-    // Simulate publish operation - in real app would call API
-    setTimeout(() => {
+    try {
+      this.survey = await this.storage.publishSurvey(this.surveyId);
       this.surveyStatus = 'published';
-      this.isPublishing = false;
-      this.snackBar.open('Survey published successfully!', 'View', {
+
+      const snackRef = this.snackBar.open('Survey published!', 'Copy Link', {
         duration: 5000,
         horizontalPosition: 'end',
         verticalPosition: 'top',
       });
-    }, 1200);
+
+      snackRef.onAction().subscribe(() => {
+        if (this.survey?.shareUrl) {
+          navigator.clipboard.writeText(this.survey.shareUrl);
+          this.snackBar.open('Link copied!', 'Close', { duration: 2000 });
+        }
+      });
+    } catch {
+      this.snackBar.open('Failed to publish survey', 'Close', {
+        duration: 3000,
+      });
+    } finally {
+      this.isPublishing = false;
+    }
+  }
+
+  goToDashboard() {
+    this.router.navigate(['/dashboard']);
   }
 
   // Add question from component drag

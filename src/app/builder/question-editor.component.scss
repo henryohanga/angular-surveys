@@ -1,2 +1,103 @@
-.full { width: 100%; }
-.editor { margin-top: 16px; }
+/* Question Editor Styles */
+.editor {
+  background: transparent;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.editor h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.editor form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.full {
+  width: 100%;
+}
+
+/* Section Headers */
+.q-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Option Rows */
+.option-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: var(--supporting);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.option-row .full {
+  margin-bottom: 0;
+}
+
+/* Buttons */
+.editor button[mat-stroked-button] {
+  font-size: 13px;
+}
+
+.editor button[mat-button][color="warn"] {
+  font-size: 12px;
+  padding: 0 8px;
+  min-width: auto;
+}
+
+/* Actions Footer */
+.editor-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--surface-border);
+  margin-top: var(--spacing-md);
+}
+
+/* Page Flow Section */
+[formGroup] > div {
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Scale Options */
+.scale-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+}
+
+/* Grid Options */
+.grid-section {
+  background: var(--supporting);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.grid-section h6 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin: 0 0 var(--spacing-sm);
+}
+
+/* Checkbox styling */
+mat-checkbox {
+  font-size: 13px;
+}

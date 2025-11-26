@@ -20,6 +20,8 @@ import { PriorityQuestionComponent } from './components/priority-question.compon
 import { QuestionHostComponent } from './components/question-host.component';
 import { QUESTION_COMPONENTS } from './registry';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MaterialSurveyComponent } from './material-survey.component';
 import { SelectQuestionComponent } from './components/select-question.component';
 import { DateQuestionComponent } from './components/date-question.component';
@@ -55,6 +57,8 @@ import { ScaleQuestionComponent } from './components/scale-question.component';
     DragDropModule,
     MatTableModule,
     MatToolbarModule,
+    MatIconModule,
+    MatProgressBarModule,
   ],
   exports: [
     TextQuestionComponent,
@@ -70,8 +74,8 @@ import { ScaleQuestionComponent } from './components/scale-question.component';
     SurveyComponent,
     QuestionHostComponent,
     MaterialSurveyComponent,
-  ]
-  ,providers: [
+  ],
+  providers: [
     {
       provide: QUESTION_COMPONENTS,
       useValue: {
@@ -85,8 +89,8 @@ import { ScaleQuestionComponent } from './components/scale-question.component';
         date: DateQuestionComponent,
         time: TimeQuestionComponent,
         scale: ScaleQuestionComponent,
-      }
-    }
-  ]
+      },
+    },
+  ],
 })
 export class SurveysModule {}

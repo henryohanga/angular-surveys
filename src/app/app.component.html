@@ -1,22 +1,52 @@
-<header class="site-topbar" role="banner" aria-label="Site header">
-  <div class="brand">
-    <span class="logo" aria-hidden="true">🧩</span>
-    <h2>Survey Builder</h2>
-  </div>
+<header
+  class="site-topbar"
+  role="banner"
+  aria-label="Site header"
+  *ngIf="!isHome"
+>
+  <a class="brand" routerLink="/">
+    <mat-icon class="logo">poll</mat-icon>
+    <h2>Angular Surveys</h2>
+  </a>
   <nav class="actions" aria-label="Primary actions">
-    <a mat-button routerLink="/builder" aria-label="Start Building">Builder</a>
-    <a mat-button routerLink="/surveys" aria-label="Preview">Preview</a>
-    <a mat-button href="https://github.com/henryohanga/angular-surveys" target="_blank" rel="noopener" aria-label="GitHub">GitHub</a>
+    <a
+      mat-button
+      routerLink="/dashboard"
+      routerLinkActive="active"
+      aria-label="My Surveys"
+    >
+      <mat-icon>folder</mat-icon>
+      My Surveys
+    </a>
+    <a
+      mat-button
+      routerLink="/builder"
+      routerLinkActive="active"
+      aria-label="Survey Builder"
+    >
+      <mat-icon>edit</mat-icon>
+      Builder
+    </a>
+    <a
+      mat-button
+      routerLink="/surveys"
+      routerLinkActive="active"
+      aria-label="Preview Survey"
+    >
+      <mat-icon>visibility</mat-icon>
+      Demo
+    </a>
+    <a
+      mat-button
+      href="https://github.com/henryohanga/angular-surveys"
+      target="_blank"
+      rel="noopener"
+      aria-label="GitHub Repository"
+    >
+      <mat-icon>code</mat-icon>
+      GitHub
+    </a>
   </nav>
 </header>
-
-<main class="hero" aria-label="Landing hero" *ngIf="isHome">
-  <h1>Design, Build, and Run Surveys</h1>
-  <p>Create structured questionnaires with page flow, accessible inputs, and a modern UI.</p>
-  <div class="cta">
-    <a mat-raised-button color="primary" routerLink="/builder">Start Building</a>
-    <a mat-stroked-button routerLink="/surveys">Preview Demo</a>
-  </div>
-</main>
 
 <router-outlet></router-outlet>

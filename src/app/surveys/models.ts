@@ -56,7 +56,13 @@ export interface MWQuestion {
   otherAnswer?: boolean;
   grid?: MWGrid;
   priorityList?: MWPriorityItem[];
-  scale?: { min: number; max: number; step?: number };
+  scale?: {
+    min: number;
+    max: number;
+    step?: number;
+    minLabel?: string;
+    maxLabel?: string;
+  };
 }
 
 export interface MWElement {
