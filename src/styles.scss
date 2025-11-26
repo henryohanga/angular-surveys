@@ -184,3 +184,109 @@ hr {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
 }
+
+/* Premium Dialog Styles */
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-shape: 16px;
+  --mdc-dialog-container-elevation: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.mat-mdc-dialog-surface {
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+.question-dialog-container {
+  .mat-mdc-dialog-container {
+    padding: 0;
+  }
+
+  .mat-mdc-dialog-surface {
+    border-radius: 16px;
+    overflow: hidden;
+  }
+}
+
+/* Premium Button Styles */
+.mat-mdc-raised-button.mat-primary {
+  --mdc-protected-button-container-shape: 8px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.mat-mdc-button {
+  --mdc-text-button-container-shape: 8px;
+}
+
+.mat-mdc-icon-button {
+  --mdc-icon-button-state-layer-size: 40px;
+}
+
+/* Premium Form Field Styles */
+.mat-mdc-form-field {
+  --mdc-outlined-text-field-container-shape: 10px;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  margin-top: 4px;
+}
+
+/* Premium Checkbox & Toggle */
+.mat-mdc-checkbox {
+  --mdc-checkbox-state-layer-size: 36px;
+}
+
+.mat-mdc-slide-toggle {
+  --mdc-switch-handle-shape: 50%;
+}
+
+/* Premium Select */
+.mat-mdc-select-panel {
+  --mat-select-panel-background-color: var(--surface);
+  border-radius: 12px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.mat-mdc-option {
+  --mat-option-selected-state-layer-color: var(--primary-ghost);
+  border-radius: 8px;
+  margin: 4px 8px;
+  min-height: 44px;
+}
+
+/* Premium Snackbar */
+.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-shape: 12px;
+  --mdc-snackbar-supporting-text-size: 14px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out;
+}

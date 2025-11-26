@@ -64,42 +64,38 @@ export class BuilderComponent implements OnInit {
 
   // Available input components for drag-and-drop
   componentItems: ComponentItem[] = [
+    // Input types
     {
       type: 'text',
-      label: 'Text Field',
-      icon: 'text_fields',
-      description: 'Single line text input',
+      label: 'Short Text',
+      icon: 'short_text',
+      description: 'Single line answer',
     },
     {
       type: 'textarea',
       label: 'Long Text',
       icon: 'notes',
-      description: 'Multi-line text area',
+      description: 'Paragraph answer',
     },
     {
-      type: 'radio',
-      label: 'Multiple Choice',
-      icon: 'radio_button_checked',
-      description: 'Single selection from options',
+      type: 'email',
+      label: 'Email',
+      icon: 'email',
+      description: 'Email address',
     },
     {
-      type: 'checkbox',
-      label: 'Checkboxes',
-      icon: 'check_box',
-      description: 'Multiple selection from options',
+      type: 'phone',
+      label: 'Phone',
+      icon: 'phone',
+      description: 'Phone number',
     },
     {
-      type: 'select',
-      label: 'Dropdown',
-      icon: 'arrow_drop_down_circle',
-      description: 'Dropdown selection',
+      type: 'number',
+      label: 'Number',
+      icon: 'pin',
+      description: 'Numeric input',
     },
-    {
-      type: 'scale',
-      label: 'Rating',
-      icon: 'star',
-      description: 'Numeric rating scale',
-    },
+    { type: 'url', label: 'Website', icon: 'link', description: 'URL input' },
     {
       type: 'date',
       label: 'Date',
@@ -112,17 +108,68 @@ export class BuilderComponent implements OnInit {
       icon: 'schedule',
       description: 'Time picker',
     },
+    // Choice types
+    {
+      type: 'radio',
+      label: 'Single Choice',
+      icon: 'radio_button_checked',
+      description: 'Select one',
+    },
+    {
+      type: 'checkbox',
+      label: 'Multiple Choice',
+      icon: 'check_box',
+      description: 'Select multiple',
+    },
+    {
+      type: 'select',
+      label: 'Dropdown',
+      icon: 'arrow_drop_down_circle',
+      description: 'Dropdown list',
+    },
+    // Advanced types
+    {
+      type: 'scale',
+      label: 'Linear Scale',
+      icon: 'linear_scale',
+      description: 'Scale rating',
+    },
+    {
+      type: 'rating',
+      label: 'Star Rating',
+      icon: 'star',
+      description: '5-star rating',
+    },
+    {
+      type: 'nps',
+      label: 'NPS Score',
+      icon: 'speed',
+      description: '0-10 score',
+    },
     {
       type: 'grid',
-      label: 'Grid',
+      label: 'Matrix Grid',
       icon: 'grid_on',
-      description: 'Matrix/grid question',
+      description: 'Grid questions',
     },
     {
       type: 'priority',
       label: 'Ranking',
       icon: 'format_list_numbered',
-      description: 'Drag to rank items',
+      description: 'Rank items',
+    },
+    // Media types
+    {
+      type: 'file',
+      label: 'File Upload',
+      icon: 'cloud_upload',
+      description: 'Upload files',
+    },
+    {
+      type: 'signature',
+      label: 'Signature',
+      icon: 'gesture',
+      description: 'Draw signature',
     },
   ];
 
@@ -465,6 +512,22 @@ export class BuilderComponent implements OnInit {
       newQuestion.scale = { min: 1, max: 5, step: 1 };
     }
 
+    // Add default for star rating
+    if (type === 'rating') {
+      newQuestion.scale = { min: 1, max: 5, step: 1 };
+    }
+
+    // Add default for NPS
+    if (type === 'nps') {
+      newQuestion.scale = {
+        min: 0,
+        max: 10,
+        step: 1,
+        minLabel: 'Not at all likely',
+        maxLabel: 'Extremely likely',
+      };
+    }
+
     // Add default priority items for ranking
     if (type === 'priority') {
       newQuestion.priorityList = [
@@ -490,6 +553,20 @@ export class BuilderComponent implements OnInit {
       };
     }
 
+    // Add default file config
+    if (type === 'file') {
+      newQuestion.fileConfig = {
+        accept: ['image/*'],
+        maxSize: 10,
+        multiple: false,
+      };
+    }
+
+    // Add default number config
+    if (type === 'number') {
+      newQuestion.numberConfig = { step: 1 };
+    }
+
     this.state.addQuestion(this.selectedPage, newQuestion);
 
     // Open dialog to edit the newly added question
@@ -510,6 +587,14 @@ export class BuilderComponent implements OnInit {
       time: 'Time question',
       grid: 'Grid question',
       priority: 'Priority ranking question',
+      email: 'Email address',
+      phone: 'Phone number',
+      number: 'Numeric question',
+      url: 'Website URL',
+      file: 'File upload',
+      nps: 'How likely are you to recommend us?',
+      rating: 'Rate your experience',
+      signature: 'Please sign below',
     };
     return labels[type] || 'New question';
   }

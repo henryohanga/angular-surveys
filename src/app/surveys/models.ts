@@ -8,7 +8,15 @@ export type MWTextType =
   | 'select'
   | 'date'
   | 'time'
-  | 'scale';
+  | 'scale'
+  | 'email'
+  | 'phone'
+  | 'number'
+  | 'url'
+  | 'file'
+  | 'nps'
+  | 'rating'
+  | 'signature';
 
 export interface MWPageFlow {
   nextPage?: boolean;
@@ -46,6 +54,20 @@ export interface MWPriorityItem {
   value: string;
 }
 
+export interface MWFileConfig {
+  accept: string[]; // e.g., ['image/*', 'video/*', 'audio/*', '.pdf']
+  maxSize?: number; // in MB
+  multiple?: boolean;
+}
+
+export interface MWNumberConfig {
+  min?: number;
+  max?: number;
+  step?: number;
+  prefix?: string; // e.g., '$'
+  suffix?: string; // e.g., 'kg'
+}
+
 export interface MWQuestion {
   id: string;
   text: string;
@@ -63,6 +85,9 @@ export interface MWQuestion {
     minLabel?: string;
     maxLabel?: string;
   };
+  fileConfig?: MWFileConfig;
+  numberConfig?: MWNumberConfig;
+  placeholder?: string;
 }
 
 export interface MWElement {
