@@ -1,60 +1,438 @@
-<!-- header removed; using global site-topbar from AppComponent -->
+<!-- Survey Builder Toolbar -->
+<div class="builder-toolbar" role="toolbar" aria-label="Survey actions">
+  <div class="toolbar-left">
+    <button
+      mat-icon-button
+      (click)="toggleComponentPanel()"
+      matTooltip="Toggle components panel"
+      aria-label="Toggle components"
+    >
+      <mat-icon>{{ showComponentPanel ? "chevron_left" : "menu" }}</mat-icon>
+    </button>
+    <div class="survey-info">
+      <span class="survey-name">{{ formDef.name || "Untitled Survey" }}</span>
+      <span
+        class="status-badge"
+        [class.published]="surveyStatus === 'published'"
+      >
+        {{ surveyStatus === "published" ? "Published" : "Draft" }}
+      </span>
+    </div>
+  </div>
 
-<section class="builder-layout" aria-label="Survey Builder layout">
-  <aside class="left-panel" aria-label="Pages and Import Export">
-    <h3>Pages</h3>
-    <mat-nav-list>
-      <a mat-list-item *ngFor="let p of formDef.pages; let i = index" (click)="selectedPage = i" (keyup.enter)="selectedPage = i" tabindex="0">
-        Page {{ p.number }}
-      </a>
-    </mat-nav-list>
-    <button mat-stroked-button (click)="addPage()">+ Add Page</button>
-    <h3>Import / Export</h3>
-    <button mat-stroked-button color="primary" (click)="exportJson()">Export JSON</button>
-    <button mat-stroked-button color="accent" (click)="importJson()">Import JSON</button>
-    <button mat-stroked-button (click)="exportToFile()">Download JSON</button>
-    <input type="file" accept="application/json" (change)="importFromFile($event)" aria-label="Upload JSON file" />
-    <mat-form-field appearance="outline" class="full">
-      <mat-label>JSON</mat-label>
-      <textarea matInput rows="8" [(ngModel)]="importText" aria-label="JSON input"></textarea>
-    </mat-form-field>
-    <div *ngIf="importError" class="error" role="alert">{{ importError }}</div>
+  <div class="toolbar-center">
+    <span class="stats"
+      >{{ getTotalQuestions() }} questions ·
+      {{ formDef.pages.length }} pages</span
+    >
+  </div>
+
+  <div class="toolbar-right">
+    <button
+      mat-stroked-button
+      (click)="openPreview()"
+      matTooltip="Preview survey"
+      class="preview-btn"
+    >
+      <mat-icon>visibility</mat-icon>
+      Preview
+    </button>
+    <button
+      mat-stroked-button
+      (click)="saveSurvey()"
+      [disabled]="isSaving"
+      matTooltip="Save survey"
+      class="save-btn"
+    >
+      <mat-icon>{{ isSaving ? "sync" : "save" }}</mat-icon>
+      {{ isSaving ? "Saving..." : "Save" }}
+    </button>
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="publishSurvey()"
+      [disabled]="isPublishing"
+      matTooltip="Publish survey"
+      class="publish-btn"
+    >
+      <mat-icon>{{ isPublishing ? "sync" : "publish" }}</mat-icon>
+      {{ isPublishing ? "Publishing..." : "Publish" }}
+    </button>
+  </div>
+</div>
+
+<section
+  class="builder-layout"
+  [class.panel-collapsed]="!showComponentPanel"
+  aria-label="Survey Builder layout"
+>
+  <!-- Left Panel - Components Toolbox -->
+  <aside
+    class="left-panel"
+    *ngIf="showComponentPanel"
+    [@slideIn]
+    aria-label="Form components"
+  >
+    <div class="panel-header">
+      <h3>Components</h3>
+      <span class="hint">Drag to add</span>
+    </div>
+
+    <div
+      class="component-list"
+      cdkDropList
+      #componentList="cdkDropList"
+      [cdkDropListConnectedTo]="['formDropList']"
+      [cdkDropListData]="componentItems"
+      [cdkDropListSortingDisabled]="true"
+    >
+      <div
+        class="component-item"
+        *ngFor="let comp of componentItems"
+        cdkDrag
+        [cdkDragData]="comp"
+      >
+        <mat-icon class="comp-icon">{{ comp.icon }}</mat-icon>
+        <div class="comp-info">
+          <span class="comp-label">{{ comp.label }}</span>
+          <span class="comp-desc">{{ comp.description }}</span>
+        </div>
+        <div class="drag-placeholder" *cdkDragPlaceholder></div>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="panel-header">
+      <h3>Pages</h3>
+    </div>
+    <div class="pages-list">
+      <div
+        class="page-item"
+        *ngFor="let p of formDef.pages; let i = index"
+        [class.active]="selectedPage === i"
+        (click)="selectedPage = i"
+        (keyup.enter)="selectedPage = i"
+        tabindex="0"
+      >
+        <mat-icon class="page-icon">description</mat-icon>
+        <span class="page-name">{{ p.name || "Page " + p.number }}</span>
+        <span class="page-count">{{ p.elements.length }}</span>
+        <button
+          mat-icon-button
+          class="delete-page"
+          *ngIf="formDef.pages.length > 1"
+          (click)="deletePage(i); $event.stopPropagation()"
+          matTooltip="Delete page"
+          aria-label="Delete page"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <button mat-stroked-button class="add-page-btn" (click)="addPage()">
+        <mat-icon>add</mat-icon> Add Page
+      </button>
+    </div>
   </aside>
 
+  <!-- Center Panel - Form Builder -->
   <main class="center-panel" aria-label="Survey editing area">
     <mat-card class="survey-meta">
-      <input class="title-input" placeholder="Untitled Survey" [value]="formDef.pages[selectedPage].name || ''" (input)="updatePageName($any($event.target).value)" aria-label="Survey title" />
-      <input class="desc-input" placeholder="Survey description..." [value]="formDef.pages[selectedPage].description || ''" (input)="updatePageDescription($any($event.target).value)" aria-label="Survey description" />
+      <div class="meta-row">
+        <mat-icon class="meta-icon">edit_note</mat-icon>
+        <input
+          class="title-input"
+          placeholder="Untitled Survey"
+          [value]="formDef.pages[selectedPage].name || ''"
+          (input)="updatePageName($any($event.target).value)"
+          aria-label="Page title"
+        />
+      </div>
+      <textarea
+        class="desc-input"
+        placeholder="Add a description for this page..."
+        [value]="formDef.pages[selectedPage].description || ''"
+        (input)="updatePageDescription($any($event.target).value)"
+        rows="2"
+        aria-label="Page description"
+      ></textarea>
     </mat-card>
 
-    <div cdkDropList (cdkDropListDropped)="drop($event)">
-      <mat-card class="question-card" *ngFor="let el of formDef.pages[selectedPage].elements; let i = index" [@fadeIn]="i" cdkDrag>
-        <div class="question-header">
-          <div class="question-title">Question</div>
-          <div class="question-actions">
-            <button mat-icon-button aria-label="Edit question" (click)="editQuestion(i)"><mat-icon>edit</mat-icon></button>
-            <button mat-icon-button aria-label="Delete question" (click)="deleteQuestion(i)"><mat-icon>delete</mat-icon></button>
+    <div
+      class="questions-container"
+      cdkDropList
+      #formDropList="cdkDropList"
+      [cdkDropListConnectedTo]="['componentList']"
+      [cdkDropListData]="formDef.pages[selectedPage].elements"
+      (cdkDropListDropped)="dropFromToolbox($event)"
+    >
+      <mat-card
+        class="question-card"
+        *ngFor="let el of formDef.pages[selectedPage].elements; let i = index"
+        [@fadeIn]="i"
+        cdkDrag
+      >
+        <div class="drag-handle" cdkDragHandle>
+          <mat-icon>drag_indicator</mat-icon>
+        </div>
+
+        <div class="question-content">
+          <div class="question-header">
+            <mat-icon class="question-type-icon">{{
+              getQuestionIcon(el.question.type)
+            }}</mat-icon>
+            <div class="question-info">
+              <span class="question-number">Q{{ i + 1 }}</span>
+              <span class="question-type-label">{{
+                el.question.type | titlecase
+              }}</span>
+            </div>
+            <div class="question-actions">
+              <button
+                mat-icon-button
+                aria-label="Edit question"
+                (click)="editQuestion(i)"
+                matTooltip="Edit"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                aria-label="Duplicate question"
+                matTooltip="Duplicate"
+              >
+                <mat-icon>content_copy</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                aria-label="Delete question"
+                (click)="deleteQuestion(i)"
+                matTooltip="Delete"
+                class="delete-btn"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="question-text">{{ el.question.text }}</div>
+
+          <!-- Question Preview -->
+          <div class="question-preview" [ngSwitch]="el.question.type">
+            <input
+              *ngSwitchCase="'text'"
+              type="text"
+              class="preview-input"
+              placeholder="Short answer text"
+              disabled
+            />
+            <textarea
+              *ngSwitchCase="'textarea'"
+              class="preview-textarea"
+              placeholder="Long answer text"
+              rows="2"
+              disabled
+            ></textarea>
+
+            <div *ngSwitchCase="'radio'" class="preview-options">
+              <div
+                class="preview-option"
+                *ngFor="let opt of el.question.offeredAnswers?.slice(0, 3)"
+              >
+                <span class="radio-circle"></span>
+                <span>{{ opt.value }}</span>
+              </div>
+              <div
+                class="preview-option more"
+                *ngIf="(el.question.offeredAnswers?.length || 0) > 3"
+              >
+                +{{ (el.question.offeredAnswers?.length || 0) - 3 }} more
+              </div>
+            </div>
+
+            <div *ngSwitchCase="'checkbox'" class="preview-options">
+              <div
+                class="preview-option"
+                *ngFor="let opt of el.question.offeredAnswers?.slice(0, 3)"
+              >
+                <span class="checkbox-square"></span>
+                <span>{{ opt.value }}</span>
+              </div>
+              <div
+                class="preview-option more"
+                *ngIf="(el.question.offeredAnswers?.length || 0) > 3"
+              >
+                +{{ (el.question.offeredAnswers?.length || 0) - 3 }} more
+              </div>
+            </div>
+
+            <div *ngSwitchCase="'select'" class="preview-select">
+              <span>Select an option</span>
+              <mat-icon>expand_more</mat-icon>
+            </div>
+
+            <div *ngSwitchCase="'scale'" class="preview-scale">
+              <span class="scale-label">{{ el.question.scale?.min || 1 }}</span>
+              <div class="scale-dots">
+                <span
+                  class="scale-dot"
+                  *ngFor="let n of [1, 2, 3, 4, 5]"
+                ></span>
+              </div>
+              <span class="scale-label">{{ el.question.scale?.max || 5 }}</span>
+            </div>
+
+            <input
+              *ngSwitchCase="'date'"
+              type="text"
+              class="preview-input"
+              placeholder="MM/DD/YYYY"
+              disabled
+            />
+            <input
+              *ngSwitchCase="'time'"
+              type="text"
+              class="preview-input"
+              placeholder="HH:MM"
+              disabled
+            />
+          </div>
+
+          <div class="question-footer">
+            <mat-checkbox
+              [checked]="!!el.question.required"
+              disabled
+              aria-label="Required"
+              >Required</mat-checkbox
+            >
           </div>
         </div>
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>{{ el.question.text }}</mat-label>
-          <input matInput [placeholder]="el.question.text" disabled />
-        </mat-form-field>
-        <div class="question-footer">
-          <mat-checkbox [checked]="!!el.question.required" (change)="editQuestion(i)" aria-label="Required">Required</mat-checkbox>
-          <span class="type-label" aria-label="Question type">{{ el.question.type }}</span>
+
+        <div class="drag-placeholder" *cdkDragPlaceholder>
+          <mat-icon>add_circle_outline</mat-icon>
+          <span>Drop here</span>
         </div>
       </mat-card>
+
+      <!-- Empty State -->
+      <div
+        class="empty-state"
+        *ngIf="formDef.pages[selectedPage].elements.length === 0"
+      >
+        <mat-icon>quiz</mat-icon>
+        <h4>No questions yet</h4>
+        <p>
+          Drag components from the left panel or click below to add a question
+        </p>
+      </div>
     </div>
 
-    <button class="add-question" type="button" (click)="openEditor()" aria-label="Add Question">+ Add Question</button>
+    <button
+      class="add-question"
+      type="button"
+      (click)="openEditor()"
+      aria-label="Add Question"
+    >
+      <mat-icon>add</mat-icon>
+      Add Question
+    </button>
   </main>
 
+  <!-- Right Panel - Question Editor -->
   <aside class="right-panel" aria-label="Properties">
-    <h3>Properties</h3>
-    <p *ngIf="!editorOpen">Select a question to edit properties</p>
-    <div *ngIf="editorOpen" class="editor-host">
-      <app-question-editor [initial]="editingInitial" (save)="addQuestion($event)" (dismissed)="closeEditor()"></app-question-editor>
+    <div class="panel-header">
+      <h3>
+        {{
+          editorOpen
+            ? editingIndex !== null
+              ? "Edit Question"
+              : "New Question"
+            : "Properties"
+        }}
+      </h3>
+      <button
+        mat-icon-button
+        *ngIf="editorOpen"
+        (click)="closeEditor()"
+        aria-label="Close editor"
+        matTooltip="Close"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
+
+    <div *ngIf="!editorOpen" class="empty-properties">
+      <mat-icon>touch_app</mat-icon>
+      <p>Select a question to edit its properties</p>
+    </div>
+
+    <div *ngIf="editorOpen" class="editor-host">
+      <app-question-editor
+        [initial]="editingInitial"
+        (save)="addQuestion($event)"
+        (dismissed)="closeEditor()"
+      ></app-question-editor>
+    </div>
+
+    <hr *ngIf="!editorOpen" />
+
+    <!-- Import/Export Section (collapsed by default) -->
+    <details class="io-section" *ngIf="!editorOpen">
+      <summary>
+        <mat-icon>import_export</mat-icon>
+        Import / Export
+      </summary>
+      <div class="io-content">
+        <div class="io-buttons">
+          <button
+            mat-stroked-button
+            (click)="exportJson()"
+            matTooltip="Export to JSON"
+          >
+            <mat-icon>download</mat-icon> Export
+          </button>
+          <button
+            mat-stroked-button
+            (click)="exportToFile()"
+            matTooltip="Download JSON file"
+          >
+            <mat-icon>save_alt</mat-icon> Download
+          </button>
+        </div>
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>JSON Data</mat-label>
+          <textarea
+            matInput
+            rows="6"
+            [(ngModel)]="importText"
+            placeholder="Paste JSON here..."
+            aria-label="JSON input"
+          ></textarea>
+        </mat-form-field>
+        <div class="io-buttons">
+          <button
+            mat-stroked-button
+            color="primary"
+            (click)="importJson()"
+            [disabled]="!importText"
+          >
+            <mat-icon>upload</mat-icon> Import JSON
+          </button>
+          <label class="file-upload-btn">
+            <mat-icon>folder_open</mat-icon> Upload File
+            <input
+              type="file"
+              accept="application/json"
+              (change)="importFromFile($event)"
+              aria-label="Upload JSON file"
+            />
+          </label>
+        </div>
+        <div *ngIf="importError" class="error" role="alert">
+          <mat-icon>error</mat-icon>
+          {{ importError }}
+        </div>
+      </div>
+    </details>
   </aside>
 </section>
