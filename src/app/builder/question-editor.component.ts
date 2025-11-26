@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MWQuestion } from '../surveys/models';
+import { FormStateService } from './form-state.service';
 
 @Component({
   selector: 'app-question-editor',
@@ -14,15 +15,19 @@ export class QuestionEditorComponent implements OnChanges {
 
   form: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  pageNumbers: number[] = [];
+
+  constructor(private fb: FormBuilder, private state: FormStateService) {
     this.form = this.fb.group({
       id: ['', Validators.required],
       text: ['', Validators.required],
       type: ['text', Validators.required],
       required: [false],
+      pageFlowModifier: [false],
       otherAnswer: [false],
       offeredAnswers: this.fb.array([]),
     });
+    this.pageNumbers = this.state.getForm().pages.map(p => p.number);
   }
 
   submit() {
@@ -35,7 +40,18 @@ export class QuestionEditorComponent implements OnChanges {
 
   addAnswer() {
     const index = this.offeredAnswers.length + 1;
-    this.offeredAnswers.push(this.fb.group({ id: 'ans-' + index, orderNo: index, value: '' }));
+    this.offeredAnswers.push(
+      this.fb.group({
+        id: 'ans-' + index,
+        orderNo: index,
+        value: '',
+        pageFlow: this.fb.group({
+          nextPage: [false],
+          goToPage: [null],
+          label: ['']
+        })
+      })
+    );
   }
 
   removeAnswer(i: number) {
@@ -49,12 +65,24 @@ export class QuestionEditorComponent implements OnChanges {
         text: this.initial.text,
         type: this.initial.type,
         required: !!this.initial.required,
+        pageFlowModifier: !!this.initial.pageFlowModifier,
         otherAnswer: !!this.initial.otherAnswer,
       });
       this.offeredAnswers.clear();
       if (this.initial.offeredAnswers) {
         this.initial.offeredAnswers.forEach((a, idx) => {
-          this.offeredAnswers.push(this.fb.group({ id: a.id, orderNo: idx + 1, value: a.value }));
+          this.offeredAnswers.push(
+            this.fb.group({
+              id: a.id,
+              orderNo: idx + 1,
+              value: a.value,
+              pageFlow: this.fb.group({
+                nextPage: [!!a.pageFlow?.nextPage],
+                goToPage: [a.pageFlow?.goToPage ?? null],
+                label: [a.pageFlow?.label ?? '']
+              })
+            })
+          );
         });
       }
     }

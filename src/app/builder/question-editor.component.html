@@ -18,6 +18,10 @@
         <mat-option value="checkbox">Checkbox</mat-option>
       </mat-select>
     </mat-form-field>
+    <div *ngIf="form.get('type')?.value === 'checkbox'" aria-labelledby="pfm-heading">
+      <h5 class="q-label" id="pfm-heading">Page Flow</h5>
+      <mat-checkbox formControlName="pageFlowModifier">Enable page flow</mat-checkbox>
+    </div>
     <div
       *ngIf="
         form.get('type')?.value === 'radio' ||
@@ -36,6 +40,16 @@
             <mat-label>Value</mat-label>
             <input matInput formControlName="value" />
           </mat-form-field>
+          <div [formGroup]="a.get('pageFlow')">
+            <mat-form-field appearance="outline" class="full">
+              <mat-label>Go to page</mat-label>
+              <mat-select formControlName="goToPage">
+                <mat-option [value]="null">None</mat-option>
+                <mat-option *ngFor="let n of pageNumbers" [value]="n">Page {{ n }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-checkbox formControlName="nextPage">Next page</mat-checkbox>
+          </div>
           <button
             mat-button
             color="warn"
