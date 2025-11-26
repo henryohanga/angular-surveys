@@ -27,6 +27,7 @@
 
 .actions a {
   margin-left: 8px;
+  transition: transform .1s ease, background-color .2s ease;
 }
 
 .hero {
@@ -34,6 +35,7 @@
   margin: 48px auto;
   padding: 0 16px;
   text-align: center;
+  animation: fadeUp .4s ease-out both;
 }
 
 .hero h1 {
@@ -47,7 +49,7 @@
 
 .hero .cta {
   display: inline-flex;
-  gap: 12px;
+  gap: 16px;
 }
 
 @media (max-width: 600px) {
@@ -55,3 +57,10 @@
   .hero { margin: 32px auto; }
   .hero .cta { flex-direction: column; }
 }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.actions a:hover { background: var(--primary-ghost); transform: translateY(-1px); }

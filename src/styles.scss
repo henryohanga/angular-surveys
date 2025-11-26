@@ -19,3 +19,13 @@ button:focus, a:focus, input:focus, textarea:focus, mat-select:focus {
   outline: 3px solid rgba(37, 99, 235, 0.35);
   outline-offset: 2px;
 }
+
+.container { max-width: 960px; margin: 24px auto; padding: 0 16px; }
+
+.mat-mdc-button, .mat-mdc-raised-button, .mat-mdc-stroked-button {
+  transition: background-color .2s ease, box-shadow .2s ease, transform .1s ease;
+}
+.mat-mdc-button:hover, .mat-mdc-stroked-button:hover { background-color: var(--primary-ghost); }
+.mat-mdc-raised-button:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.15); transform: translateY(-1px); }
+
+hr { border: none; border-top: 1px solid var(--surface-border); margin: 16px 0; }
