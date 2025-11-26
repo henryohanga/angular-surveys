@@ -21,10 +21,20 @@
   <h2>Review</h2>
   <p>Confirm your answers before submitting.</p>
   <div class="summary">
-    <div class="summary-item" *ngFor="let key of (form.value | keyvalue)">
-      <strong>{{ key.key }}</strong>
-      <span>{{ key.value | json }}</span>
-    </div>
+    <ng-container *ngFor="let p of formDef.pages">
+      <div class="summary-item" *ngFor="let el of p.elements">
+        <strong>{{ el.question.text }}</strong>
+        <span *ngIf="!el.question.grid">{{ answerLabel(el.question.id, form.get(el.question.id)?.value) }}</span>
+        <span *ngIf="el.question.grid">
+          <div *ngFor="let r of gridRowsFor(el.question.id)">
+            {{ r.label }}: 
+            <span [style.color]="gridRowInvalid(el.question.id, r.id) ? '#b00020' : ''">
+              {{ gridRowValueLabel(el.question.id, r.id) || '—' }}
+            </span>
+          </div>
+        </span>
+      </div>
+    </ng-container>
   </div>
   <div class="nav">
     <button mat-button type="button" (click)="prev()">Back</button>

@@ -108,8 +108,9 @@ export class SurveyComponent {
           case 'priority': {
             const arr = this.fb.array([]);
             for (const item of q.priorityList ?? []) {
-              arr.push(new FormControl(item.value));
+              arr.push(new FormControl(item.value, Validators.required));
             }
+            if (q.required) arr.addValidators(this.arrayLengthMinValidator(1));
             this.form.addControl(key, arr);
             break;
           }
@@ -127,6 +128,72 @@ export class SurveyComponent {
         ? null
         : { minSelected: { required: min, actual: arr.length } };
     };
+  }
+
+  private arrayLengthMinValidator(min: number): ValidatorFn {
+    return (control: AbstractControl) => {
+      const arr = control as FormArray;
+      return arr.length >= min
+        ? null
+        : { minLengthArray: { required: min, actual: arr.length } };
+    };
+  }
+
+  private answerLabel(qId: string, value: unknown): string {
+    const q = this.formDef.pages
+      .map((p) => p.elements)
+      .reduce((acc, cur) => acc.concat(cur), [])
+      .map((e) => e.question)
+      .find((qq) => qq.id === qId);
+    if (!q) return String(value ?? '');
+    if (q.type === 'radio' && q.offeredAnswers) {
+      const v = typeof value === 'string' ? value : '';
+      const found = q.offeredAnswers.find((a) => a.value === v);
+      return found ? found.value : String(value ?? '');
+    }
+    if (Array.isArray(value)) {
+      return (value as unknown[]).map((v) => String(v ?? '')).join(', ');
+    }
+    if (typeof value === 'object' && value !== null) {
+      return JSON.stringify(value);
+    }
+    return String(value ?? '');
+  }
+
+  gridRowsFor(qId: string): { id: string; label: string }[] {
+    const q = this.formDef.pages
+      .map((p) => p.elements)
+      .reduce((acc, cur) => acc.concat(cur), [])
+      .map((e) => e.question)
+      .find((qq) => qq.id === qId);
+    return q?.grid?.rows?.map((r) => ({ id: r.id, label: r.label })) ?? [];
+  }
+
+  gridRowInvalid(qId: string, rowId: string): boolean {
+    const group = this.form.get(qId) as FormGroup;
+    const ctrl = group?.get(rowId);
+    return !!ctrl && ctrl.invalid;
+  }
+
+  gridRowValueLabel(qId: string, rowId: string): string {
+    const group = this.form.get(qId) as FormGroup;
+    const q = this.formDef.pages
+      .map((p) => p.elements)
+      .reduce((acc, cur) => acc.concat(cur), [])
+      .map((e) => e.question)
+      .find((qq) => qq.id === qId);
+    if (!group || !q || !q.grid) return '';
+    const val = group.get(rowId)?.value;
+    if (q.grid.cellInputType === 'radio') {
+      const found = q.grid.cols.find((c) => c.id === val);
+      return found ? found.label : String(val || '');
+    } else {
+      const arr = val as string[];
+      const labels = (arr || []).map(
+        (cid) => q.grid!.cols.find((c) => c.id === cid)?.label || cid
+      );
+      return labels.join(', ');
+    }
   }
 
   private pageQuestionIds(index: number): string[] {
