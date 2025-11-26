@@ -73,4 +73,23 @@ export class FormStateService {
       return raw ? JSON.parse(raw) as MWForm : null;
     } catch { return null; }
   }
+
+  validateForm(form: MWForm): string[] {
+    const errors: string[] = [];
+    if (!form || typeof form !== 'object') errors.push('Invalid JSON object');
+    if (!form.name || typeof form.name !== 'string') errors.push('Form name is required');
+    if (!Array.isArray(form.pages)) errors.push('Form pages must be an array');
+    const allowed = ['text', 'textarea', 'radio', 'checkbox', 'grid', 'priority'];
+    form.pages?.forEach((p, pi) => {
+      if (!Array.isArray(p.elements)) errors.push(`Page ${pi + 1}: elements must be an array`);
+      p.elements?.forEach((e, ei) => {
+        if (e.type !== 'question') errors.push(`Page ${pi + 1} element ${ei + 1}: unsupported type`);
+        const q = e.question as MWQuestion;
+        if (!q || typeof q !== 'object') errors.push(`Page ${pi + 1} element ${ei + 1}: missing question`);
+        if (!q.id) errors.push(`Page ${pi + 1} element ${ei + 1}: question id is required`);
+        if (!allowed.includes(q.type as string)) errors.push(`Page ${pi + 1} element ${ei + 1}: unknown question type`);
+      });
+    });
+    return errors;
+  }
 }

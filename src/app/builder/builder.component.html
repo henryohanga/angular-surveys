@@ -18,6 +18,7 @@
         <mat-label>JSON</mat-label>
         <textarea matInput rows="8" [(ngModel)]="importText"></textarea>
       </mat-form-field>
+      <div *ngIf="importError" class="error">{{ importError }}</div>
     </div>
     <div class="content">
       <h3>Questions (Page {{ formDef.pages[selectedPage].number }})</h3>

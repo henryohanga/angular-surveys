@@ -14,6 +14,7 @@ export class BuilderComponent {
   selectedPage = 0;
   editorOpen = false;
   importText = '';
+  importError: string | null = null;
   editingIndex: number | null = null;
   editingInitial: MWQuestion | null = null;
 
@@ -57,13 +58,25 @@ export class BuilderComponent {
 
   exportJson() {
     this.importText = this.state.exportJson();
+    this.importError = null;
   }
 
   importJson() {
     if (this.importText?.trim()) {
-      this.state.importJson(this.importText);
-      this.formDef = this.state.getForm();
-      this.selectedPage = 0;
+      try {
+        const parsed = JSON.parse(this.importText) as MWForm;
+        const errs = this.state.validateForm(parsed);
+        if (errs.length) {
+          this.importError = errs.join('\n');
+          return;
+        }
+        this.state.importJson(this.importText);
+        this.formDef = this.state.getForm();
+        this.selectedPage = 0;
+        this.importError = null;
+      } catch {
+        this.importError = 'Invalid JSON';
+      }
     }
   }
 

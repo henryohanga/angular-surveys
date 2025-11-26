@@ -26,6 +26,12 @@ export class QuestionEditorComponent implements OnChanges {
       pageFlowModifier: [false],
       otherAnswer: [false],
       offeredAnswers: this.fb.array([]),
+      grid: this.fb.group({
+        cellInputType: ['radio'],
+        rows: this.fb.array([]),
+        cols: this.fb.array([]),
+      }),
+      priorityList: this.fb.array([]),
     });
     this.pageNumbers = this.state.getForm().pages.map(p => p.number);
   }
@@ -37,6 +43,10 @@ export class QuestionEditorComponent implements OnChanges {
   }
 
   get offeredAnswers(): FormArray { return this.form.get('offeredAnswers') as FormArray; }
+  get grid(): FormGroup { return this.form.get('grid') as FormGroup; }
+  get gridRows(): FormArray { return this.grid.get('rows') as FormArray; }
+  get gridCols(): FormArray { return this.grid.get('cols') as FormArray; }
+  get priorityList(): FormArray { return this.form.get('priorityList') as FormArray; }
 
   addAnswer() {
     const index = this.offeredAnswers.length + 1;
@@ -53,6 +63,27 @@ export class QuestionEditorComponent implements OnChanges {
       })
     );
   }
+
+  addGridRow() {
+    const index = this.gridRows.length + 1;
+    this.gridRows.push(this.fb.group({ id: 'row-' + index, orderNo: index, label: '' }));
+  }
+
+  removeGridRow(i: number) { this.gridRows.removeAt(i); }
+
+  addGridCol() {
+    const index = this.gridCols.length + 1;
+    this.gridCols.push(this.fb.group({ id: 'col-' + index, orderNo: index, label: '' }));
+  }
+
+  removeGridCol(i: number) { this.gridCols.removeAt(i); }
+
+  addPriorityItem() {
+    const index = this.priorityList.length + 1;
+    this.priorityList.push(this.fb.group({ id: 'p' + index, orderNo: index, value: '' }));
+  }
+
+  removePriorityItem(i: number) { this.priorityList.removeAt(i); }
 
   removeAnswer(i: number) {
     this.offeredAnswers.removeAt(i);
@@ -83,6 +114,26 @@ export class QuestionEditorComponent implements OnChanges {
               })
             })
           );
+        });
+      }
+
+      const g = this.grid;
+      (g.get('rows') as FormArray).clear();
+      (g.get('cols') as FormArray).clear();
+      if (this.initial.grid) {
+        g.patchValue({ cellInputType: this.initial.grid.cellInputType });
+        this.initial.grid.rows.forEach((r, idx) => {
+          this.gridRows.push(this.fb.group({ id: r.id, orderNo: idx + 1, label: r.label }));
+        });
+        this.initial.grid.cols.forEach((c, idx) => {
+          this.gridCols.push(this.fb.group({ id: c.id, orderNo: idx + 1, label: c.label }));
+        });
+      }
+
+      this.priorityList.clear();
+      if (this.initial.priorityList) {
+        this.initial.priorityList.forEach((it, idx) => {
+          this.priorityList.push(this.fb.group({ id: it.id, orderNo: idx + 1, value: it.value }));
         });
       }
     }

@@ -1,3 +1,6 @@
 .layout { display: grid; grid-template-columns: 260px 1fr; gap: 16px; }
 .sidebar { border-right: 1px solid #eee; padding-right: 16px; }
-.q-item { margin-bottom: 8px; }
+.q-item { margin-bottom: 8px; display:flex; align-items:center; justify-content: space-between; }
+.actions { display:flex; gap: 8px; }
+.full { width: 100%; }
+.error { color: #b00020; white-space: pre-line; margin-top: 8px; }
