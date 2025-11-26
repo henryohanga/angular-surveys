@@ -24,9 +24,14 @@
         <mat-option value="scale">Scale</mat-option>
       </mat-select>
     </mat-form-field>
-    <div *ngIf="form.get('type')?.value === 'checkbox'" aria-labelledby="pfm-heading">
+    <div
+      *ngIf="form.get('type')?.value === 'checkbox'"
+      aria-labelledby="pfm-heading"
+    >
       <h5 class="q-label" id="pfm-heading">Page Flow</h5>
-      <mat-checkbox formControlName="pageFlowModifier">Enable page flow</mat-checkbox>
+      <mat-checkbox formControlName="pageFlowModifier"
+        >Enable page flow</mat-checkbox
+      >
     </div>
     <div
       *ngIf="
@@ -52,7 +57,9 @@
               <mat-label>Go to page</mat-label>
               <mat-select formControlName="goToPage">
                 <mat-option [value]="null">None</mat-option>
-                <mat-option *ngFor="let n of pageNumbers" [value]="n">Page {{ n }}</mat-option>
+                <mat-option *ngFor="let n of pageNumbers" [value]="n"
+                  >Page {{ n }}</mat-option
+                >
               </mat-select>
             </mat-form-field>
             <mat-checkbox formControlName="nextPage">Next page</mat-checkbox>
@@ -75,7 +82,11 @@
       >
     </div>
 
-    <div *ngIf="form.get('type')?.value === 'grid'" [formGroup]="grid" aria-labelledby="grid-heading">
+    <div
+      *ngIf="form.get('type')?.value === 'grid'"
+      [formGroup]="grid"
+      aria-labelledby="grid-heading"
+    >
       <h5 class="q-label" id="grid-heading">Grid</h5>
       <mat-form-field appearance="outline" class="full">
         <mat-label>Cell input type</mat-label>
@@ -86,41 +97,88 @@
       </mat-form-field>
       <div formArrayName="rows">
         <h6 class="q-label">Rows</h6>
-        <div *ngFor="let r of gridRows.controls; let i = index" [formGroupName]="i" class="option-row">
+        <div
+          *ngFor="let r of gridRows.controls; let i = index"
+          [formGroupName]="i"
+          class="option-row"
+        >
           <mat-form-field appearance="outline" class="full">
             <mat-label>Row label</mat-label>
             <input matInput formControlName="label" />
           </mat-form-field>
-          <button mat-button color="warn" type="button" (click)="removeGridRow(i)">Remove</button>
+          <button
+            mat-button
+            color="warn"
+            type="button"
+            (click)="removeGridRow(i)"
+          >
+            Remove
+          </button>
         </div>
-        <button mat-stroked-button type="button" (click)="addGridRow()">Add Row</button>
+        <button mat-stroked-button type="button" (click)="addGridRow()">
+          Add Row
+        </button>
       </div>
       <div formArrayName="cols">
         <h6 class="q-label">Columns</h6>
-        <div *ngFor="let c of gridCols.controls; let i = index" [formGroupName]="i" class="option-row">
+        <div
+          *ngFor="let c of gridCols.controls; let i = index"
+          [formGroupName]="i"
+          class="option-row"
+        >
           <mat-form-field appearance="outline" class="full">
             <mat-label>Column label</mat-label>
             <input matInput formControlName="label" />
           </mat-form-field>
-          <button mat-button color="warn" type="button" (click)="removeGridCol(i)">Remove</button>
+          <button
+            mat-button
+            color="warn"
+            type="button"
+            (click)="removeGridCol(i)"
+          >
+            Remove
+          </button>
         </div>
-        <button mat-stroked-button type="button" (click)="addGridCol()">Add Column</button>
+        <button mat-stroked-button type="button" (click)="addGridCol()">
+          Add Column
+        </button>
       </div>
     </div>
 
-    <div *ngIf="form.get('type')?.value === 'priority'" formArrayName="priorityList" aria-labelledby="prio-heading">
+    <div
+      *ngIf="form.get('type')?.value === 'priority'"
+      formArrayName="priorityList"
+      aria-labelledby="prio-heading"
+    >
       <h5 class="q-label" id="prio-heading">Priority Items</h5>
-      <div *ngFor="let it of priorityList.controls; let i = index" [formGroupName]="i" class="option-row">
+      <div
+        *ngFor="let it of priorityList.controls; let i = index"
+        [formGroupName]="i"
+        class="option-row"
+      >
         <mat-form-field appearance="outline" class="full">
           <mat-label>Item</mat-label>
           <input matInput formControlName="value" />
         </mat-form-field>
-        <button mat-button color="warn" type="button" (click)="removePriorityItem(i)">Remove</button>
+        <button
+          mat-button
+          color="warn"
+          type="button"
+          (click)="removePriorityItem(i)"
+        >
+          Remove
+        </button>
       </div>
-      <button mat-stroked-button type="button" (click)="addPriorityItem()">Add Item</button>
+      <button mat-stroked-button type="button" (click)="addPriorityItem()">
+        Add Item
+      </button>
     </div>
 
-    <div *ngIf="form.get('type')?.value === 'scale'" [formGroup]="scale" aria-labelledby="scale-heading">
+    <div
+      *ngIf="form.get('type')?.value === 'scale'"
+      [formGroup]="scale"
+      aria-labelledby="scale-heading"
+    >
       <h5 class="q-label" id="scale-heading">Scale</h5>
       <div class="option-row">
         <mat-form-field appearance="outline" class="full">
@@ -134,6 +192,16 @@
         <mat-form-field appearance="outline" class="full">
           <mat-label>Step</mat-label>
           <input matInput type="number" formControlName="step" />
+        </mat-form-field>
+      </div>
+      <div class="option-row">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Min Label (e.g. "Poor")</mat-label>
+          <input matInput formControlName="minLabel" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Max Label (e.g. "Excellent")</mat-label>
+          <input matInput formControlName="maxLabel" />
         </mat-form-field>
       </div>
     </div>

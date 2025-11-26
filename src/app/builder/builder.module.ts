@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -16,17 +17,25 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BuilderComponent } from './builder.component';
 import { QuestionEditorComponent } from './question-editor.component';
 import { SurveyPreviewDialogComponent } from './survey-preview-dialog.component';
+import { QuestionDialogComponent } from './question-dialog.component';
 
 @NgModule({
-  declarations: [BuilderComponent, QuestionEditorComponent, SurveyPreviewDialogComponent],
+  declarations: [
+    BuilderComponent,
+    QuestionEditorComponent,
+    SurveyPreviewDialogComponent,
+    QuestionDialogComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    TextFieldModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -42,6 +51,7 @@ import { SurveyPreviewDialogComponent } from './survey-preview-dialog.component'
     MatTabsModule,
     MatSliderModule,
     MatRadioModule,
+    MatSlideToggleModule,
     DragDropModule,
   ],
 })

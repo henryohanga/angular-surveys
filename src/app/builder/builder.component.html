@@ -199,6 +199,7 @@
               <button
                 mat-icon-button
                 aria-label="Duplicate question"
+                (click)="duplicateQuestion(i)"
                 matTooltip="Duplicate"
               >
                 <mat-icon>content_copy</mat-icon>
@@ -330,7 +331,7 @@
     <button
       class="add-question"
       type="button"
-      (click)="openEditor()"
+      (click)="openQuestionDialog()"
       aria-label="Add Question"
     >
       <mat-icon>add</mat-icon>
@@ -338,46 +339,58 @@
     </button>
   </main>
 
-  <!-- Right Panel - Question Editor -->
-  <aside class="right-panel" aria-label="Properties">
+  <!-- Right Panel - Survey Settings -->
+  <aside class="right-panel" aria-label="Survey Settings">
     <div class="panel-header">
-      <h3>
-        {{
-          editorOpen
-            ? editingIndex !== null
-              ? "Edit Question"
-              : "New Question"
-            : "Properties"
-        }}
-      </h3>
-      <button
-        mat-icon-button
-        *ngIf="editorOpen"
-        (click)="closeEditor()"
-        aria-label="Close editor"
-        matTooltip="Close"
-      >
-        <mat-icon>close</mat-icon>
-      </button>
+      <h3>Survey Settings</h3>
     </div>
 
-    <div *ngIf="!editorOpen" class="empty-properties">
-      <mat-icon>touch_app</mat-icon>
-      <p>Select a question to edit its properties</p>
+    <!-- Survey Name -->
+    <div class="settings-section">
+      <label class="settings-label">Survey Name</label>
+      <input
+        class="settings-input"
+        [value]="formDef.name || ''"
+        (input)="updateSurveyName($any($event.target).value)"
+        placeholder="Enter survey name..."
+      />
     </div>
 
-    <div *ngIf="editorOpen" class="editor-host">
-      <app-question-editor
-        [initial]="editingInitial"
-        (save)="addQuestion($event)"
-        (dismissed)="closeEditor()"
-      ></app-question-editor>
+    <!-- Survey Description -->
+    <div class="settings-section">
+      <label class="settings-label">Description</label>
+      <textarea
+        class="settings-textarea"
+        [value]="formDef.description || ''"
+        (input)="updateSurveyDescription($any($event.target).value)"
+        placeholder="Add a description..."
+        rows="3"
+      ></textarea>
     </div>
 
-    <hr *ngIf="!editorOpen" />
+    <hr />
 
-    <!-- Import/Export Section (collapsed by default) -->
-    <details class="io-section" *ngIf="!editorOpen">
+    <!-- Quick Stats -->
+    <div class="settings-section">
+      <label class="settings-label">Quick Stats</label>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <mat-icon>quiz</mat-icon>
+          <span class="stat-value">{{ getTotalQuestions() }}</span>
+          <span class="stat-label">Questions</span>
+        </div>
+        <div class="stat-item">
+          <mat-icon>description</mat-icon>
+          <span class="stat-value">{{ formDef.pages.length }}</span>
+          <span class="stat-label">Pages</span>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- Import/Export Section -->
+    <details class="io-section">
       <summary>
         <mat-icon>import_export</mat-icon>
         Import / Export
@@ -434,5 +447,11 @@
         </div>
       </div>
     </details>
+
+    <!-- Last Saved -->
+    <div class="last-saved" *ngIf="lastSaved">
+      <mat-icon>check_circle</mat-icon>
+      <span>Saved {{ formatTimeAgo(lastSaved) }}</span>
+    </div>
   </aside>
 </section>

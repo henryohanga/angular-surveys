@@ -1,8 +1,30 @@
-<div [formGroup]="form">
+<div [formGroup]="form" class="scale-question">
   <label class="q-label" [attr.for]="question.id">{{ question.text }}</label>
-  <mat-form-field appearance="outline" class="full">
-    <mat-label>{{ question.text }}</mat-label>
-    <input matInput [formControlName]="question.id" type="number" [attr.min]="min()" [attr.max]="max()" [attr.step]="step()" />
-  </mat-form-field>
-</div>
 
+  <div class="scale-container">
+    <span class="scale-label min-label" *ngIf="minLabel()">{{
+      minLabel()
+    }}</span>
+
+    <div class="scale-buttons">
+      <button
+        type="button"
+        *ngFor="let point of scalePoints"
+        class="scale-point"
+        [class.selected]="currentValue === point"
+        (click)="setValue(point)"
+        [attr.aria-label]="'Select ' + point"
+        [attr.aria-pressed]="currentValue === point"
+      >
+        {{ point }}
+      </button>
+    </div>
+
+    <span class="scale-label max-label" *ngIf="maxLabel()">{{
+      maxLabel()
+    }}</span>
+  </div>
+
+  <!-- Hidden input for form control -->
+  <input type="hidden" [formControlName]="question.id" />
+</div>

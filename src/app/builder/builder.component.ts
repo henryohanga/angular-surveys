@@ -7,6 +7,10 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SurveyPreviewDialogComponent } from './survey-preview-dialog.component';
+import {
+  QuestionDialogComponent,
+  QuestionDialogData,
+} from './question-dialog.component';
 import { StorageService, Survey } from '../core/services/storage.service';
 
 interface ComponentItem {
@@ -114,6 +118,12 @@ export class BuilderComponent implements OnInit {
       icon: 'grid_on',
       description: 'Matrix/grid question',
     },
+    {
+      type: 'priority',
+      label: 'Ranking',
+      icon: 'format_list_numbered',
+      description: 'Drag to rank items',
+    },
   ];
 
   constructor(
@@ -165,8 +175,41 @@ export class BuilderComponent implements OnInit {
   openEditor() {
     this.editorOpen = true;
   }
+
   closeEditor() {
     this.editorOpen = false;
+    this.editingIndex = null;
+    this.editingInitial = null;
+  }
+
+  // Open the new question dialog
+  openQuestionDialog(question?: MWQuestion, index?: number) {
+    const dialogData: QuestionDialogData = {
+      question: question,
+      pageNumbers: this.formDef.pages.map((p) => p.number),
+      mode: question ? 'edit' : 'create',
+    };
+
+    const dialogRef = this.dialog.open(QuestionDialogComponent, {
+      width: '640px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      data: dialogData,
+      panelClass: 'question-dialog-container',
+      autoFocus: false,
+    });
+
+    dialogRef.afterClosed().subscribe((result: MWQuestion | undefined) => {
+      if (result) {
+        if (index !== undefined) {
+          this.state.updateQuestion(this.selectedPage, index, result);
+          this.snackBar.open('Question updated', 'Close', { duration: 2000 });
+        } else {
+          this.state.addQuestion(this.selectedPage, result);
+          this.snackBar.open('Question added', 'Close', { duration: 2000 });
+        }
+      }
+    });
   }
 
   addQuestion(q: MWQuestion) {
@@ -182,13 +225,24 @@ export class BuilderComponent implements OnInit {
 
   editQuestion(i: number) {
     const el = this.formDef.pages[this.selectedPage].elements[i];
-    this.editingIndex = i;
-    this.editingInitial = el.question;
-    this.openEditor();
+    // Use the new dialog instead
+    this.openQuestionDialog(el.question, i);
+  }
+
+  duplicateQuestion(i: number) {
+    const el = this.formDef.pages[this.selectedPage].elements[i];
+    const duplicate: MWQuestion = {
+      ...JSON.parse(JSON.stringify(el.question)),
+      id: 'q-' + Date.now(),
+      text: el.question.text + ' (copy)',
+    };
+    this.state.addQuestion(this.selectedPage, duplicate);
+    this.snackBar.open('Question duplicated', 'Close', { duration: 2000 });
   }
 
   deleteQuestion(i: number) {
     this.state.deleteQuestion(this.selectedPage, i);
+    this.snackBar.open('Question deleted', 'Undo', { duration: 3000 });
   }
 
   drop(e: CdkDragDrop<MWElement[]>) {
@@ -229,6 +283,31 @@ export class BuilderComponent implements OnInit {
 
   updatePageDescription(description: string) {
     this.state.updatePageMeta(this.selectedPage, { description });
+  }
+
+  updateSurveyName(name: string) {
+    this.formDef.name = name;
+    this.state.importJson(JSON.stringify(this.formDef));
+  }
+
+  updateSurveyDescription(description: string) {
+    this.formDef.description = description;
+    this.state.importJson(JSON.stringify(this.formDef));
+  }
+
+  formatTimeAgo(date: Date): string {
+    const now = new Date();
+    const diffMs = now.getTime() - new Date(date).getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMins < 1) return 'just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays}d ago`;
   }
 
   updateNamedPage(namedPage: boolean) {
@@ -384,6 +463,31 @@ export class BuilderComponent implements OnInit {
     // Add default scale for rating
     if (type === 'scale') {
       newQuestion.scale = { min: 1, max: 5, step: 1 };
+    }
+
+    // Add default priority items for ranking
+    if (type === 'priority') {
+      newQuestion.priorityList = [
+        { id: 'p1', orderNo: 1, value: 'Item 1' },
+        { id: 'p2', orderNo: 2, value: 'Item 2' },
+        { id: 'p3', orderNo: 3, value: 'Item 3' },
+      ];
+    }
+
+    // Add default grid structure
+    if (type === 'grid') {
+      newQuestion.grid = {
+        cellInputType: 'radio',
+        rows: [
+          { id: 'row-1', orderNo: 1, label: 'Row 1' },
+          { id: 'row-2', orderNo: 2, label: 'Row 2' },
+        ],
+        cols: [
+          { id: 'col-1', orderNo: 1, label: 'Column 1' },
+          { id: 'col-2', orderNo: 2, label: 'Column 2' },
+          { id: 'col-3', orderNo: 3, label: 'Column 3' },
+        ],
+      };
     }
 
     this.state.addQuestion(this.selectedPage, newQuestion);
