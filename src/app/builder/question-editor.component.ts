@@ -32,6 +32,7 @@ export class QuestionEditorComponent implements OnChanges {
         cols: this.fb.array([]),
       }),
       priorityList: this.fb.array([]),
+      scale: this.fb.group({ min: [1], max: [5], step: [1] }),
     });
     this.pageNumbers = this.state.getForm().pages.map(p => p.number);
   }
@@ -47,6 +48,7 @@ export class QuestionEditorComponent implements OnChanges {
   get gridRows(): FormArray { return this.grid.get('rows') as FormArray; }
   get gridCols(): FormArray { return this.grid.get('cols') as FormArray; }
   get priorityList(): FormArray { return this.form.get('priorityList') as FormArray; }
+  get scale(): FormGroup { return this.form.get('scale') as FormGroup; }
 
   addAnswer() {
     const index = this.offeredAnswers.length + 1;
@@ -135,6 +137,10 @@ export class QuestionEditorComponent implements OnChanges {
         this.initial.priorityList.forEach((it, idx) => {
           this.priorityList.push(this.fb.group({ id: it.id, orderNo: idx + 1, value: it.value }));
         });
+      }
+
+      if (this.initial.scale) {
+        this.scale.patchValue({ min: this.initial.scale.min, max: this.initial.scale.max, step: this.initial.scale.step ?? 1 });
       }
     }
   }

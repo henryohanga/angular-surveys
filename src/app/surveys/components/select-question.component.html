@@ -1,0 +1,10 @@
+<div [formGroup]="form">
+  <label class="q-label" [attr.for]="question.id">{{ question.text }}</label>
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>{{ question.text }}</mat-label>
+    <mat-select [formControlName]="question.id">
+      <mat-option *ngFor="let a of answers()" [value]="a.value">{{ a.value }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+

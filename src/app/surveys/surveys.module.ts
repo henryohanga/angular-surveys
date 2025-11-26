@@ -12,6 +12,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatSelectModule } from '@angular/material/select';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTableModule } from '@angular/material/table';
 import { GridQuestionComponent } from './components/grid-question.component';
@@ -20,6 +21,10 @@ import { QuestionHostComponent } from './components/question-host.component';
 import { QUESTION_COMPONENTS } from './registry';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MaterialSurveyComponent } from './material-survey.component';
+import { SelectQuestionComponent } from './components/select-question.component';
+import { DateQuestionComponent } from './components/date-question.component';
+import { TimeQuestionComponent } from './components/time-question.component';
+import { ScaleQuestionComponent } from './components/scale-question.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +37,10 @@ import { MaterialSurveyComponent } from './material-survey.component';
     PriorityQuestionComponent,
     QuestionHostComponent,
     MaterialSurveyComponent,
+    SelectQuestionComponent,
+    DateQuestionComponent,
+    TimeQuestionComponent,
+    ScaleQuestionComponent,
   ],
   imports: [
     CommonModule,
@@ -42,6 +51,7 @@ import { MaterialSurveyComponent } from './material-survey.component';
     MatCheckboxModule,
     MatButtonModule,
     MatCardModule,
+    MatSelectModule,
     DragDropModule,
     MatTableModule,
     MatToolbarModule,
@@ -53,6 +63,10 @@ import { MaterialSurveyComponent } from './material-survey.component';
     CheckboxQuestionComponent,
     GridQuestionComponent,
     PriorityQuestionComponent,
+    SelectQuestionComponent,
+    DateQuestionComponent,
+    TimeQuestionComponent,
+    ScaleQuestionComponent,
     SurveyComponent,
     QuestionHostComponent,
     MaterialSurveyComponent,
@@ -67,6 +81,10 @@ import { MaterialSurveyComponent } from './material-survey.component';
         checkbox: CheckboxQuestionComponent,
         grid: GridQuestionComponent,
         priority: PriorityQuestionComponent,
+        select: SelectQuestionComponent,
+        date: DateQuestionComponent,
+        time: TimeQuestionComponent,
+        scale: ScaleQuestionComponent,
       }
     }
   ]

@@ -60,6 +60,33 @@ export class SurveyComponent {
               this.form.addControl(key, arr);
             }
             break;
+          case 'select':
+            this.form.addControl(
+              key,
+              new FormControl('', q.required ? Validators.required : [])
+            );
+            break;
+          case 'date':
+            this.form.addControl(
+              key,
+              new FormControl('', q.required ? Validators.required : [])
+            );
+            break;
+          case 'time':
+            this.form.addControl(
+              key,
+              new FormControl('', q.required ? Validators.required : [])
+            );
+            break;
+          case 'scale':
+            this.form.addControl(
+              key,
+              new FormControl(
+                q.scale?.min ?? 1,
+                q.required ? Validators.required : []
+              )
+            );
+            break;
           case 'grid': {
             const group = this.fb.group({});
             const grid = q.grid!;

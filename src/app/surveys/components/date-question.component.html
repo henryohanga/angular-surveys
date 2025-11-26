@@ -1,0 +1,8 @@
+<div [formGroup]="form">
+  <label class="q-label" [attr.for]="question.id">{{ question.text }}</label>
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>{{ question.text }}</mat-label>
+    <input matInput [formControlName]="question.id" type="date" />
+  </mat-form-field>
+</div>
+

@@ -4,7 +4,11 @@ export type MWTextType =
   | 'radio'
   | 'checkbox'
   | 'grid'
-  | 'priority';
+  | 'priority'
+  | 'select'
+  | 'date'
+  | 'time'
+  | 'scale';
 
 export interface MWPageFlow {
   nextPage?: boolean;
@@ -52,6 +56,7 @@ export interface MWQuestion {
   otherAnswer?: boolean;
   grid?: MWGrid;
   priorityList?: MWPriorityItem[];
+  scale?: { min: number; max: number; step?: number };
 }
 
 export interface MWElement {

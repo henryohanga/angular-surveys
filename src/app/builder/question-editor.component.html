@@ -18,6 +18,10 @@
         <mat-option value="checkbox">Checkbox</mat-option>
         <mat-option value="grid">Grid</mat-option>
         <mat-option value="priority">Priority</mat-option>
+        <mat-option value="select">Select</mat-option>
+        <mat-option value="date">Date</mat-option>
+        <mat-option value="time">Time</mat-option>
+        <mat-option value="scale">Scale</mat-option>
       </mat-select>
     </mat-form-field>
     <div *ngIf="form.get('type')?.value === 'checkbox'" aria-labelledby="pfm-heading">
@@ -27,7 +31,8 @@
     <div
       *ngIf="
         form.get('type')?.value === 'radio' ||
-        form.get('type')?.value === 'checkbox'
+        form.get('type')?.value === 'checkbox' ||
+        form.get('type')?.value === 'select'
       "
       aria-labelledby="options-heading"
     >
@@ -113,6 +118,24 @@
         <button mat-button color="warn" type="button" (click)="removePriorityItem(i)">Remove</button>
       </div>
       <button mat-stroked-button type="button" (click)="addPriorityItem()">Add Item</button>
+    </div>
+
+    <div *ngIf="form.get('type')?.value === 'scale'" [formGroup]="scale" aria-labelledby="scale-heading">
+      <h5 class="q-label" id="scale-heading">Scale</h5>
+      <div class="option-row">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Min</mat-label>
+          <input matInput type="number" formControlName="min" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Max</mat-label>
+          <input matInput type="number" formControlName="max" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Step</mat-label>
+          <input matInput type="number" formControlName="step" />
+        </mat-form-field>
+      </div>
     </div>
     <button mat-button type="button" (click)="dismissed.emit()">Cancel</button>
     <button mat-raised-button color="primary" type="submit">Add</button>

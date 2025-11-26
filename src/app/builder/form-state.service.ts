@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MWForm, MWPage, MWElement, MWQuestion } from '../surveys/models';
 import { DEMO_FORM } from '../surveys/demo-data';
+import Ajv, { JSONSchemaType } from 'ajv';
 
 @Injectable({ providedIn: 'root' })
 export class FormStateService {
@@ -75,24 +76,121 @@ export class FormStateService {
   }
 
   validateForm(form: MWForm): string[] {
-    const errors: string[] = [];
-    if (!form || typeof form !== 'object') errors.push('Invalid JSON object');
-    if (!form.name || typeof form.name !== 'string') errors.push('Form name is required');
-    if (!Array.isArray(form.pages)) errors.push('Form pages must be an array');
-    const allowed = ['text', 'textarea', 'radio', 'checkbox', 'grid', 'priority'];
-    form.pages?.forEach((p, pi) => {
-      if (!Array.isArray(p.elements)) errors.push(`Page ${pi + 1}: elements must be an array`);
-      p.elements?.forEach((e, ei) => {
-        if (e.type !== 'question') errors.push(`Page ${pi + 1} element ${ei + 1}: unsupported type`);
-        const q = e.question as MWQuestion;
-        if (!q || typeof q !== 'object') errors.push(`Page ${pi + 1} element ${ei + 1}: missing question`);
-        if (!q.id) errors.push(`Page ${pi + 1} element ${ei + 1}: question id is required`);
-        if (!allowed.includes(q.type as string)) errors.push(`Page ${pi + 1} element ${ei + 1}: unknown question type`);
-      });
-    });
-    return errors;
-  }
+    const ajv = new Ajv({ allErrors: true });
+    const schema: import('ajv').AnySchema = {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        description: { type: 'string', nullable: true },
+        pages: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string' },
+              number: { type: 'number' },
+              name: { type: 'string', nullable: true },
+              description: { type: 'string', nullable: true },
+              namedPage: { type: 'boolean' },
+              pageFlow: {
+                type: 'object',
+                properties: {
+                  nextPage: { type: 'boolean' },
+                  label: { type: 'string' },
+                  goToPage: { type: 'number' }
+                },
+                required: [],
+              },
+              elements: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'string' },
+                    orderNo: { type: 'number' },
+                    type: { type: 'string' },
+                    question: {
+                      type: 'object',
+                      properties: {
+                        id: { type: 'string' },
+                        text: { type: 'string' },
+                        type: { type: 'string', enum: ['text','textarea','radio','checkbox','grid','priority','select','date','time','scale'] },
+                        required: { type: 'boolean' },
+                        pageFlowModifier: { type: 'boolean' },
+                        otherAnswer: { type: 'boolean' },
+                        offeredAnswers: {
+                          type: 'array',
+                          items: {
+                            type: 'object',
+                            properties: {
+                              id: { type: 'string' },
+                              orderNo: { type: 'number' },
+                              value: { type: 'string' },
+                              pageFlow: {
+                                type: 'object',
+                                properties: {
+                                  nextPage: { type: 'boolean' },
+                                  label: { type: 'string' },
+                                  goToPage: { type: 'number' }
+                                },
+                                required: [],
+                              }
+                            },
+                            required: ['id','orderNo','value']
+                          },
+                          
+                        },
+                        grid: {
+                          type: 'object',
+                          properties: {
+                            cellInputType: { type: 'string', enum: ['radio','checkbox'] },
+                            rows: {
+                              type: 'array',
+                              items: { type: 'object', properties: { id: { type: 'string' }, orderNo: { type: 'number' }, label: { type: 'string' } }, required: ['id','orderNo','label'] }
+                            },
+                            cols: {
+                              type: 'array',
+                              items: { type: 'object', properties: { id: { type: 'string' }, orderNo: { type: 'number' }, label: { type: 'string' } }, required: ['id','orderNo','label'] }
+                            }
+                          },
+                          required: ['cellInputType','rows','cols'],
+                          
+                        },
+                        priorityList: {
+                          type: 'array',
+                          items: { type: 'object', properties: { id: { type: 'string' }, orderNo: { type: 'number' }, value: { type: 'string' } }, required: ['id','orderNo','value'] },
+                          
+                        },
+                        scale: {
+                          type: 'object',
+                          properties: {
+                            min: { type: 'number' },
+                            max: { type: 'number' },
+                            step: { type: 'number' }
+                          },
+                          required: ['min','max'],
+                          
+                        }
+                      },
+                      required: ['id','text','type']
+                    }
+                  },
+                  required: ['id','orderNo','type','question']
+                }
+              }
+            },
+            required: ['id','number','elements']
+          }
+        }
+      },
+      required: ['name','pages']
+    } as const;
 
+    const validate = ajv.compile(schema);
+    const ok = validate(form);
+    if (ok) return [];
+    return (validate.errors ?? []).map(e => `${e.instancePath || '/'}: ${e.message}`);
+  }
   updatePageMeta(pageIndex: number, partial: Partial<MWPage>) {
     const p = this.state.pages[pageIndex];
     this.state.pages[pageIndex] = { ...p, ...partial };

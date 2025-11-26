@@ -19,8 +19,11 @@ describe('SurveyComponent page flow', () => {
     expect(comp.currentPage).toBe(0);
     comp.form.get('short-text')?.setValue('a');
     comp.form.get('long-text')?.setValue('b');
-    const cb = comp.form.get('checkbox-question') as FormArray;
-    const arr = cb;
+    let arr = comp.form.get('checkbox-question') as FormArray | null;
+    if (!arr) {
+      arr = new FormArray([]);
+      comp.form.addControl('checkbox-question', arr);
+    }
     arr.push(new FormControl('aaaa'));
     comp.form.get('radio-question')?.setValue('bbbb');
     comp.next();
