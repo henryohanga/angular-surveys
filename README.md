@@ -1,39 +1,52 @@
 # Angular Surveys
 
-A modern, component-based survey builder for Angular applications. Create beautiful, interactive surveys with drag-and-drop ease, conditional logic, and real-time preview.
+A modern, feature-rich survey builder for Angular applications. Create beautiful, interactive surveys with an intuitive drag-and-drop interface, 18+ question types, real-time preview, and seamless data management.
 
-> This project is a modern translation of the original [angular-surveys](https://github.com/mwasiluk/angular-surveys) by Marcin Wasiluk, rebuilt for Angular 18 with Material Design.
+> This project is a modern evolution of the original [angular-surveys](https://github.com/mwasiluk/angular-surveys) by Marcin Wasiluk, completely rebuilt for Angular 18 with Material Design and enhanced with premium features.
 
 ![Angular Surveys](https://img.shields.io/badge/Angular-18-red?style=flat-square)
 ![Material Design](https://img.shields.io/badge/Material-Design-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
+![Question Types](https://img.shields.io/badge/Question%20Types-18+-purple?style=flat-square)
 
 ## ✨ Features
 
 ### Survey Builder
 
 - **Drag & Drop Interface** - Intuitive drag-and-drop to arrange questions and pages
-- **10+ Question Types** - Text, textarea, radio, checkbox, dropdown, rating scale, grid, priority, date, time
-- **Live Preview** - Preview your survey in real-time as you build
-- **Page Management** - Create multi-page surveys with custom page names
+- **18+ Question Types** - Comprehensive question types for any survey need
+- **Premium Question Dialog** - Modern, categorized question editor with live configuration
+- **Live Preview** - Preview your survey in real-time with device toggle (desktop/mobile)
+- **Multi-Page Surveys** - Create unlimited pages with custom names and descriptions
+- **Survey Dashboard** - Manage all your surveys in one place with save/publish workflow
+
+### Question Types
+
+- **Input Types** - Short text, long text, email, phone, number, URL, date, time
+- **Choice Types** - Multiple choice (radio), checkboxes, dropdown select
+- **Advanced Types** - Rating scale, star rating, NPS (Net Promoter Score), matrix grid, ranking/priority
+- **Media Types** - File upload (images, documents, video), signature capture
 
 ### Conditional Logic
 
 - **Page Flow Control** - Define which page to show next based on responses
 - **Answer-Based Branching** - Skip logic based on selected answers
-- **Required Fields** - Mark questions as required with validation
+- **Required Fields** - Mark questions as required with built-in validation
+- **Field Validation** - Email, phone, URL, and custom validation patterns
 
 ### Data Management
 
+- **IndexedDB Storage** - Persistent survey storage in browser database
 - **JSON Import/Export** - Export surveys as JSON, import existing definitions
-- **Local Storage** - Auto-save progress to browser storage
-- **File Upload** - Upload JSON files directly
+- **Auto-Save** - Automatic progress saving as you build
+- **Survey Templates** - Quick start with pre-built templates
 
 ### Modern UI
 
-- **Material Design** - Clean, accessible UI with Angular Material
-- **Responsive Layout** - Works on desktop, tablet, and mobile
-- **Dark/Light Theme** - Customizable theme colors
+- **Material Design 3** - Clean, accessible UI with Angular Material components
+- **Responsive Layout** - Optimized for desktop, tablet, and mobile
+- **Premium Dialogs** - Beautiful, responsive modal dialogs for editing and preview
+- **Visual Question Cards** - Clear visual separation with colored accents and hover effects
 
 ## 🚀 Getting Started
 
@@ -64,36 +77,46 @@ Open `http://localhost:4200` in your browser.
 
 ### Routes
 
-| Route      | Description                         |
-| ---------- | ----------------------------------- |
-| `/`        | Landing page with features overview |
-| `/builder` | Survey builder interface            |
-| `/surveys` | Survey runner/preview               |
+| Route          | Description                           |
+| -------------- | ------------------------------------- |
+| `/`            | Landing page with features overview   |
+| `/dashboard`   | Survey management dashboard           |
+| `/builder`     | Survey builder interface (new survey) |
+| `/builder/:id` | Edit existing survey                  |
+| `/surveys`     | Demo survey runner/preview            |
 
 ### Building a Survey
 
-1. Navigate to `/builder`
-2. Drag question types from the left panel to the form area
-3. Click on a question to edit its properties in the right panel
-4. Add pages using the "Add Page" button
-5. Configure page flow and conditions as needed
-6. Click "Preview" to test your survey
-7. Export as JSON or save/publish
+1. Navigate to `/dashboard` and click "Create Survey"
+2. Use the left toolbox to drag question types onto the canvas
+3. Click "Add Question" button to open the question dialog
+4. Configure question settings in the premium dialog interface
+5. Add multiple pages using the page tabs
+6. Click "Preview" to test your survey with device toggle
+7. Save as draft or publish when ready
 
 ### Question Types
 
-| Type       | Description                            |
-| ---------- | -------------------------------------- |
-| `text`     | Single-line text input                 |
-| `textarea` | Multi-line text area                   |
-| `radio`    | Single selection from options          |
-| `checkbox` | Multiple selection from options        |
-| `select`   | Dropdown selection                     |
-| `scale`    | Numeric rating scale (1-5, 1-10, etc.) |
-| `grid`     | Matrix/grid with rows and columns      |
-| `priority` | Drag-to-rank priority list             |
-| `date`     | Date picker                            |
-| `time`     | Time picker                            |
+| Type        | Description                            | Category |
+| ----------- | -------------------------------------- | -------- |
+| `text`      | Single-line text input                 | Input    |
+| `textarea`  | Multi-line text area                   | Input    |
+| `email`     | Email address with validation          | Input    |
+| `phone`     | Phone number input                     | Input    |
+| `number`    | Numeric input with min/max/step        | Input    |
+| `url`       | Website URL input                      | Input    |
+| `date`      | Date picker                            | Input    |
+| `time`      | Time picker                            | Input    |
+| `radio`     | Single selection from options          | Choice   |
+| `checkbox`  | Multiple selection from options        | Choice   |
+| `select`    | Dropdown selection                     | Choice   |
+| `scale`     | Numeric rating scale (1-5, 1-10, etc.) | Advanced |
+| `rating`    | Star rating (1-5 stars)                | Advanced |
+| `nps`       | Net Promoter Score (0-10)              | Advanced |
+| `grid`      | Matrix/grid with rows and columns      | Advanced |
+| `priority`  | Drag-to-rank priority list             | Advanced |
+| `file`      | File upload (images, docs, video)      | Media    |
+| `signature` | Signature capture pad                  | Media    |
 
 ### JSON Schema
 
@@ -151,17 +174,25 @@ npm run lint
 
 ```
 src/app/
-├── builder/           # Survey builder components
-│   ├── builder.component.*
-│   ├── question-editor.component.*
-│   └── survey-preview-dialog.component.ts
-├── home/              # Landing page
+├── builder/                    # Survey builder module
+│   ├── builder.component.*     # Main builder interface
+│   ├── question-dialog.*       # Premium question editor dialog
+│   ├── question-editor.*       # Inline question editor
+│   ├── survey-preview-dialog.* # Survey preview with device toggle
+│   └── form-state.service.ts   # Survey state management
+├── dashboard/                  # Survey management dashboard
+│   └── dashboard.component.*
+├── home/                       # Landing page
 │   └── home.component.*
-├── surveys/           # Survey runner & question components
-│   ├── components/    # Individual question type components
+├── surveys/                    # Survey runner & components
+│   ├── components/             # Question type components
 │   ├── survey.component.*
-│   └── models.ts      # TypeScript interfaces
-└── app.module.ts      # Root module
+│   └── models.ts               # TypeScript interfaces
+├── core/                       # Core services
+│   ├── services/
+│   │   └── storage.service.ts  # IndexedDB storage
+│   └── error-handler.ts        # Global error handling
+└── app.module.ts               # Root module
 ```
 
 ## 🤝 Contributing

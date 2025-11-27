@@ -31,33 +31,33 @@ export class HomeComponent {
     },
     {
       icon: 'question_answer',
-      title: '10+ Question Types',
+      title: '18+ Question Types',
       description:
-        'Text fields, multiple choice, checkboxes, dropdowns, ratings, grids, date/time pickers, and more.',
+        'Text, email, phone, ratings, NPS, star ratings, file uploads, signatures, matrix grids, and more.',
     },
     {
-      icon: 'account_tree',
-      title: 'Conditional Logic',
+      icon: 'auto_awesome',
+      title: 'Premium Dialogs',
       description:
-        'Create dynamic surveys with page flows and skip logic based on respondent answers.',
+        'Modern, categorized question editor with live configuration. Beautiful, responsive modal interfaces.',
     },
     {
       icon: 'visibility',
       title: 'Live Preview',
       description:
-        'Preview your survey in real-time as you build. Test the complete flow before publishing.',
+        'Preview your survey in real-time with desktop/mobile toggle. Test the complete flow before publishing.',
     },
     {
-      icon: 'code',
-      title: 'JSON Import/Export',
+      icon: 'dashboard',
+      title: 'Survey Dashboard',
       description:
-        'Export surveys as JSON for backup or import existing survey definitions. Full data portability.',
+        'Manage all your surveys in one place. Save drafts, publish, and organize with IndexedDB storage.',
     },
     {
       icon: 'devices',
       title: 'Responsive Design',
       description:
-        'Surveys look great on any device - desktop, tablet, or mobile. Accessible and user-friendly.',
+        'Surveys and builder look great on any device. Premium UI with Material Design 3 components.',
     },
   ];
 
