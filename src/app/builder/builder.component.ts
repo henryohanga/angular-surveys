@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { FormStateService } from './form-state.service';
@@ -179,7 +179,8 @@ export class BuilderComponent implements OnInit {
     private snackBar: MatSnackBar,
     private storage: StorageService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
@@ -190,10 +191,10 @@ export class BuilderComponent implements OnInit {
       try {
         this.survey = await this.storage.getSurvey(this.surveyId);
         if (this.survey) {
-          this.formDef = this.survey.form;
+          this.state.importJson(JSON.stringify(this.survey.form));
+          this.formDef = this.state.getForm(); // Always reference state's form
           this.surveyStatus = this.survey.status;
           this.lastSaved = this.survey.updatedAt;
-          this.state.importJson(JSON.stringify(this.formDef));
         } else {
           this.snackBar.open('Survey not found', 'Close', { duration: 3000 });
           this.router.navigate(['/dashboard']);
@@ -255,6 +256,7 @@ export class BuilderComponent implements OnInit {
           this.state.addQuestion(this.selectedPage, result);
           this.snackBar.open('Question added', 'Close', { duration: 2000 });
         }
+        this.cdr.detectChanges();
       }
     });
   }
@@ -268,6 +270,7 @@ export class BuilderComponent implements OnInit {
       this.state.addQuestion(this.selectedPage, q);
     }
     this.closeEditor();
+    this.cdr.detectChanges();
   }
 
   editQuestion(i: number) {
@@ -285,11 +288,13 @@ export class BuilderComponent implements OnInit {
     };
     this.state.addQuestion(this.selectedPage, duplicate);
     this.snackBar.open('Question duplicated', 'Close', { duration: 2000 });
+    this.cdr.detectChanges();
   }
 
   deleteQuestion(i: number) {
     this.state.deleteQuestion(this.selectedPage, i);
     this.snackBar.open('Question deleted', 'Undo', { duration: 3000 });
+    this.cdr.detectChanges();
   }
 
   drop(e: CdkDragDrop<MWElement[]>) {
@@ -298,6 +303,7 @@ export class BuilderComponent implements OnInit {
       e.previousIndex,
       e.currentIndex
     );
+    this.cdr.detectChanges();
   }
 
   exportJson() {
@@ -568,6 +574,7 @@ export class BuilderComponent implements OnInit {
     }
 
     this.state.addQuestion(this.selectedPage, newQuestion);
+    this.cdr.detectChanges();
 
     // Open dialog to edit the newly added question
     const elements = this.formDef.pages[this.selectedPage].elements;
