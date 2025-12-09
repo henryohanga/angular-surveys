@@ -1,7 +1,7 @@
 <div [formGroup]="form">
   <mat-form-field appearance="outline" class="full">
     <mat-label>{{ question.text }}</mat-label>
-    <input matInput [formControlName]="question.id" />
+    <input matInput [formControlName]="question.id" [type]="inputType()" [placeholder]="placeholder() || ''" [attr.min]="min()" [attr.max]="max()" [attr.step]="step()" />
   </mat-form-field>
   
 </div>

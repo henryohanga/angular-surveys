@@ -183,38 +183,38 @@ import { MWForm, MWQuestion } from '../surveys/models';
 
                       <!-- Radio -->
                       <div *ngSwitchCase="'radio'" class="options-group">
-                        <label
+                        <div
                           class="option-item radio"
                           *ngFor="let opt of el.question.offeredAnswers"
                         >
                           <div class="option-circle"></div>
                           <span>{{ opt.value }}</span>
-                        </label>
-                        <label
+                        </div>
+                        <div
                           class="option-item radio"
                           *ngIf="el.question.otherAnswer"
                         >
                           <div class="option-circle"></div>
                           <span>Other...</span>
-                        </label>
+                        </div>
                       </div>
 
                       <!-- Checkbox -->
                       <div *ngSwitchCase="'checkbox'" class="options-group">
-                        <label
+                        <div
                           class="option-item checkbox"
                           *ngFor="let opt of el.question.offeredAnswers"
                         >
                           <div class="option-square"></div>
                           <span>{{ opt.value }}</span>
-                        </label>
-                        <label
+                        </div>
+                        <div
                           class="option-item checkbox"
                           *ngIf="el.question.otherAnswer"
                         >
                           <div class="option-square"></div>
                           <span>Other...</span>
-                        </label>
+                        </div>
                       </div>
 
                       <!-- Select -->

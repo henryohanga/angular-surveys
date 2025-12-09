@@ -431,6 +431,12 @@ export class BuilderComponent implements OnInit {
       // Sync formDef with state
       this.formDef = this.state.getForm();
 
+      const errs = this.state.validateForm(this.formDef);
+      if (errs.length) {
+        this.snackBar.open('Invalid survey: ' + errs[0], 'Close', { duration: 4000 });
+        return;
+      }
+
       if (this.surveyId && this.survey) {
         // Update existing survey
         this.survey.form = this.formDef;
@@ -467,6 +473,12 @@ export class BuilderComponent implements OnInit {
 
     this.isPublishing = true;
     try {
+      const errs = this.state.validateForm(this.state.getForm());
+      if (errs.length) {
+        this.snackBar.open('Fix validation before publishing', 'Close', { duration: 4000 });
+        this.isPublishing = false;
+        return;
+      }
       this.survey = await this.storage.publishSurvey(this.surveyId);
       this.surveyStatus = 'published';
 

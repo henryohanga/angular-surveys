@@ -80,6 +80,10 @@ import { ScaleQuestionComponent } from './components/scale-question.component';
       provide: QUESTION_COMPONENTS,
       useValue: {
         text: TextQuestionComponent,
+        email: TextQuestionComponent,
+        phone: TextQuestionComponent,
+        number: TextQuestionComponent,
+        url: TextQuestionComponent,
         textarea: TextareaQuestionComponent,
         radio: RadioQuestionComponent,
         checkbox: CheckboxQuestionComponent,

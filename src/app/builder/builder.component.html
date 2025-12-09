@@ -347,9 +347,10 @@
 
     <!-- Survey Name -->
     <div class="settings-section">
-      <label class="settings-label">Survey Name</label>
+      <label class="settings-label" for="settings-name">Survey Name</label>
       <input
         class="settings-input"
+        id="settings-name"
         [value]="formDef.name || ''"
         (input)="updateSurveyName($any($event.target).value)"
         placeholder="Enter survey name..."
@@ -358,9 +359,10 @@
 
     <!-- Survey Description -->
     <div class="settings-section">
-      <label class="settings-label">Description</label>
+      <label class="settings-label" for="settings-desc">Description</label>
       <textarea
         class="settings-textarea"
+        id="settings-desc"
         [value]="formDef.description || ''"
         (input)="updateSurveyDescription($any($event.target).value)"
         placeholder="Add a description..."
@@ -372,7 +374,7 @@
 
     <!-- Quick Stats -->
     <div class="settings-section">
-      <label class="settings-label">Quick Stats</label>
+      <div class="settings-label">Quick Stats</div>
       <div class="stats-grid">
         <div class="stat-item">
           <mat-icon>quiz</mat-icon>

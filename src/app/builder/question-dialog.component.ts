@@ -376,7 +376,7 @@ export class QuestionDialogComponent implements OnInit {
   createAnswerGroup(
     id: string,
     orderNo: number,
-    value: string = ''
+    value = ''
   ): FormGroup {
     return this.fb.group({
       id: [id],
@@ -388,7 +388,7 @@ export class QuestionDialogComponent implements OnInit {
   createGridItemGroup(
     id: string,
     orderNo: number,
-    label: string = ''
+    label = ''
   ): FormGroup {
     return this.fb.group({
       id: [id],
@@ -400,7 +400,7 @@ export class QuestionDialogComponent implements OnInit {
   createPriorityGroup(
     id: string,
     orderNo: number,
-    value: string = ''
+    value = ''
   ): FormGroup {
     return this.fb.group({
       id: [id],

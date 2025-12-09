@@ -137,7 +137,7 @@ export class FormStateService {
                       properties: {
                         id: { type: 'string' },
                         text: { type: 'string' },
-                        type: { type: 'string', enum: ['text','textarea','radio','checkbox','grid','priority','select','date','time','scale'] },
+                        type: { type: 'string', enum: ['text','textarea','radio','checkbox','grid','priority','select','date','time','scale','email','phone','number','url'] },
                         required: { type: 'boolean' },
                         pageFlowModifier: { type: 'boolean' },
                         otherAnswer: { type: 'boolean' },
@@ -163,6 +163,29 @@ export class FormStateService {
                           },
                           
                         },
+                        numberConfig: {
+                          type: 'object',
+                          properties: {
+                            min: { type: 'number' },
+                            max: { type: 'number' },
+                            step: { type: 'number' },
+                            prefix: { type: 'string' },
+                            suffix: { type: 'string' }
+                          },
+                          required: [],
+                          nullable: true
+                        },
+                        fileConfig: {
+                          type: 'object',
+                          properties: {
+                            accept: { type: 'array', items: { type: 'string' } },
+                            maxSize: { type: 'number' },
+                            multiple: { type: 'boolean' }
+                          },
+                          required: ['accept'],
+                          nullable: true
+                        },
+                        placeholder: { type: 'string' },
                         grid: {
                           type: 'object',
                           properties: {
@@ -189,7 +212,9 @@ export class FormStateService {
                           properties: {
                             min: { type: 'number' },
                             max: { type: 'number' },
-                            step: { type: 'number' }
+                            step: { type: 'number' },
+                            minLabel: { type: 'string' },
+                            maxLabel: { type: 'string' }
                           },
                           required: ['min','max'],
                           

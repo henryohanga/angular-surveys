@@ -79,6 +79,47 @@ export class SurveyComponent {
               new FormControl('', q.required ? Validators.required : [])
             );
             break;
+          case 'email':
+            this.form.addControl(
+              key,
+              new FormControl('', [
+                ...(q.required ? [Validators.required] : []),
+                Validators.email,
+              ])
+            );
+            break;
+          case 'url': {
+            const urlPattern = /^(https?:\/\/)?[^\s/$.?#].[^\s]*$/i;
+            this.form.addControl(
+              key,
+              new FormControl('', [
+                ...(q.required ? [Validators.required] : []),
+                Validators.pattern(urlPattern),
+              ])
+            );
+            break;
+          }
+          case 'phone': {
+            const phonePattern = /^[+]?\d[\d\s()-]{6,}$/;
+            this.form.addControl(
+              key,
+              new FormControl('', [
+                ...(q.required ? [Validators.required] : []),
+                Validators.pattern(phonePattern),
+              ])
+            );
+            break;
+          }
+          case 'number': {
+            const validators = [] as ValidatorFn[];
+            if (q.required) validators.push(Validators.required);
+            if (q.numberConfig?.min !== undefined)
+              validators.push(Validators.min(q.numberConfig.min));
+            if (q.numberConfig?.max !== undefined)
+              validators.push(Validators.max(q.numberConfig.max));
+            this.form.addControl(key, new FormControl(null, validators));
+            break;
+          }
           case 'scale':
             this.form.addControl(
               key,
