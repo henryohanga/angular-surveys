@@ -472,35 +472,84 @@ export class StorageService {
     let templatesCount = 0;
     let responsesCount = 0;
 
-    if (data.surveys) {
-      for (const survey of data.surveys) {
+    const isValidForm = (form: unknown): boolean => {
+      const f = form as Record<string, unknown> | null;
+      if (!f) return false;
+      if (typeof f.name !== 'string') return false;
+      const pages = f.pages as unknown;
+      if (!Array.isArray(pages)) return false;
+      for (const p of pages as unknown[]) {
+        const pg = p as Record<string, unknown> | null;
+        if (!pg) return false;
+        if (typeof pg.id !== 'string') return false;
+        if (typeof pg.number !== 'number') return false;
+        const elements = pg.elements as unknown;
+        if (!Array.isArray(elements)) return false;
+        for (const e of elements as unknown[]) {
+          const el = e as Record<string, unknown> | null;
+          if (!el || el.type !== 'question') return false;
+          const q = el.question as Record<string, unknown> | null;
+          if (!q || typeof q.id !== 'string') return false;
+        }
+      }
+      return true;
+    };
+
+    if (Array.isArray(data.surveys)) {
+      for (const raw of data.surveys) {
+        if (!raw || typeof raw.id !== 'string' || !isValidForm(raw.form)) continue;
+        const survey: Survey = {
+          id: raw.id,
+          form: raw.form,
+          status: raw.status === 'published' ? 'published' : 'draft',
+          createdAt: new Date(raw.createdAt || Date.now()),
+          updatedAt: new Date(raw.updatedAt || Date.now()),
+          publishedAt: raw.publishedAt ? new Date(raw.publishedAt) : undefined,
+          shareUrl: raw.shareUrl,
+          responseCount: Number(raw.responseCount || 0),
+        };
         await this.saveSurvey(survey);
         surveysCount++;
       }
     }
 
-    if (data.templates) {
-      for (const template of data.templates) {
+    if (Array.isArray(data.templates)) {
+      for (const raw of data.templates) {
+        if (!raw || typeof raw.id !== 'string' || !isValidForm(raw.form)) continue;
+        const template: SurveyTemplate = {
+          id: raw.id,
+          name: String(raw.name || ''),
+          description: String(raw.description || ''),
+          category: String(raw.category || 'General'),
+          icon: String(raw.icon || 'description'),
+          color: String(raw.color || '#1A73E8'),
+          form: raw.form,
+          isCustom: !!raw.isCustom,
+          createdAt: raw.createdAt ? new Date(raw.createdAt) : undefined,
+        };
         await this.saveTemplate(template);
         templatesCount++;
       }
     }
 
-    if (data.responses) {
+    if (Array.isArray(data.responses)) {
       const db = await this.ensureDb();
       const transaction = db.transaction(RESPONSES_STORE, 'readwrite');
       const store = transaction.objectStore(RESPONSES_STORE);
-
-      for (const response of data.responses) {
+      for (const raw of data.responses) {
+        if (!raw || typeof raw.id !== 'string' || typeof raw.surveyId !== 'string') continue;
+        const response: SurveyResponse = {
+          id: raw.id,
+          surveyId: raw.surveyId,
+          responses: raw.responses && typeof raw.responses === 'object' ? raw.responses : {},
+          submittedAt: new Date(raw.submittedAt || Date.now()),
+          metadata: raw.metadata && typeof raw.metadata === 'object' ? raw.metadata : {},
+        };
         store.put(response);
         responsesCount++;
       }
     }
 
-    return {
-      surveys: surveysCount,
-      templates: templatesCount,
-      responses: responsesCount,
-    };
+    return { surveys: surveysCount, templates: templatesCount, responses: responsesCount };
   }
 }

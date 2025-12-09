@@ -21,6 +21,7 @@ export class SurveyComponent {
   form: FormGroup;
   currentPage = 0;
   showSummary = false;
+  showSuccess = false;
 
   constructor(private fb: FormBuilder, private state: FormStateService) {
     this.formDef = this.state.getForm();
@@ -332,8 +333,7 @@ export class SurveyComponent {
 
   submit() {
     if (this.form.valid) {
-      console.log('Survey submit', this.form.value);
-      alert('Submitted: ' + JSON.stringify(this.form.value, null, 2));
+      this.showSuccess = true;
     } else {
       this.form.markAllAsTouched();
       this.showSummary = false;

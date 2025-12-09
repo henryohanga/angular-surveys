@@ -1,5 +1,5 @@
 <!-- Survey Form -->
-<div class="survey-container" *ngIf="!showSummary">
+<div class="survey-container" *ngIf="!showSummary && !showSuccess">
   <!-- Survey Header -->
   <div class="survey-header">
     <h2>{{ formDef.name || "Survey" }}</h2>
@@ -79,7 +79,7 @@
 </div>
 
 <!-- Summary / Review -->
-<div class="survey-container" *ngIf="showSummary">
+<div class="survey-container" *ngIf="showSummary && !showSuccess">
   <div class="survey-header">
     <h2>Review Your Answers</h2>
     <p>Please confirm your responses before submitting.</p>
@@ -118,6 +118,24 @@
     <button mat-raised-button color="accent" type="button" (click)="submit()">
       <mat-icon>send</mat-icon>
       Submit Survey
+    </button>
+  </div>
+</div>
+
+<!-- Success Screen -->
+<div class="survey-container" *ngIf="showSuccess">
+  <div class="survey-header">
+    <h2>Thank you!</h2>
+    <p>Your response has been submitted.</p>
+  </div>
+  <div class="nav">
+    <button mat-raised-button color="primary" type="button" (click)="showSuccess = false; currentPage = 0; showSummary = false; form.reset()">
+      <mat-icon>refresh</mat-icon>
+      Submit another
+    </button>
+    <button mat-stroked-button type="button" (click)="showSuccess = false">
+      <mat-icon>arrow_back</mat-icon>
+      Back
     </button>
   </div>
 </div>

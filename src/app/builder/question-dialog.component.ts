@@ -191,7 +191,7 @@ export class QuestionDialogComponent implements OnInit {
 
   initForm() {
     this.form = this.fb.group({
-      id: [''],
+      id: ['', Validators.required],
       text: ['', Validators.required],
       type: ['text'],
       required: [false],
@@ -552,11 +552,9 @@ export class QuestionDialogComponent implements OnInit {
   }
 
   isFormValid(): boolean {
-    // Always require question text
-    if (!this.form.get('text')?.value?.trim()) {
-      return false;
-    }
-    return true;
+    const textOk = !!this.form.get('text')?.value?.trim();
+    const idOk = !!this.form.get('id')?.value?.trim();
+    return textOk && idOk;
   }
 
   save() {
