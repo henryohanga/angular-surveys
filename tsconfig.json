@@ -1,21 +1,15 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
+  "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
-    "sourceMap": true,
     "esModuleInterop": true,
-    "declaration": false,
-    "experimentalDecorators": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "target": "ES2022",
-    "module": "es2020",
-    "lib": [
-      "es2018",
-      "dom"
-    ],
     "useDefineForClassFields": false
-  }
+  },
+  "files": [],
+  "references": [
+    { "path": "./apps/web/tsconfig.app.json" },
+    { "path": "./apps/web/tsconfig.spec.json" },
+    { "path": "./libs/shared-types/tsconfig.lib.json" }
+  ]
 }
