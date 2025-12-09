@@ -1,11 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MWQuestion, MWOfferedAnswer } from '../models';
 
 @Component({
   selector: 'app-radio-question',
   templateUrl: './radio-question.component.html',
-  styleUrls: ['./radio-question.component.scss']
+  styleUrls: ['./radio-question.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RadioQuestionComponent {
   @Input() question!: MWQuestion;

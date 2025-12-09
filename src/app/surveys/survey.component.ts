@@ -192,6 +192,14 @@ export class SurveyComponent {
       const found = q.offeredAnswers.find((a) => a.value === v);
       return found ? found.value : String(value ?? '');
     }
+    if (q.type === 'select' && q.offeredAnswers) {
+      const v = typeof value === 'string' ? value : '';
+      const found = q.offeredAnswers.find((a) => a.value === v);
+      return found ? found.value : String(value ?? '');
+    }
+    if (q.type === 'checkbox' && Array.isArray(value)) {
+      return (value as unknown[]).map((v) => String(v ?? '')).join(', ');
+    }
     if (Array.isArray(value)) {
       return (value as unknown[]).map((v) => String(v ?? '')).join(', ');
     }

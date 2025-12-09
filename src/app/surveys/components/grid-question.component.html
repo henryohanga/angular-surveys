@@ -2,9 +2,9 @@
   <div class="grid">
     <div class="header">
       <div class="cell"></div>
-      <div class="cell" *ngFor="let c of g.cols">{{ c.label }}</div>
+      <div class="cell" *ngFor="let c of g.cols; trackBy: trackByCol">{{ c.label }}</div>
     </div>
-    <div class="row" *ngFor="let r of g.rows">
+    <div class="row" *ngFor="let r of g.rows; trackBy: trackByRow">
       <div class="cell row-label">{{ r.label }}</div>
       <div class="cells" [formGroup]="form.get(question.id)">
         <ng-container [ngSwitch]="g.cellInputType">
@@ -24,4 +24,3 @@
     </div>
   </div>
 </div>
-

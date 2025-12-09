@@ -1,11 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MWQuestion, MWOfferedAnswer } from '../models';
 
 @Component({
   selector: 'app-checkbox-question',
   templateUrl: './checkbox-question.component.html',
-  styleUrls: ['./checkbox-question.component.scss']
+  styleUrls: ['./checkbox-question.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CheckboxQuestionComponent {
   @Input() question!: MWQuestion;

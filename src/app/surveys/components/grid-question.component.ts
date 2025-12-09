@@ -1,11 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MWGrid, MWQuestion } from '../models';
 
 @Component({
   selector: 'app-grid-question',
   templateUrl: './grid-question.component.html',
-  styleUrls: ['./grid-question.component.scss']
+  styleUrls: ['./grid-question.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GridQuestionComponent {
   @Input() question!: MWQuestion;
@@ -30,4 +31,7 @@ export class GridQuestionComponent {
       if (i > -1) arr.removeAt(i);
     }
   }
+
+  trackByRow(_i: number, r: import('../models').MWGridRow): string { return r.id; }
+  trackByCol(_i: number, c: import('../models').MWGridCol): string { return c.id; }
 }

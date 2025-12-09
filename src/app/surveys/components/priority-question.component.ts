@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MWQuestion, MWPriorityItem } from '../models';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -7,6 +7,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
   selector: 'app-priority-question',
   templateUrl: './priority-question.component.html',
   styleUrls: ['./priority-question.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PriorityQuestionComponent {
   @Input() question!: MWQuestion;

@@ -118,6 +118,73 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  async exportResponsesCSV(survey: Survey, event: Event) {
+    event.stopPropagation();
+    const responses = await this.storage.getResponses(survey.id);
+    const questions = survey.form.pages
+      .map((p) => p.elements)
+      .reduce((acc, cur) => acc.concat(cur), [])
+      .map((e) => e.question);
+
+    const header = ['Submitted At', ...questions.map((q) => q.text)];
+
+    const rows = responses.map((r) => {
+      const values = questions.map((q) => this.formatAnswer(q, r.responses[q.id]));
+      return [new Date(r.submittedAt).toISOString(), ...values];
+    });
+
+    const csv = [header, ...rows]
+      .map((row) => row.map((cell) => this.escapeCSV(cell)).join(','))
+      .join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${(survey.form.name || 'survey').toLowerCase().replace(/\s+/g, '-')}-responses.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  private escapeCSV(val: unknown): string {
+    const s = String(val ?? '');
+    if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }
+
+  private formatAnswer(q: import('../surveys/models').MWQuestion, value: unknown): string {
+    if (value == null) return '';
+    if (q.type === 'radio' || q.type === 'select') {
+      const v = typeof value === 'string' ? value : '';
+      const found = q.offeredAnswers?.find((a) => a.value === v);
+      return found ? found.value : v;
+    }
+    if (q.type === 'checkbox') {
+      const arr = Array.isArray(value) ? (value as unknown[]) : [];
+      return arr.map((v) => String(v ?? '')).join('; ');
+    }
+    if (q.type === 'grid' && q.grid) {
+      const obj = value as Record<string, unknown>;
+      const parts: string[] = [];
+      for (const row of q.grid.rows) {
+        const rv = obj?.[row.id];
+        if (q.grid.cellInputType === 'radio') {
+          const col = q.grid.cols.find((c) => c.id === rv);
+          parts.push(`${row.label}: ${col ? col.label : String(rv ?? '')}`);
+        } else {
+          const arr = Array.isArray(rv) ? (rv as unknown[]) : [];
+          const labels = arr
+            .map((cid) => q.grid!.cols.find((c) => c.id === cid)?.label || String(cid ?? ''))
+            .join('|');
+          parts.push(`${row.label}: ${labels}`);
+        }
+      }
+      return parts.join(' / ');
+    }
+    if (typeof value === 'object') return JSON.stringify(value);
+    return String(value);
+  }
+
   async deleteSurvey(survey: Survey, event: Event) {
     event.stopPropagation();
     if (
@@ -227,4 +294,7 @@ export class DashboardComponent implements OnInit {
       }
     }
   }
+
+  trackBySurvey(_i: number, s: Survey): string { return s.id; }
+  trackByTemplate(_i: number, t: SurveyTemplate): string { return t.id; }
 }

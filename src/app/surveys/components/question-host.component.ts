@@ -1,4 +1,4 @@
-import { Component, EnvironmentInjector, Inject, Input, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EnvironmentInjector, Inject, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MWQuestion } from '../models';
 import { QUESTION_COMPONENTS, QuestionComponentRegistry } from '../registry';
@@ -6,6 +6,7 @@ import { QUESTION_COMPONENTS, QuestionComponentRegistry } from '../registry';
 @Component({
   selector: 'app-question-host',
   template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuestionHostComponent implements OnInit {
   @Input() question!: MWQuestion;

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MWQuestion } from '../models';
 
@@ -6,6 +6,7 @@ import { MWQuestion } from '../models';
   selector: 'app-scale-question',
   templateUrl: './scale-question.component.html',
   styleUrls: ['./scale-question.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScaleQuestionComponent {
   @Input() question!: MWQuestion;

@@ -77,7 +77,7 @@
     <div class="survey-grid" *ngIf="filteredSurveys.length > 0">
       <div
         class="survey-card"
-        *ngFor="let survey of filteredSurveys"
+        *ngFor="let survey of filteredSurveys; trackBy: trackBySurvey"
         (click)="editSurvey(survey)"
         (keyup.enter)="editSurvey(survey)"
         tabindex="0"
@@ -107,6 +107,10 @@
               <button mat-menu-item (click)="duplicateSurvey(survey, $event)">
                 <mat-icon>content_copy</mat-icon>
                 <span>Duplicate</span>
+              </button>
+              <button mat-menu-item (click)="exportResponsesCSV(survey, $event)">
+                <mat-icon>download</mat-icon>
+                <span>Export Responses (CSV)</span>
               </button>
               <button mat-menu-item (click)="viewResponses(survey, $event)">
                 <mat-icon>bar_chart</mat-icon>
@@ -185,7 +189,7 @@
     <div class="template-grid">
       <div
         class="template-card"
-        *ngFor="let template of filteredTemplates"
+        *ngFor="let template of filteredTemplates; trackBy: trackByTemplate"
         (click)="createFromTemplate(template)"
         tabindex="0"
         role="button"
