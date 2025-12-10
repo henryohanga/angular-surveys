@@ -1,81 +1,157 @@
-<div class="auth-container">
-  <mat-card class="auth-card">
-    <mat-card-header>
-      <mat-card-title>
-        <mat-icon class="title-icon">login</mat-icon>
-        Sign In
-      </mat-card-title>
-      <mat-card-subtitle
-        >Welcome back! Please sign in to continue.</mat-card-subtitle
-      >
-    </mat-card-header>
+<div class="auth-page">
+  <!-- Left Panel - Branding -->
+  <div class="auth-branding">
+    <div class="branding-content">
+      <div class="logo-section">
+        <div class="logo-icon">
+          <mat-icon>poll</mat-icon>
+        </div>
+        <h1 class="logo-text">Angular Surveys</h1>
+      </div>
 
-    <mat-card-content>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
-          <input
-            matInput
-            type="email"
-            formControlName="email"
-            placeholder="you@example.com"
-            autocomplete="email"
-          />
-          <mat-icon matPrefix>email</mat-icon>
-          <mat-error *ngIf="email?.hasError('required')"
-            >Email is required</mat-error
-          >
-          <mat-error *ngIf="email?.hasError('email')"
-            >Please enter a valid email</mat-error
-          >
-        </mat-form-field>
+      <div class="tagline">
+        <h2>Create beautiful surveys in minutes</h2>
+        <p>
+          Build engaging forms, collect responses, and analyze results with our
+          powerful survey platform.
+        </p>
+      </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
-          <input
-            matInput
-            [type]="hidePassword ? 'password' : 'text'"
-            formControlName="password"
-            placeholder="Enter your password"
-            autocomplete="current-password"
-          />
-          <mat-icon matPrefix>lock</mat-icon>
-          <button
-            mat-icon-button
-            matSuffix
-            type="button"
-            (click)="hidePassword = !hidePassword"
+      <div class="features-list">
+        <div class="feature-item">
+          <mat-icon>check_circle</mat-icon>
+          <span>18+ question types</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon>check_circle</mat-icon>
+          <span>Real-time analytics</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon>check_circle</mat-icon>
+          <span>Drag & drop builder</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="branding-decoration">
+      <div class="circle circle-1"></div>
+      <div class="circle circle-2"></div>
+      <div class="circle circle-3"></div>
+    </div>
+  </div>
+
+  <!-- Right Panel - Form -->
+  <div class="auth-form-panel">
+    <div class="form-container">
+      <div class="form-header">
+        <h2>Welcome back</h2>
+        <p>Sign in to your account to continue</p>
+      </div>
+
+      <!-- Login Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+        <div class="form-field">
+          <label for="email">Email address</label>
+          <div
+            class="input-wrapper"
+            [class.error]="email?.invalid && email?.touched"
+            [class.focused]="emailFocused"
           >
-            <mat-icon>{{
-              hidePassword ? "visibility_off" : "visibility"
-            }}</mat-icon>
-          </button>
-          <mat-error *ngIf="password?.hasError('required')"
-            >Password is required</mat-error
+            <mat-icon class="field-icon">mail_outline</mat-icon>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              (focus)="emailFocused = true"
+              (blur)="emailFocused = false"
+            />
+          </div>
+          <div
+            class="field-error"
+            *ngIf="email?.hasError('required') && email?.touched"
           >
-          <mat-error *ngIf="password?.hasError('minlength')">
+            Email is required
+          </div>
+          <div
+            class="field-error"
+            *ngIf="email?.hasError('email') && email?.touched"
+          >
+            Please enter a valid email address
+          </div>
+        </div>
+
+        <div class="form-field">
+          <div class="label-row">
+            <label for="password">Password</label>
+            <a class="forgot-link" routerLink="/forgot-password"
+              >Forgot password?</a
+            >
+          </div>
+          <div
+            class="input-wrapper"
+            [class.error]="password?.invalid && password?.touched"
+            [class.focused]="passwordFocused"
+          >
+            <mat-icon class="field-icon">lock_outline</mat-icon>
+            <input
+              id="password"
+              [type]="hidePassword ? 'password' : 'text'"
+              formControlName="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              (focus)="passwordFocused = true"
+              (blur)="passwordFocused = false"
+            />
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="hidePassword = !hidePassword"
+              tabindex="-1"
+            >
+              <mat-icon>{{
+                hidePassword ? "visibility_off" : "visibility"
+              }}</mat-icon>
+            </button>
+          </div>
+          <div
+            class="field-error"
+            *ngIf="password?.hasError('required') && password?.touched"
+          >
+            Password is required
+          </div>
+          <div
+            class="field-error"
+            *ngIf="password?.hasError('minlength') && password?.touched"
+          >
             Password must be at least 8 characters
-          </mat-error>
-        </mat-form-field>
+          </div>
+        </div>
+
+        <div class="remember-me">
+          <mat-checkbox formControlName="rememberMe" color="primary">
+            Remember me for 30 days
+          </mat-checkbox>
+        </div>
 
         <button
-          mat-raised-button
-          color="primary"
           type="submit"
-          class="full-width submit-button"
+          class="submit-btn"
           [disabled]="isLoading"
+          [class.loading]="isLoading"
         >
           <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
-          <span *ngIf="!isLoading">Sign In</span>
+          <span *ngIf="!isLoading">Sign in</span>
         </button>
       </form>
 
-      <mat-divider class="divider"></mat-divider>
-
       <div class="auth-footer">
-        <p>Don't have an account?</p>
-        <a mat-button color="primary" routerLink="/register">Create Account</a>
+        <p>
+          Don't have an account?
+          <a routerLink="/register">Create one for free</a>
+        </p>
       </div>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </div>
 </div>

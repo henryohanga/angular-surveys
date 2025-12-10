@@ -46,6 +46,7 @@ services:
       DB_USERNAME: ${DB_USERNAME:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
       DB_NAME: ${DB_NAME:-angular_surveys}
+      DB_SYNCHRONIZE: ${DB_SYNCHRONIZE:-true}
       JWT_SECRET: ${JWT_SECRET:-change-this-in-production}
       PORT: 3000
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost}

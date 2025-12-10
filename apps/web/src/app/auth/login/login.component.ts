@@ -4,7 +4,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../core/services/auth.service';
 
-@Component({ standalone: false,
+@Component({
+  standalone: false,
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
@@ -14,6 +15,8 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   hidePassword = true;
   returnUrl = '/dashboard';
+  emailFocused = false;
+  passwordFocused = false;
 
   constructor(
     private fb: FormBuilder,
@@ -27,6 +30,7 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
+      rememberMe: [false],
     });
 
     // Get return URL from route parameters

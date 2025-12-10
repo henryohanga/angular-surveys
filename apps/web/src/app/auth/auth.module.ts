@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
@@ -30,6 +31,7 @@ import { RegisterComponent } from './register/register.component';
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatDividerModule,
+    MatCheckboxModule,
   ],
   exports: [LoginComponent, RegisterComponent],
 })

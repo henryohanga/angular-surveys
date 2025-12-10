@@ -54,7 +54,7 @@ import { HealthController } from './health/health.controller';
         password: configService.get('DB_PASSWORD', 'postgres'),
         database: configService.get('DB_NAME', 'angular_surveys'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: configService.get('NODE_ENV') !== 'production',
+        synchronize: configService.get('DB_SYNCHRONIZE', 'false') === 'true',
         logging: configService.get('NODE_ENV') === 'development',
       }),
     }),

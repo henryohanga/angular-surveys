@@ -88,6 +88,33 @@ npm run start
 - **API:** `http://localhost:3000/api`
 - **API Docs:** `http://localhost:3000/api/docs`
 
+### Docker Deployment
+
+Run the entire stack with Docker Compose:
+
+```bash
+# Copy environment file
+cp .env.example .env
+
+# Build and start all services
+docker compose up
+
+# Or run in detached mode
+docker compose up -d
+```
+
+This starts:
+
+- **Web App:** `http://localhost` (Caddy server)
+- **API:** `http://localhost:3000`
+- **PostgreSQL:** `localhost:5432`
+
+For development with hot-reload:
+
+```bash
+docker compose -f docker-compose.dev.yml up
+```
+
 ## 📖 Usage
 
 ### Routes
@@ -218,16 +245,19 @@ angular-surveys/
 │   │   │   │   ├── public-survey/ # Public survey view
 │   │   │   │   └── core/        # Core services
 │   │   │   └── environments/
-│   │   └── e2e/                 # E2E tests (Playwright)
+│   │   ├── e2e/                 # E2E tests (Playwright)
+│   │   ├── Dockerfile           # Web production build
+│   │   └── Caddyfile            # Static file serving config
 │   │
 │   └── api/                     # NestJS backend
-│       └── src/
-│           └── app/
-│               ├── auth/        # Authentication (JWT)
-│               ├── users/       # User management
-│               ├── surveys/     # Survey CRUD
-│               ├── responses/   # Response handling
-│               └── health/      # Health checks
+│       ├── src/
+│       │   └── app/
+│       │       ├── auth/        # Authentication (JWT)
+│       │       ├── users/       # User management
+│       │       ├── surveys/     # Survey CRUD
+│       │       ├── responses/   # Response handling
+│       │       └── health/      # Health checks
+│       └── Dockerfile           # API production build
 │
 ├── libs/
 │   └── shared-types/            # Shared TypeScript types
@@ -237,7 +267,9 @@ angular-surveys/
 │           ├── response.types.ts
 │           └── api.types.ts
 │
-├── docker-compose.yml           # Local development services
+├── docker-compose.yml           # Production Docker services
+├── docker-compose.dev.yml       # Development Docker services
+├── Caddyfile                    # Root Caddy configuration
 ├── nx.json                      # Nx configuration
 └── package.json                 # Root package.json
 ```

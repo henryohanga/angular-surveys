@@ -9,7 +9,8 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../core/services/auth.service';
 
-@Component({ standalone: false,
+@Component({
+  standalone: false,
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
@@ -19,6 +20,12 @@ export class RegisterComponent implements OnInit {
   isLoading = false;
   hidePassword = true;
   hideConfirmPassword = true;
+
+  // Focus states
+  nameFocused = false;
+  emailFocused = false;
+  passwordFocused = false;
+  confirmPasswordFocused = false;
 
   constructor(
     private fb: FormBuilder,
@@ -34,6 +41,7 @@ export class RegisterComponent implements OnInit {
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, Validators.minLength(8)]],
         confirmPassword: ['', [Validators.required]],
+        agreeToTerms: [false, [Validators.requiredTrue]],
       },
       { validators: this.passwordMatchValidator }
     );
@@ -44,9 +52,49 @@ export class RegisterComponent implements OnInit {
     }
   }
 
+  // Password strength getters
+  get passwordStrength(): number {
+    const pwd = this.password?.value || '';
+    let strength = 0;
+    if (pwd.length >= 8) strength++;
+    if (/[A-Z]/.test(pwd)) strength++;
+    if (/[0-9]/.test(pwd)) strength++;
+    if (/[^A-Za-z0-9]/.test(pwd)) strength++;
+    return strength;
+  }
+
+  get passwordStrengthText(): string {
+    switch (this.passwordStrength) {
+      case 0:
+        return '';
+      case 1:
+        return 'Weak';
+      case 2:
+        return 'Fair';
+      case 3:
+        return 'Good';
+      case 4:
+        return 'Strong';
+      default:
+        return '';
+    }
+  }
+
+  get hasMinLength(): boolean {
+    return (this.password?.value || '').length >= 8;
+  }
+
+  get hasUppercase(): boolean {
+    return /[A-Z]/.test(this.password?.value || '');
+  }
+
+  get hasNumber(): boolean {
+    return /[0-9]/.test(this.password?.value || '');
+  }
+
   passwordMatchValidator(
     control: AbstractControl
-  ): { [key: string]: boolean } | null {
+  ): Record<string, boolean> | null {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
 

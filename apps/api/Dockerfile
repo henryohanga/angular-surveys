@@ -44,4 +44,4 @@ ENV NODE_ENV=production
 
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]
