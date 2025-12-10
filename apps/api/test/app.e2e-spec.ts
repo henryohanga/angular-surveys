@@ -37,12 +37,6 @@ describe('API E2E Tests', () => {
   });
 
   describe('Auth Endpoints', () => {
-    const testUser = {
-      email: `test-${Date.now()}@example.com`,
-      password: 'testPassword123',
-      name: 'Test User',
-    };
-
     it('/api/auth/register (POST) - validation error', () => {
       return request(app.getHttpServer())
         .post('/api/auth/register')

@@ -45,7 +45,9 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Successfully logged in' })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   @ApiResponse({ status: 429, description: 'Too many requests' })
-  async login(@Request() req: { user: unknown }, @Body() _loginDto: LoginDto) {
+  async login(@Request() req: { user: unknown }, @Body() loginDto: LoginDto) {
+    // loginDto is used only for ValidationPipe and API docs
+    void loginDto;
     return this.authService.login(req.user);
   }
 
