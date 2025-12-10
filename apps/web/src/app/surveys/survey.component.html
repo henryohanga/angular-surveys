@@ -1,3 +1,13 @@
+<!-- Demo Banner -->
+<div class="demo-banner" *ngIf="isDemo">
+  <mat-icon>science</mat-icon>
+  <span
+    ><strong>Demo Mode</strong> — This is a sample survey to showcase features.
+    Responses are not saved.</span
+  >
+  <a routerLink="/register" class="demo-cta">Create Your Own</a>
+</div>
+
 <!-- Survey Form -->
 <div class="survey-container" *ngIf="!showSummary && !showSuccess">
   <!-- Survey Header -->
@@ -129,7 +139,14 @@
     <p>Your response has been submitted.</p>
   </div>
   <div class="nav">
-    <button mat-raised-button color="primary" type="button" (click)="showSuccess = false; currentPage = 0; showSummary = false; form.reset()">
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="
+        showSuccess = false; currentPage = 0; showSummary = false; form.reset()
+      "
+    >
       <mat-icon>refresh</mat-icon>
       Submit another
     </button>

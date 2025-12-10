@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
@@ -7,10 +7,14 @@ import {
   Survey,
   SurveyTemplate,
 } from '../core/services/storage.service';
+import { SurveyApiService } from '../core/services/survey-api.service';
+import { AuthService } from '../core/services/auth.service';
 import { BUILT_IN_TEMPLATES } from '../core/data/templates.data';
 import { MWForm } from '../surveys/models';
+import { firstValueFrom } from 'rxjs';
 
-@Component({ standalone: false,
+@Component({
+  standalone: false,
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
@@ -25,21 +29,40 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private storage: StorageService,
+    private surveyApi: SurveyApiService,
+    private authService: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
   ) {}
 
   async ngOnInit() {
     await this.loadData();
+
+    // Check for template query param from home page
+    const templateId = this.route.snapshot.queryParams['template'];
+    if (templateId) {
+      const template = this.templates.find((t) => t.id === templateId);
+      if (template) {
+        this.createFromTemplate(template);
+      }
+    }
   }
 
   async loadData() {
     this.isLoading = true;
     try {
-      this.surveys = await this.storage.getAllSurveys();
+      if (this.authService.isAuthenticated) {
+        // Load from API when authenticated
+        const apiSurveys = await firstValueFrom(this.surveyApi.getAllSurveys());
+        this.surveys = apiSurveys.map((s) => this.surveyApi.toLocalSurvey(s));
+      } else {
+        // Fall back to local storage for unauthenticated users
+        this.surveys = await this.storage.getAllSurveys();
+      }
 
-      // Load custom templates from storage
+      // Load custom templates from storage (templates are local-only for now)
       const storedTemplates = await this.storage.getAllTemplates();
       this.customTemplates = storedTemplates.filter((t) => t.isCustom);
 
@@ -91,14 +114,54 @@ export class DashboardComponent implements OnInit {
       ],
     };
 
-    const survey = await this.storage.createSurvey(blankForm);
-    this.router.navigate(['/builder', survey.id]);
+    try {
+      let surveyId: string;
+      if (this.authService.isAuthenticated) {
+        const apiSurvey = await firstValueFrom(
+          this.surveyApi.createSurvey({
+            name: blankForm.name,
+            description: blankForm.description,
+            form: blankForm,
+          })
+        );
+        surveyId = apiSurvey.id;
+      } else {
+        const survey = await this.storage.createSurvey(blankForm);
+        surveyId = survey.id;
+      }
+      this.router.navigate(['/builder', surveyId]);
+    } catch (error) {
+      console.error('Failed to create survey:', error);
+      this.snackBar.open('Failed to create survey', 'Close', {
+        duration: 3000,
+      });
+    }
   }
 
   async createFromTemplate(template: SurveyTemplate) {
-    const form = JSON.parse(JSON.stringify(template.form)); // Deep clone
-    const survey = await this.storage.createSurvey(form);
-    this.router.navigate(['/builder', survey.id]);
+    const form = JSON.parse(JSON.stringify(template.form)) as MWForm; // Deep clone
+    try {
+      let surveyId: string;
+      if (this.authService.isAuthenticated) {
+        const apiSurvey = await firstValueFrom(
+          this.surveyApi.createSurvey({
+            name: form.name,
+            description: form.description,
+            form,
+          })
+        );
+        surveyId = apiSurvey.id;
+      } else {
+        const survey = await this.storage.createSurvey(form);
+        surveyId = survey.id;
+      }
+      this.router.navigate(['/builder', surveyId]);
+    } catch (error) {
+      console.error('Failed to create survey from template:', error);
+      this.snackBar.open('Failed to create survey', 'Close', {
+        duration: 3000,
+      });
+    }
   }
 
   editSurvey(survey: Survey) {
@@ -108,7 +171,15 @@ export class DashboardComponent implements OnInit {
   async duplicateSurvey(survey: Survey, event: Event) {
     event.stopPropagation();
     try {
-      const newSurvey = await this.storage.duplicateSurvey(survey.id);
+      let newSurvey: Survey;
+      if (this.authService.isAuthenticated) {
+        const apiSurvey = await firstValueFrom(
+          this.surveyApi.duplicateSurvey(survey.id)
+        );
+        newSurvey = this.surveyApi.toLocalSurvey(apiSurvey);
+      } else {
+        newSurvey = await this.storage.duplicateSurvey(survey.id);
+      }
       this.surveys = [newSurvey, ...this.surveys];
       this.snackBar.open('Survey duplicated', 'Close', { duration: 2000 });
     } catch {
@@ -120,7 +191,15 @@ export class DashboardComponent implements OnInit {
 
   async exportResponsesCSV(survey: Survey, event: Event) {
     event.stopPropagation();
-    const responses = await this.storage.getResponses(survey.id);
+    let responses;
+    if (this.authService.isAuthenticated) {
+      const apiResponses = await firstValueFrom(
+        this.surveyApi.getResponses(survey.id)
+      );
+      responses = apiResponses.map((r) => this.surveyApi.toLocalResponse(r));
+    } else {
+      responses = await this.storage.getResponses(survey.id);
+    }
     const questions = survey.form.pages
       .map((p) => p.elements)
       .reduce((acc, cur) => acc.concat(cur), [])
@@ -129,7 +208,9 @@ export class DashboardComponent implements OnInit {
     const header = ['Submitted At', ...questions.map((q) => q.text)];
 
     const rows = responses.map((r) => {
-      const values = questions.map((q) => this.formatAnswer(q, r.responses[q.id]));
+      const values = questions.map((q) =>
+        this.formatAnswer(q, r.responses[q.id])
+      );
       return [new Date(r.submittedAt).toISOString(), ...values];
     });
 
@@ -141,7 +222,9 @@ export class DashboardComponent implements OnInit {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${(survey.form.name || 'survey').toLowerCase().replace(/\s+/g, '-')}-responses.csv`;
+    a.download = `${(survey.form.name || 'survey')
+      .toLowerCase()
+      .replace(/\s+/g, '-')}-responses.csv`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -152,7 +235,10 @@ export class DashboardComponent implements OnInit {
     return s;
   }
 
-  private formatAnswer(q: import('../surveys/models').MWQuestion, value: unknown): string {
+  private formatAnswer(
+    q: import('../surveys/models').MWQuestion,
+    value: unknown
+  ): string {
     if (value == null) return '';
     if (q.type === 'radio' || q.type === 'select') {
       const v = typeof value === 'string' ? value : '';
@@ -174,7 +260,11 @@ export class DashboardComponent implements OnInit {
         } else {
           const arr = Array.isArray(rv) ? (rv as unknown[]) : [];
           const labels = arr
-            .map((cid) => q.grid!.cols.find((c) => c.id === cid)?.label || String(cid ?? ''))
+            .map(
+              (cid) =>
+                q.grid!.cols.find((c) => c.id === cid)?.label ||
+                String(cid ?? '')
+            )
             .join('|');
           parts.push(`${row.label}: ${labels}`);
         }
@@ -193,7 +283,11 @@ export class DashboardComponent implements OnInit {
       )
     ) {
       try {
-        await this.storage.deleteSurvey(survey.id);
+        if (this.authService.isAuthenticated) {
+          await firstValueFrom(this.surveyApi.deleteSurvey(survey.id));
+        } else {
+          await this.storage.deleteSurvey(survey.id);
+        }
         this.surveys = this.surveys.filter((s) => s.id !== survey.id);
         this.snackBar.open('Survey deleted', 'Close', { duration: 2000 });
       } catch {
@@ -218,15 +312,32 @@ export class DashboardComponent implements OnInit {
     event.stopPropagation();
     try {
       if (survey.status === 'published') {
-        await this.storage.unpublishSurvey(survey.id);
+        if (this.authService.isAuthenticated) {
+          await firstValueFrom(this.surveyApi.unpublishSurvey(survey.id));
+        } else {
+          await this.storage.unpublishSurvey(survey.id);
+        }
         survey.status = 'draft';
         survey.shareUrl = undefined;
         this.snackBar.open('Survey unpublished', 'Close', { duration: 2000 });
       } else {
-        const updated = await this.storage.publishSurvey(survey.id);
+        let shareUrl: string;
+        if (this.authService.isAuthenticated) {
+          const updated = await firstValueFrom(
+            this.surveyApi.publishSurvey(survey.id)
+          );
+          shareUrl = `${window.location.origin}/s/${updated.id}`;
+          survey.publishedAt = updated.publishedAt
+            ? new Date(updated.publishedAt)
+            : new Date();
+        } else {
+          const updated = await this.storage.publishSurvey(survey.id);
+          shareUrl =
+            updated.shareUrl || `${window.location.origin}/s/${survey.id}`;
+          survey.publishedAt = updated.publishedAt;
+        }
         survey.status = 'published';
-        survey.shareUrl = updated.shareUrl;
-        survey.publishedAt = updated.publishedAt;
+        survey.shareUrl = shareUrl;
         this.snackBar
           .open('Survey published!', 'Copy Link', { duration: 5000 })
           .onAction()
@@ -295,6 +406,10 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  trackBySurvey(_i: number, s: Survey): string { return s.id; }
-  trackByTemplate(_i: number, t: SurveyTemplate): string { return t.id; }
+  trackBySurvey(_i: number, s: Survey): string {
+    return s.id;
+  }
+  trackByTemplate(_i: number, t: SurveyTemplate): string {
+    return t.id;
+  }
 }

@@ -12,6 +12,9 @@ import {
   QuestionDialogData,
 } from './question-dialog.component';
 import { StorageService, Survey } from '../core/services/storage.service';
+import { SurveyApiService } from '../core/services/survey-api.service';
+import { AuthService } from '../core/services/auth.service';
+import { firstValueFrom } from 'rxjs';
 
 interface ComponentItem {
   type: MWTextType;
@@ -20,7 +23,8 @@ interface ComponentItem {
   description: string;
 }
 
-@Component({ standalone: false,
+@Component({
+  standalone: false,
   selector: 'app-builder',
   templateUrl: './builder.component.html',
   styleUrls: ['./builder.component.scss'],
@@ -178,6 +182,8 @@ export class BuilderComponent implements OnInit {
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private storage: StorageService,
+    private surveyApi: SurveyApiService,
+    private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
     private cdr: ChangeDetectorRef
@@ -189,7 +195,15 @@ export class BuilderComponent implements OnInit {
     if (this.surveyId) {
       // Load existing survey
       try {
-        this.survey = await this.storage.getSurvey(this.surveyId);
+        if (this.authService.isAuthenticated) {
+          const apiSurvey = await firstValueFrom(
+            this.surveyApi.getSurvey(this.surveyId)
+          );
+          this.survey = this.surveyApi.toLocalSurvey(apiSurvey);
+        } else {
+          this.survey = await this.storage.getSurvey(this.surveyId);
+        }
+
         if (this.survey) {
           this.state.importJson(JSON.stringify(this.survey.form));
           this.formDef = this.state.getForm(); // Always reference state's form
@@ -433,20 +447,49 @@ export class BuilderComponent implements OnInit {
 
       const errs = this.state.validateForm(this.formDef);
       if (errs.length) {
-        this.snackBar.open('Invalid survey: ' + errs[0], 'Close', { duration: 4000 });
+        this.snackBar.open('Invalid survey: ' + errs[0], 'Close', {
+          duration: 4000,
+        });
         return;
       }
 
-      if (this.surveyId && this.survey) {
-        // Update existing survey
-        this.survey.form = this.formDef;
-        this.survey = await this.storage.saveSurvey(this.survey);
+      if (this.authService.isAuthenticated) {
+        // Use API when authenticated
+        if (this.surveyId && this.survey) {
+          const apiSurvey = await firstValueFrom(
+            this.surveyApi.updateSurvey(this.surveyId, {
+              name: this.formDef.name,
+              description: this.formDef.description,
+              form: this.formDef,
+            })
+          );
+          this.survey = this.surveyApi.toLocalSurvey(apiSurvey);
+        } else {
+          const apiSurvey = await firstValueFrom(
+            this.surveyApi.createSurvey({
+              name: this.formDef.name,
+              description: this.formDef.description,
+              form: this.formDef,
+            })
+          );
+          this.survey = this.surveyApi.toLocalSurvey(apiSurvey);
+          this.surveyId = this.survey.id;
+          this.router.navigate(['/builder', this.surveyId], {
+            replaceUrl: true,
+          });
+        }
       } else {
-        // Create new survey
-        this.survey = await this.storage.createSurvey(this.formDef);
-        this.surveyId = this.survey.id;
-        // Update URL without navigation
-        this.router.navigate(['/builder', this.surveyId], { replaceUrl: true });
+        // Use local storage for unauthenticated users
+        if (this.surveyId && this.survey) {
+          this.survey.form = this.formDef;
+          this.survey = await this.storage.saveSurvey(this.survey);
+        } else {
+          this.survey = await this.storage.createSurvey(this.formDef);
+          this.surveyId = this.survey.id;
+          this.router.navigate(['/builder', this.surveyId], {
+            replaceUrl: true,
+          });
+        }
       }
 
       this.lastSaved = new Date();
@@ -475,11 +518,27 @@ export class BuilderComponent implements OnInit {
     try {
       const errs = this.state.validateForm(this.state.getForm());
       if (errs.length) {
-        this.snackBar.open('Fix validation before publishing', 'Close', { duration: 4000 });
+        this.snackBar.open('Fix validation before publishing', 'Close', {
+          duration: 4000,
+        });
         this.isPublishing = false;
         return;
       }
-      this.survey = await this.storage.publishSurvey(this.surveyId);
+
+      let shareUrl: string;
+      if (this.authService.isAuthenticated) {
+        const apiSurvey = await firstValueFrom(
+          this.surveyApi.publishSurvey(this.surveyId)
+        );
+        this.survey = this.surveyApi.toLocalSurvey(apiSurvey);
+        shareUrl = `${window.location.origin}/s/${apiSurvey.id}`;
+        this.survey.shareUrl = shareUrl;
+      } else {
+        this.survey = await this.storage.publishSurvey(this.surveyId);
+        shareUrl =
+          this.survey.shareUrl ||
+          `${window.location.origin}/s/${this.surveyId}`;
+      }
       this.surveyStatus = 'published';
 
       const snackRef = this.snackBar.open('Survey published!', 'Copy Link', {
@@ -489,8 +548,8 @@ export class BuilderComponent implements OnInit {
       });
 
       snackRef.onAction().subscribe(() => {
-        if (this.survey?.shareUrl) {
-          navigator.clipboard.writeText(this.survey.shareUrl);
+        if (shareUrl) {
+          navigator.clipboard.writeText(shareUrl);
           this.snackBar.open('Link copied!', 'Close', { duration: 2000 });
         }
       });
@@ -505,6 +564,61 @@ export class BuilderComponent implements OnInit {
 
   goToDashboard() {
     this.router.navigate(['/dashboard']);
+  }
+
+  // Open live preview in new tab
+  openLivePreview() {
+    if (this.surveyId) {
+      window.open(`/preview/${this.surveyId}`, '_blank');
+    } else {
+      this.snackBar.open(
+        'Save the survey first to preview in new tab',
+        'Close',
+        {
+          duration: 3000,
+        }
+      );
+    }
+  }
+
+  // Copy share link to clipboard
+  copyShareLink() {
+    if (this.surveyId) {
+      const shareUrl = `${window.location.origin}/s/${this.surveyId}`;
+      navigator.clipboard.writeText(shareUrl);
+      this.snackBar.open('Share link copied to clipboard!', 'Close', {
+        duration: 2000,
+      });
+    }
+  }
+
+  // Navigate to responses page
+  viewResponses() {
+    if (this.surveyId) {
+      this.router.navigate(['/responses', this.surveyId]);
+    }
+  }
+
+  // Unpublish survey
+  async unpublishSurvey() {
+    if (!this.surveyId) return;
+
+    try {
+      if (this.authService.isAuthenticated) {
+        const apiSurvey = await firstValueFrom(
+          this.surveyApi.unpublishSurvey(this.surveyId)
+        );
+        this.survey = this.surveyApi.toLocalSurvey(apiSurvey);
+      } else {
+        this.survey = await this.storage.unpublishSurvey(this.surveyId);
+      }
+      this.surveyStatus = 'draft';
+      this.snackBar.open('Survey unpublished', 'Close', { duration: 3000 });
+    } catch {
+      this.snackBar.open('Failed to unpublish survey', 'Close', {
+        duration: 3000,
+      });
+    }
   }
 
   // Add question from component drag

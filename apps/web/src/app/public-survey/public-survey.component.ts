@@ -10,9 +10,12 @@ import {
   AbstractControl,
 } from '@angular/forms';
 import { StorageService, Survey } from '../core/services/storage.service';
+import { SurveyApiService } from '../core/services/survey-api.service';
 import { MWForm, MWPage, MWOfferedAnswer } from '../surveys/models';
+import { firstValueFrom } from 'rxjs';
 
-@Component({ standalone: false,
+@Component({
+  standalone: false,
   selector: 'app-public-survey',
   templateUrl: './public-survey.component.html',
   styleUrls: ['./public-survey.component.scss'],
@@ -26,12 +29,14 @@ export class PublicSurveyComponent implements OnInit {
   isSubmitted = false;
   isLoading = true;
   error: string | null = null;
+  isPreview = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
-    private storage: StorageService
+    private storage: StorageService,
+    private surveyApi: SurveyApiService
   ) {}
 
   async ngOnInit() {
@@ -42,17 +47,43 @@ export class PublicSurveyComponent implements OnInit {
       return;
     }
 
+    // Check if this is a preview (allows drafts) or public access (published only)
+    this.isPreview = this.route.snapshot.url[0]?.path === 'preview';
+
     try {
-      this.survey = await this.storage.getSurvey(surveyId);
+      if (this.isPreview) {
+        // Preview mode - load from API (authenticated) or local storage
+        try {
+          const apiSurvey = await firstValueFrom(
+            this.surveyApi.getSurvey(surveyId)
+          );
+          this.survey = this.surveyApi.toLocalSurvey(apiSurvey);
+        } catch {
+          // Fall back to local storage
+          this.survey = await this.storage.getSurvey(surveyId);
+        }
+      } else {
+        // Public mode - try public API endpoint first
+        try {
+          const apiSurvey = await firstValueFrom(
+            this.surveyApi.getPublicSurvey(surveyId)
+          );
+          this.survey = this.surveyApi.toLocalSurvey(apiSurvey);
+        } catch {
+          // Fall back to local storage
+          this.survey = await this.storage.getSurvey(surveyId);
+        }
+
+        // Public access requires published status
+        if (this.survey && this.survey.status !== 'published') {
+          this.error = 'This survey is not currently accepting responses';
+          this.isLoading = false;
+          return;
+        }
+      }
 
       if (!this.survey) {
         this.error = 'Survey not found';
-        this.isLoading = false;
-        return;
-      }
-
-      if (this.survey.status !== 'published') {
-        this.error = 'This survey is not currently accepting responses';
         this.isLoading = false;
         return;
       }
@@ -257,7 +288,17 @@ export class PublicSurveyComponent implements OnInit {
     if (!this.survey) return;
 
     try {
-      await this.storage.saveResponse(this.survey.id, this.form.value);
+      // Try to submit to API first
+      try {
+        await firstValueFrom(
+          this.surveyApi.submitResponse(this.survey.id, {
+            responses: this.form.value,
+          })
+        );
+      } catch {
+        // Fall back to local storage if API fails
+        await this.storage.saveResponse(this.survey.id, this.form.value);
+      }
       this.isSubmitted = true;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch {

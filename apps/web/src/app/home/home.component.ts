@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../core/services/auth.service';
 import { Observable } from 'rxjs';
@@ -18,12 +18,13 @@ interface Template {
   color: string;
 }
 
-@Component({ standalone: false,
+@Component({
+  standalone: false,
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   features: Feature[] = [
     {
       icon: 'drag_indicator',
@@ -106,22 +107,27 @@ export class HomeComponent {
     this.currentUser$ = this.authService.currentUser$;
   }
 
-  startBuilding() {
-    this.router.navigate(['/dashboard']);
+  ngOnInit(): void {
+    // Redirect to dashboard if user is already authenticated
+    if (this.authService.isAuthenticated) {
+      this.router.navigate(['/dashboard']);
+    }
   }
 
   viewDemo() {
-    this.router.navigate(['/surveys']);
-  }
-
-  goToDashboard() {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/demo']);
   }
 
   useTemplate(templateId: string) {
-    // In a real app, this would load the template
-    this.router.navigate(['/builder'], {
-      queryParams: { template: templateId },
-    });
+    // Redirect to dashboard with template parameter
+    // Dashboard will handle creating survey from template
+    if (this.authService.isAuthenticated) {
+      this.router.navigate(['/dashboard'], {
+        queryParams: { template: templateId },
+      });
+    } else {
+      // Prompt guests to register first
+      this.router.navigate(['/register']);
+    }
   }
 }

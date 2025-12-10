@@ -20,6 +20,21 @@
   </div>
 </div>
 
+<!-- Preview Banner -->
+<div
+  class="preview-banner"
+  *ngIf="isPreview && !isLoading && !error && !isSubmitted"
+>
+  <mat-icon>visibility</mat-icon>
+  <span
+    ><strong>Preview Mode</strong> — You're viewing a preview. Responses in
+    preview mode are not saved.</span
+  >
+  <a [routerLink]="['/builder', survey?.id]" class="preview-cta"
+    >Back to Builder</a
+  >
+</div>
+
 <!-- Submitted State -->
 <div class="submitted-container" *ngIf="isSubmitted">
   <div class="submitted-content">

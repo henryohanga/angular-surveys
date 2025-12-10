@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SurveyComponent } from './surveys/survey.component';
-import { MaterialSurveyComponent } from './surveys/material-survey.component';
 import { BuilderComponent } from './builder/builder.component';
 import { HomeComponent } from './home/home.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -24,26 +23,31 @@ const routes: Routes = [
     component: DashboardComponent,
     canActivate: [AuthGuard],
   },
-  { path: 'builder', component: BuilderComponent, canActivate: [AuthGuard] },
+  // Builder requires a survey ID - redirect bare /builder to dashboard
+  { path: 'builder', redirectTo: 'dashboard', pathMatch: 'full' },
   {
     path: 'builder/:id',
     component: BuilderComponent,
     canActivate: [AuthGuard],
   },
   {
-    path: 'analytics/:id',
+    path: 'responses/:id',
     component: AnalyticsDashboardComponent,
     canActivate: [AuthGuard],
   },
-  { path: 'analytics', component: AnalyticsDashboardComponent },
 
-  // Demo routes (no auth required for now)
-  { path: 'surveys', component: SurveyComponent },
-  { path: 'surveys/material', component: MaterialSurveyComponent },
+  // Demo route - shows sample survey for trying out
+  { path: 'demo', component: SurveyComponent },
 
   // Public survey routes
   { path: 'preview/:id', component: PublicSurveyComponent },
   { path: 's/:id', component: PublicSurveyComponent }, // Short URL for sharing
+
+  // Redirect old routes
+  { path: 'surveys', redirectTo: 'demo', pathMatch: 'full' },
+  { path: 'surveys/material', redirectTo: 'demo', pathMatch: 'full' },
+  { path: 'analytics/:id', redirectTo: 'responses/:id', pathMatch: 'full' },
+  { path: 'analytics', redirectTo: 'dashboard', pathMatch: 'full' },
 
   { path: '**', redirectTo: '' },
 ];

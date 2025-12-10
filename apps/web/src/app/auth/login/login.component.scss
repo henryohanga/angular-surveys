@@ -1,14 +1,15 @@
-// Variables
-$primary-color: #6366f1;
-$primary-dark: #4f46e5;
-$primary-light: #818cf8;
-$text-primary: #1e293b;
-$text-secondary: #64748b;
-$text-muted: #94a3b8;
-$border-color: #e2e8f0;
-$error-color: #ef4444;
-$success-color: #22c55e;
-$background-light: #f8fafc;
+// Using global theme colors for consistency
+$primary-color: #1a73e8; // var(--primary)
+$primary-dark: #1557b0; // var(--primary-hover)
+$primary-light: #4285f4;
+$accent-color: #34a853; // var(--accent)
+$text-primary: #202124; // var(--text-primary)
+$text-secondary: #5f6368; // var(--text-secondary)
+$text-muted: #9aa0a6;
+$border-color: #dadce0; // var(--surface-border)
+$error-color: #ea4335; // var(--danger)
+$success-color: #34a853;
+$background-light: #f8f9fa;
 
 .auth-page {
   display: flex;
@@ -25,8 +26,8 @@ $background-light: #f8fafc;
   background: linear-gradient(
     135deg,
     $primary-color 0%,
-    #8b5cf6 50%,
-    #a855f7 100%
+    #1e88e5 50%,
+    #42a5f5 100%
   );
   display: flex;
   align-items: center;

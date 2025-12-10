@@ -1,7 +1,6 @@
 .dashboard {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  min-height: calc(100vh - 64px);
 }
 
 /* Header */
@@ -219,6 +218,7 @@
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   min-height: 36px;

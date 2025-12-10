@@ -1,16 +1,28 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
+
+interface ApiResponse {
+  id: string;
+  surveyId: string;
+  responses: Record<string, unknown>;
+  submittedAt: string;
+  isComplete: boolean;
+  metadata?: Record<string, unknown>;
+}
 
 interface SurveyAnalytics {
   surveyId: string;
-  surveyName: string;
+  surveyName?: string;
   totalResponses: number;
+  completedResponses: number;
   completionRate: number;
-  averageTime: number;
-  questionStats: QuestionStats[];
-  recentResponses: ResponseRow[];
+  averageCompletionTime: number;
+  responsesByDate: { date: string; count: number }[];
+  questionStats?: QuestionStats[];
+  recentResponses?: ResponseRow[];
 }
 
 interface QuestionStats {
@@ -26,7 +38,8 @@ interface ResponseRow {
   [key: string]: unknown;
 }
 
-@Component({ standalone: false,
+@Component({
+  standalone: false,
   selector: 'app-analytics-dashboard',
   templateUrl: './analytics-dashboard.component.html',
   styleUrls: ['./analytics-dashboard.component.scss'],
@@ -43,8 +56,16 @@ export class AnalyticsDashboardComponent implements OnInit {
     surveyId: 'demo-survey',
     surveyName: 'Customer Satisfaction Survey',
     totalResponses: 247,
+    completedResponses: 193,
     completionRate: 78,
-    averageTime: 245,
+    averageCompletionTime: 245,
+    responsesByDate: [
+      { date: '2025-12-05', count: 42 },
+      { date: '2025-12-06', count: 38 },
+      { date: '2025-12-07', count: 55 },
+      { date: '2025-12-08', count: 48 },
+      { date: '2025-12-09', count: 64 },
+    ],
     questionStats: [
       {
         questionId: 'q1',
@@ -106,11 +127,8 @@ export class AnalyticsDashboardComponent implements OnInit {
     ],
   };
 
-  responseColumns = [
-    { key: 'q1', label: 'Satisfaction' },
-    { key: 'q2', label: 'Recommend' },
-    { key: 'q3', label: 'Features Used' },
-  ];
+  responseColumns: { key: string; label: string }[] = [];
+  individualResponses: ResponseRow[] = [];
 
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
@@ -121,6 +139,7 @@ export class AnalyticsDashboardComponent implements OnInit {
 
   private loadAnalytics(): void {
     this.isLoading = true;
+    this.error = undefined;
 
     if (!this.surveyId || this.surveyId === 'demo') {
       // Use mock data for demo
@@ -131,27 +150,96 @@ export class AnalyticsDashboardComponent implements OnInit {
       return;
     }
 
-    // Load real data from API
-    this.http
-      .get<SurveyAnalytics>(
-        `${environment.apiUrl}/responses/analytics/${this.surveyId}`
-      )
-      .subscribe({
-        next: (data) => {
-          this.analytics = data;
-          this.isLoading = false;
-        },
-        error: (err) => {
-          this.error = err.error?.message || 'Failed to load analytics';
-          this.isLoading = false;
-        },
-      });
+    // Load analytics and individual responses in parallel
+    forkJoin({
+      analytics: this.http.get<SurveyAnalytics>(
+        `${environment.apiUrl}/responses/survey/${this.surveyId}/analytics`
+      ),
+      responses: this.http.get<ApiResponse[]>(
+        `${environment.apiUrl}/responses/survey/${this.surveyId}`
+      ),
+    }).subscribe({
+      next: ({ analytics, responses }) => {
+        this.analytics = {
+          ...analytics,
+          surveyName: analytics.surveyName || 'Survey Analytics',
+          questionStats: analytics.questionStats || [],
+          recentResponses: [],
+        };
+
+        // Transform API responses to table format
+        this.individualResponses = responses.map((r) => ({
+          id: r.id,
+          submittedAt: new Date(r.submittedAt),
+          ...r.responses,
+        }));
+
+        // Build columns dynamically from first response
+        if (responses.length > 0) {
+          const firstResponse = responses[0].responses;
+          this.responseColumns = Object.keys(firstResponse).map((key) => ({
+            key,
+            label: this.formatQuestionKey(key),
+          }));
+        }
+
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Failed to load analytics';
+        this.isLoading = false;
+      },
+    });
   }
 
   formatTime(seconds: number): string {
+    if (!seconds || seconds === 0) return '—';
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}m ${secs}s`;
+    return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+  }
+
+  formatQuestionKey(key: string): string {
+    // Convert question IDs like "q-1234567890" to readable labels
+    if (key.startsWith('q-')) {
+      return `Question ${key.substring(2, 8)}...`;
+    }
+    // Convert camelCase or snake_case to Title Case
+    return key
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/_/g, ' ')
+      .replace(/^./, (str) => str.toUpperCase())
+      .trim();
+  }
+
+  formatDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  getTodayCount(): number {
+    if (!this.analytics?.responsesByDate) return 0;
+    const today = new Date().toISOString().split('T')[0];
+    const todayData = this.analytics.responsesByDate.find(
+      (d) => d.date === today
+    );
+    return todayData?.count || 0;
+  }
+
+  getBarHeight(count: number): number {
+    if (!this.analytics?.responsesByDate) return 0;
+    const maxCount = Math.max(
+      ...this.analytics.responsesByDate.map((d) => d.count)
+    );
+    return maxCount > 0 ? (count / maxCount) * 100 : 0;
+  }
+
+  copyShareLink(): void {
+    if (this.surveyId) {
+      const shareUrl = `${window.location.origin}/s/${this.surveyId}`;
+      navigator.clipboard.writeText(shareUrl);
+      // Could add a snackbar notification here
+    }
   }
 
   refresh(): void {

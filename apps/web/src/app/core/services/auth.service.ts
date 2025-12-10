@@ -97,9 +97,13 @@ export class AuthService {
       );
   }
 
-  login(credentials: LoginCredentials): Observable<AuthResponse> {
+  login(
+    credentials: LoginCredentials & { rememberMe?: boolean }
+  ): Observable<AuthResponse> {
+    // Only send email and password to API (backend rejects extra fields)
+    const { email, password } = credentials;
     return this.http
-      .post<AuthResponse>(`${this.apiUrl}/auth/login`, credentials)
+      .post<AuthResponse>(`${this.apiUrl}/auth/login`, { email, password })
       .pipe(
         tap((response) => {
           this.storeAuth(response);

@@ -16,27 +16,17 @@
       aria-label="My Surveys"
       *ngIf="isAuthenticated$ | async"
     >
-      <mat-icon>folder</mat-icon>
-      My Surveys
+      <mat-icon>dashboard</mat-icon>
+      Dashboard
     </a>
     <a
       mat-button
-      routerLink="/builder"
+      routerLink="/demo"
       routerLinkActive="active"
-      aria-label="Survey Builder"
-      *ngIf="isAuthenticated$ | async"
+      aria-label="Try Demo Survey"
     >
-      <mat-icon>edit</mat-icon>
-      Builder
-    </a>
-    <a
-      mat-button
-      routerLink="/surveys"
-      routerLinkActive="active"
-      aria-label="Preview Survey"
-    >
-      <mat-icon>visibility</mat-icon>
-      Demo
+      <mat-icon>play_circle</mat-icon>
+      Try Demo
     </a>
     <a
       mat-button

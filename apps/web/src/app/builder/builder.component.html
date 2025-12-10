@@ -30,13 +30,25 @@
   <div class="toolbar-right">
     <button
       mat-stroked-button
-      (click)="openPreview()"
-      matTooltip="Preview survey"
+      [matMenuTriggerFor]="previewMenu"
+      matTooltip="Preview options"
       class="preview-btn"
     >
       <mat-icon>visibility</mat-icon>
       Preview
+      <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
     </button>
+    <mat-menu #previewMenu="matMenu">
+      <button mat-menu-item (click)="openPreview()">
+        <mat-icon>preview</mat-icon>
+        <span>Quick Preview</span>
+      </button>
+      <button mat-menu-item (click)="openLivePreview()" [disabled]="!surveyId">
+        <mat-icon>open_in_new</mat-icon>
+        <span>Preview in New Tab</span>
+      </button>
+    </mat-menu>
+
     <button
       mat-stroked-button
       (click)="saveSurvey()"
@@ -47,17 +59,77 @@
       <mat-icon>{{ isSaving ? "sync" : "save" }}</mat-icon>
       {{ isSaving ? "Saving..." : "Save" }}
     </button>
+
     <button
       mat-raised-button
       color="accent"
       (click)="publishSurvey()"
-      [disabled]="isPublishing"
-      matTooltip="Publish survey"
+      [disabled]="isPublishing || surveyStatus === 'published'"
+      matTooltip="{{
+        surveyStatus === 'published' ? 'Already published' : 'Publish survey'
+      }}"
       class="publish-btn"
+      *ngIf="surveyStatus !== 'published'"
     >
       <mat-icon>{{ isPublishing ? "sync" : "publish" }}</mat-icon>
       {{ isPublishing ? "Publishing..." : "Publish" }}
     </button>
+
+    <button
+      mat-stroked-button
+      [matMenuTriggerFor]="publishedMenu"
+      class="published-btn"
+      *ngIf="surveyStatus === 'published'"
+    >
+      <mat-icon>check_circle</mat-icon>
+      Published
+      <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #publishedMenu="matMenu">
+      <button mat-menu-item (click)="copyShareLink()">
+        <mat-icon>link</mat-icon>
+        <span>Copy Share Link</span>
+      </button>
+      <button mat-menu-item (click)="viewResponses()">
+        <mat-icon>bar_chart</mat-icon>
+        <span>View Responses</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="unpublishSurvey()" class="text-warning">
+        <mat-icon>unpublished</mat-icon>
+        <span>Unpublish</span>
+      </button>
+    </mat-menu>
+
+    <button
+      mat-icon-button
+      [matMenuTriggerFor]="moreMenu"
+      matTooltip="More actions"
+    >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #moreMenu="matMenu">
+      <button mat-menu-item (click)="goToDashboard()">
+        <mat-icon>dashboard</mat-icon>
+        <span>Back to Dashboard</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="exportToFile()">
+        <mat-icon>download</mat-icon>
+        <span>Export JSON</span>
+      </button>
+      <button mat-menu-item (click)="fileInput.click()">
+        <mat-icon>upload</mat-icon>
+        <span>Import JSON</span>
+      </button>
+      <input
+        #fileInput
+        type="file"
+        accept=".json"
+        (change)="importFromFile($event)"
+        style="display: none"
+      />
+    </mat-menu>
   </div>
 </div>
 

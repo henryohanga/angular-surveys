@@ -1,4 +1,11 @@
-import { Component, Input, ViewChild, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -9,7 +16,8 @@ interface ResponseRow {
   [key: string]: unknown;
 }
 
-@Component({ standalone: false,
+@Component({
+  standalone: false,
   selector: 'app-response-table',
   templateUrl: './response-table.component.html',
   styleUrls: ['./response-table.component.scss'],
@@ -23,8 +31,11 @@ export class ResponseTableComponent implements AfterViewInit {
   }
 
   @Input() columns: { key: string; label: string }[] = [];
+  @Output() deleted = new EventEmitter<string>();
 
   dataSource = new MatTableDataSource<ResponseRow>([]);
+  selectedResponse: ResponseRow | null = null;
+  showDetailPanel = false;
 
   get displayedColumns(): string[] {
     return ['submittedAt', ...this.columns.map((c) => c.key), 'actions'];
@@ -44,6 +55,22 @@ export class ResponseTableComponent implements AfterViewInit {
 
   formatDate(date: Date): string {
     return new Date(date).toLocaleString();
+  }
+
+  viewDetails(row: ResponseRow): void {
+    this.selectedResponse = row;
+    this.showDetailPanel = true;
+  }
+
+  closeDetails(): void {
+    this.showDetailPanel = false;
+    this.selectedResponse = null;
+  }
+
+  deleteResponse(row: ResponseRow): void {
+    if (confirm('Are you sure you want to delete this response?')) {
+      this.deleted.emit(row.id);
+    }
   }
 
   exportCsv(): void {

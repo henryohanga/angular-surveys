@@ -9,7 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MWForm, MWPage, MWOfferedAnswer } from './models';
-import { FormStateService } from '../builder/form-state.service';
+import { DEMO_SURVEY } from '../core/data/demo-survey.data';
 
 @Component({
   standalone: false,
@@ -18,14 +18,16 @@ import { FormStateService } from '../builder/form-state.service';
   styleUrls: ['./survey.component.scss'],
 })
 export class SurveyComponent {
-  formDef!: MWForm;
+  formDef: MWForm;
   form: FormGroup;
   currentPage = 0;
   showSummary = false;
   showSuccess = false;
+  isDemo = true;
 
-  constructor(private fb: FormBuilder, private state: FormStateService) {
-    this.formDef = this.state.getForm();
+  constructor(private fb: FormBuilder) {
+    // Use the fixed demo survey
+    this.formDef = DEMO_SURVEY;
     this.form = this.fb.group({});
     this.buildForm();
   }

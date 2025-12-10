@@ -59,6 +59,24 @@
   gap: var(--spacing-sm);
 }
 
+.dropdown-icon {
+  margin-left: -4px;
+  margin-right: -8px;
+}
+
+.published-btn {
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+
+  mat-icon:first-child {
+    color: var(--accent);
+  }
+}
+
+.text-warning {
+  color: var(--warning) !important;
+}
+
 .toolbar-right button {
   display: flex;
   align-items: center;

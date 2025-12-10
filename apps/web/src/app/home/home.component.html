@@ -15,19 +15,36 @@
       preview.
     </p>
     <div class="hero-actions">
-      <button
-        mat-raised-button
-        color="primary"
-        class="cta-primary"
-        (click)="startBuilding()"
-      >
-        <mat-icon>add_circle</mat-icon>
-        Start Building
-      </button>
-      <button mat-stroked-button class="cta-secondary" (click)="viewDemo()">
-        <mat-icon>play_circle</mat-icon>
-        Try Demo
-      </button>
+      <ng-container *ngIf="(isAuthenticated$ | async) === false">
+        <a
+          mat-raised-button
+          color="primary"
+          class="cta-primary"
+          routerLink="/register"
+        >
+          <mat-icon>rocket_launch</mat-icon>
+          Get Started Free
+        </a>
+        <a mat-stroked-button class="cta-secondary" routerLink="/demo">
+          <mat-icon>play_circle</mat-icon>
+          Try Demo
+        </a>
+      </ng-container>
+      <ng-container *ngIf="isAuthenticated$ | async">
+        <a
+          mat-raised-button
+          color="primary"
+          class="cta-primary"
+          routerLink="/dashboard"
+        >
+          <mat-icon>dashboard</mat-icon>
+          Go to Dashboard
+        </a>
+        <a mat-stroked-button class="cta-secondary" routerLink="/demo">
+          <mat-icon>play_circle</mat-icon>
+          Try Demo
+        </a>
+      </ng-container>
     </div>
     <div class="hero-stats">
       <div class="stat">
@@ -244,18 +261,29 @@
 <section class="cta-section">
   <div class="cta-content">
     <h2>Ready to Build Your Survey?</h2>
-    <p>
-      Start creating beautiful, interactive surveys today. No account required.
-    </p>
-    <button
-      mat-raised-button
-      color="primary"
-      class="cta-button"
-      (click)="startBuilding()"
-    >
-      <mat-icon>rocket_launch</mat-icon>
-      Get Started Free
-    </button>
+    <p>Start creating beautiful, interactive surveys today. Free forever.</p>
+    <ng-container *ngIf="(isAuthenticated$ | async) === false">
+      <a
+        mat-raised-button
+        color="primary"
+        class="cta-button"
+        routerLink="/register"
+      >
+        <mat-icon>rocket_launch</mat-icon>
+        Get Started Free
+      </a>
+    </ng-container>
+    <ng-container *ngIf="isAuthenticated$ | async">
+      <a
+        mat-raised-button
+        color="primary"
+        class="cta-button"
+        routerLink="/dashboard"
+      >
+        <mat-icon>dashboard</mat-icon>
+        Go to Dashboard
+      </a>
+    </ng-container>
   </div>
 </section>
 
@@ -272,8 +300,8 @@
     <div class="footer-links">
       <div class="link-group">
         <h5>Product</h5>
-        <a routerLink="/builder">Builder</a>
-        <a routerLink="/surveys">Demo Survey</a>
+        <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/demo">Try Demo</a>
         <a href="#features">Features</a>
       </div>
       <div class="link-group">
