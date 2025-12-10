@@ -11,6 +11,7 @@ import { HomeModule } from './home/home.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { PublicSurveyModule } from './public-survey/public-survey.module';
 import { AuthModule } from './auth/auth.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -29,6 +30,7 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
     DashboardModule,
     PublicSurveyModule,
     AuthModule,
+    AnalyticsModule,
     MatButtonModule,
     MatIconModule,
     MatMenuModule,

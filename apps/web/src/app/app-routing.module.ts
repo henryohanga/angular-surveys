@@ -8,6 +8,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { PublicSurveyComponent } from './public-survey/public-survey.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
+import { AnalyticsDashboardComponent } from './analytics/analytics-dashboard/analytics-dashboard.component';
 import { AuthGuard, GuestGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
@@ -29,6 +30,12 @@ const routes: Routes = [
     component: BuilderComponent,
     canActivate: [AuthGuard],
   },
+  {
+    path: 'analytics/:id',
+    component: AnalyticsDashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  { path: 'analytics', component: AnalyticsDashboardComponent },
 
   // Demo routes (no auth required for now)
   { path: 'surveys', component: SurveyComponent },

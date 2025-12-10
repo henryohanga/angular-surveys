@@ -1,0 +1,104 @@
+<div class="analytics-dashboard">
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Loading analytics...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state" *ngIf="error && !isLoading">
+    <mat-icon>error_outline</mat-icon>
+    <h3>Failed to load analytics</h3>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="refresh()">
+      <mat-icon>refresh</mat-icon>
+      Try Again
+    </button>
+  </div>
+
+  <!-- Analytics Content -->
+  <div class="analytics-content" *ngIf="analytics && !isLoading">
+    <!-- Header -->
+    <div class="dashboard-header">
+      <div class="header-title">
+        <h1>{{ analytics.surveyName }}</h1>
+        <mat-chip-set>
+          <mat-chip color="primary" highlighted
+            >{{ analytics.totalResponses }} Responses</mat-chip
+          >
+        </mat-chip-set>
+      </div>
+      <button mat-button (click)="refresh()">
+        <mat-icon>refresh</mat-icon>
+        Refresh
+      </button>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <app-stat-card
+        title="Total Responses"
+        [value]="analytics.totalResponses"
+        icon="poll"
+        color="primary"
+        [trend]="12"
+        trendLabel="vs last week"
+      ></app-stat-card>
+
+      <app-stat-card
+        title="Completion Rate"
+        [value]="analytics.completionRate + '%'"
+        icon="check_circle"
+        color="success"
+        subtitle="of started surveys"
+      ></app-stat-card>
+
+      <app-stat-card
+        title="Avg. Completion Time"
+        [value]="formatTime(analytics.averageTime)"
+        icon="timer"
+        color="accent"
+      ></app-stat-card>
+
+      <app-stat-card
+        title="Active Today"
+        value="23"
+        icon="trending_up"
+        color="warn"
+        [trend]="-5"
+        trendLabel="vs yesterday"
+      ></app-stat-card>
+    </div>
+
+    <!-- Question Analytics -->
+    <div class="charts-section">
+      <h2>Response Distribution by Question</h2>
+
+      <mat-tab-group>
+        <mat-tab
+          *ngFor="let question of analytics.questionStats"
+          [label]="question.questionText"
+        >
+          <div class="chart-tab-content">
+            <div class="question-info">
+              <mat-chip>{{ question.questionType }}</mat-chip>
+            </div>
+            <app-response-chart
+              [data]="question.answerDistribution"
+              [type]="question.questionType === 'checkbox' ? 'bar' : 'donut'"
+              [title]="question.questionText"
+            ></app-response-chart>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+
+    <!-- Responses Table -->
+    <mat-card class="responses-section">
+      <app-response-table
+        [responses]="analytics.recentResponses"
+        [columns]="responseColumns"
+      ></app-response-table>
+    </mat-card>
+  </div>
+</div>
