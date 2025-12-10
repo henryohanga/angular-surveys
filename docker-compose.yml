@@ -1,41 +1,35 @@
-version: "3.8"
-
 services:
-  # PostgreSQL Database
-  postgres:
-    image: postgres:16-alpine
-    container_name: angular-surveys-db
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: angular_surveys
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # Redis for caching (optional, for future use)
-  redis:
-    image: redis:7-alpine
-    container_name: angular-surveys-redis
+  # Caddy Reverse Proxy
+  caddy:
+    image: caddy:2-alpine
+    container_name: angular-surveys-proxy
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "80:80"
+      - "443:443"
     volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+      - web
+    networks:
+      - app-network
 
-  # API Backend (optional - for containerized development)
+  # Angular Frontend
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: angular-surveys-web
+    restart: unless-stopped
+    expose:
+      - "80"
+    networks:
+      - app-network
+
+  # NestJS API Backend
   api:
     build:
       context: .
@@ -46,21 +40,61 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: angular_surveys
-      JWT_SECRET: dev-secret-change-in-production
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_NAME: ${DB_NAME:-angular_surveys}
+      JWT_SECRET: ${JWT_SECRET:-change-this-in-production}
       PORT: 3000
-    ports:
-      - "3000:3000"
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost}
+    expose:
+      - "3000"
+    networks:
+      - app-network
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: angular-surveys-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-angular_surveys}
     volumes:
-      - ./apps/api/src:/app/apps/api/src:ro
-    profiles:
-      - full
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: angular-surveys-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   postgres_data:
   redis_data:
+  caddy_data:
+  caddy_config:

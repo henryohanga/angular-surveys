@@ -1,0 +1,61 @@
+# Caddyfile for Angular Surveys
+# For local development, use localhost
+# For production, replace with your domain
+
+{
+    # Global options
+    admin off
+    # Uncomment for production with real domain
+    # email your-email@example.com
+}
+
+# Local development (HTTP)
+:80 {
+    # API reverse proxy
+    handle /api/* {
+        reverse_proxy api:3000
+    }
+
+    # Swagger docs (development only)
+    handle /api/docs* {
+        reverse_proxy api:3000
+    }
+
+    # Frontend (Angular)
+    handle {
+        reverse_proxy web:80
+    }
+
+    # Logging
+    log {
+        output stdout
+        format console
+    }
+}
+
+# Production with HTTPS (uncomment and configure for production)
+# your-domain.com {
+#     # API reverse proxy
+#     handle /api/* {
+#         reverse_proxy api:3000
+#     }
+#
+#     # Frontend (Angular)
+#     handle {
+#         reverse_proxy web:80
+#     }
+#
+#     # Security headers
+#     header {
+#         X-Content-Type-Options nosniff
+#         X-Frame-Options DENY
+#         Referrer-Policy strict-origin-when-cross-origin
+#         X-XSS-Protection "1; mode=block"
+#     }
+#
+#     # Logging
+#     log {
+#         output file /var/log/caddy/access.log
+#         format json
+#     }
+# }
