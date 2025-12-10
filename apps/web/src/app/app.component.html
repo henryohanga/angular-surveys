@@ -14,6 +14,7 @@
       routerLink="/dashboard"
       routerLinkActive="active"
       aria-label="My Surveys"
+      *ngIf="isAuthenticated$ | async"
     >
       <mat-icon>folder</mat-icon>
       My Surveys
@@ -23,6 +24,7 @@
       routerLink="/builder"
       routerLinkActive="active"
       aria-label="Survey Builder"
+      *ngIf="isAuthenticated$ | async"
     >
       <mat-icon>edit</mat-icon>
       Builder
@@ -46,6 +48,50 @@
       <mat-icon>code</mat-icon>
       GitHub
     </a>
+
+    <!-- Auth buttons -->
+    <ng-container *ngIf="(isAuthenticated$ | async) === false">
+      <a mat-button routerLink="/login" class="auth-button">
+        <mat-icon>login</mat-icon>
+        Sign In
+      </a>
+      <a
+        mat-raised-button
+        color="primary"
+        routerLink="/register"
+        class="auth-button"
+      >
+        Get Started
+      </a>
+    </ng-container>
+
+    <!-- User menu -->
+    <ng-container *ngIf="isAuthenticated$ | async">
+      <button
+        mat-button
+        [matMenuTriggerFor]="userMenu"
+        class="user-menu-trigger"
+      >
+        <mat-icon>account_circle</mat-icon>
+        <span class="user-name">{{ (currentUser$ | async)?.name }}</span>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item routerLink="/dashboard">
+          <mat-icon>dashboard</mat-icon>
+          <span>Dashboard</span>
+        </button>
+        <button mat-menu-item disabled>
+          <mat-icon>settings</mat-icon>
+          <span>Settings</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Sign Out</span>
+        </button>
+      </mat-menu>
+    </ng-container>
   </nav>
 </header>
 

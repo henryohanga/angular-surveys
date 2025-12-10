@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService, User } from '../core/services/auth.service';
+import { Observable } from 'rxjs';
 
 interface Feature {
   icon: string;
@@ -96,7 +98,13 @@ export class HomeComponent {
     },
   ];
 
-  constructor(private router: Router) {}
+  isAuthenticated$: Observable<boolean>;
+  currentUser$: Observable<User | null>;
+
+  constructor(private router: Router, private authService: AuthService) {
+    this.isAuthenticated$ = this.authService.isAuthenticated$;
+    this.currentUser$ = this.authService.currentUser$;
+  }
 
   startBuilding() {
     this.router.navigate(['/dashboard']);

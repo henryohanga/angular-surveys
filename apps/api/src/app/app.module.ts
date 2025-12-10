@@ -1,10 +1,14 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
 import { SurveysModule } from './surveys/surveys.module';
 import { ResponsesModule } from './responses/responses.module';
 import { UsersModule } from './users/users.module';
+import { CommonModule } from './common/common.module';
+import { SentryInterceptor } from './common/interceptors/sentry.interceptor';
 import { HealthController } from './health/health.controller';
 
 @Module({
@@ -13,6 +17,29 @@ import { HealthController } from './health/health.controller';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
+    }),
+
+    // Rate limiting
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => [
+        {
+          name: 'short',
+          ttl: 1000, // 1 second
+          limit: configService.get('THROTTLE_SHORT_LIMIT', 10),
+        },
+        {
+          name: 'medium',
+          ttl: 10000, // 10 seconds
+          limit: configService.get('THROTTLE_MEDIUM_LIMIT', 50),
+        },
+        {
+          name: 'long',
+          ttl: 60000, // 1 minute
+          limit: configService.get('THROTTLE_LONG_LIMIT', 100),
+        },
+      ],
     }),
 
     // Database
@@ -32,6 +59,9 @@ import { HealthController } from './health/health.controller';
       }),
     }),
 
+    // Common module (global services)
+    CommonModule,
+
     // Feature modules
     AuthModule,
     SurveysModule,
@@ -39,5 +69,17 @@ import { HealthController } from './health/health.controller';
     UsersModule,
   ],
   controllers: [HealthController],
+  providers: [
+    // Global rate limiting guard
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+    // Global Sentry error interceptor
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: SentryInterceptor,
+    },
+  ],
 })
 export class AppModule {}
