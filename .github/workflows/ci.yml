@@ -31,3 +31,6 @@ jobs:
 
       - name: Build
         run: npx nx affected --target=build --parallel=3
+
+      - name: Test
+        run: npm run test:all
