@@ -1,6 +1,6 @@
 # Angular Surveys
 
-[![CI](https://github.com/henryohanga/angular-surveys/actions/workflows/ci.yml/badge.svg)](https://github.com/henryohanga/angular-surveys/actions/workflows/ci.yml)
+[![CI](https://github.com/henryohanga/angular-surveys/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/henryohanga/angular-surveys/actions/workflows/ci.yml)
 
 A modern, full-stack survey platform built with Angular and NestJS. Create beautiful, interactive surveys with an intuitive drag-and-drop interface, 18+ question types, real-time preview, and seamless data management.
 
