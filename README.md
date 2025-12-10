@@ -1,10 +1,12 @@
 # Angular Surveys
 
-A modern, feature-rich survey builder for Angular applications. Create beautiful, interactive surveys with an intuitive drag-and-drop interface, 18+ question types, real-time preview, and seamless data management.
+A modern, full-stack survey platform built with Angular and NestJS. Create beautiful, interactive surveys with an intuitive drag-and-drop interface, 18+ question types, real-time preview, and seamless data management.
 
-> This project is a modern evolution of the original [angular-surveys](https://github.com/mwasiluk/angular-surveys) by Marcin Wasiluk, completely rebuilt for Angular 18 with Material Design and enhanced with premium features.
+> This project is a modern evolution of the original [angular-surveys](https://github.com/mwasiluk/angular-surveys) by Marcin Wasiluk, completely rebuilt as an Nx monorepo with Angular 18, NestJS backend, and PostgreSQL.
 
 ![Angular Surveys](https://img.shields.io/badge/Angular-18-red?style=flat-square)
+![NestJS](https://img.shields.io/badge/NestJS-10-red?style=flat-square)
+![Nx](https://img.shields.io/badge/Nx-Monorepo-blue?style=flat-square)
 ![Material Design](https://img.shields.io/badge/Material-Design-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 ![Question Types](https://img.shields.io/badge/Question%20Types-18+-purple?style=flat-square)
@@ -52,8 +54,10 @@ A modern, feature-rich survey builder for Angular applications. Create beautiful
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 20+
 - npm or yarn
+- Docker & Docker Compose (for database)
+- PostgreSQL 16+ (or use Docker)
 
 ### Installation
 
@@ -67,11 +71,22 @@ cd angular-surveys
 # Install dependencies
 npm install
 
-# Start development server
+# Start PostgreSQL with Docker
+docker-compose up -d postgres
+
+# Copy environment file
+cp .env.example .env.local
+
+# Start the API (in one terminal)
+npm run start:api
+
+# Start the web app (in another terminal)
 npm run start
 ```
 
-Open `http://localhost:4200` in your browser.
+- **Web App:** `http://localhost:4200`
+- **API:** `http://localhost:3000/api`
+- **API Docs:** `http://localhost:3000/api/docs`
 
 ## 📖 Usage
 
@@ -154,45 +169,77 @@ Open `http://localhost:4200` in your browser.
 ### Commands
 
 ```bash
-# Development server
+# Start web app
 npm run start
 
-# Build for production
-npm run build
+# Start API server
+npm run start:api
 
-# Run unit tests
-npm run test
+# Start both (parallel)
+npm run start:all
+
+# Build for production
+npm run build           # Web only
+npm run build:api       # API only
+npm run build:all       # All projects
+
+# Run tests
+npm run test            # Web tests
+npm run test:api        # API tests
+npm run test:all        # All tests
 
 # Run e2e tests
 npm run e2e
 
-# Lint code
+# Lint all projects
 npm run lint
+
+# View dependency graph
+npm run graph
+
+# Run affected commands (CI optimization)
+npm run affected:build
+npm run affected:test
+npm run affected:lint
 ```
 
 ### Project Structure
 
 ```
-src/app/
-├── builder/                    # Survey builder module
-│   ├── builder.component.*     # Main builder interface
-│   ├── question-dialog.*       # Premium question editor dialog
-│   ├── question-editor.*       # Inline question editor
-│   ├── survey-preview-dialog.* # Survey preview with device toggle
-│   └── form-state.service.ts   # Survey state management
-├── dashboard/                  # Survey management dashboard
-│   └── dashboard.component.*
-├── home/                       # Landing page
-│   └── home.component.*
-├── surveys/                    # Survey runner & components
-│   ├── components/             # Question type components
-│   ├── survey.component.*
-│   └── models.ts               # TypeScript interfaces
-├── core/                       # Core services
-│   ├── services/
-│   │   └── storage.service.ts  # IndexedDB storage
-│   └── error-handler.ts        # Global error handling
-└── app.module.ts               # Root module
+angular-surveys/
+├── apps/
+│   ├── web/                     # Angular frontend
+│   │   ├── src/
+│   │   │   ├── app/
+│   │   │   │   ├── builder/     # Survey builder module
+│   │   │   │   ├── dashboard/   # Survey management
+│   │   │   │   ├── home/        # Landing page
+│   │   │   │   ├── surveys/     # Survey runner
+│   │   │   │   ├── public-survey/ # Public survey view
+│   │   │   │   └── core/        # Core services
+│   │   │   └── environments/
+│   │   └── e2e/                 # E2E tests (Playwright)
+│   │
+│   └── api/                     # NestJS backend
+│       └── src/
+│           └── app/
+│               ├── auth/        # Authentication (JWT)
+│               ├── users/       # User management
+│               ├── surveys/     # Survey CRUD
+│               ├── responses/   # Response handling
+│               └── health/      # Health checks
+│
+├── libs/
+│   └── shared-types/            # Shared TypeScript types
+│       └── src/lib/
+│           ├── survey.types.ts
+│           ├── user.types.ts
+│           ├── response.types.ts
+│           └── api.types.ts
+│
+├── docker-compose.yml           # Local development services
+├── nx.json                      # Nx configuration
+└── package.json                 # Root package.json
 ```
 
 ## 🤝 Contributing

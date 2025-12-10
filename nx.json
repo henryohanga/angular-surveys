@@ -32,27 +32,6 @@
     }
   },
   "defaultBase": "main",
-  "plugins": [
-    {
-      "plugin": "@nx/angular/plugin",
-      "options": {
-        "targetDefaults": {
-          "build": {
-            "cache": true,
-            "dependsOn": ["^build"],
-            "inputs": ["production", "^production"]
-          },
-          "test": {
-            "cache": true,
-            "inputs": ["default", "^production"]
-          },
-          "serve": {
-            "cache": true
-          }
-        }
-      }
-    }
-  ],
   "workspaceLayout": {
     "appsDir": "apps",
     "libsDir": "libs"

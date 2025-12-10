@@ -1,16 +1,21 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# compiled output
+# Compiled output
 /dist
 /tmp
 /out-tsc
 # Only exists if Bazel was run
 /bazel-out
 
-# dependencies
+# Dependencies
 /node_modules
 
-# profiling files
+# Nx
+.nx/cache
+.nx/workspace-data
+nx-cloud.env
+
+# Profiling files
 chrome-profiler-events*.json
 speed-measure-plugin*.json
 
@@ -31,7 +36,7 @@ speed-measure-plugin*.json
 !.vscode/extensions.json
 .history/*
 
-# misc
+# Misc
 /.angular/cache
 /.sass-cache
 /connect.lock
@@ -42,7 +47,27 @@ yarn-error.log
 testem.log
 /typings
 
+# Test results
+/test-results
+
 # System Files
 .DS_Store
 Thumbs.db
+
+# Deployment
 .vercel
+.netlify
+
+# Environment files
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs
+logs
+*.log
+
+# Database
+*.sqlite
+*.db
