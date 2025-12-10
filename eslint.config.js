@@ -31,6 +31,8 @@ module.exports = defineConfig([
           style: "kebab-case",
         },
       ],
+      // Allow using non-standalone components while the app still uses NgModules
+      "@angular-eslint/prefer-standalone": "off",
     },
   },
   {
@@ -40,5 +42,5 @@ module.exports = defineConfig([
       angular.configs.templateAccessibility,
     ],
     rules: {},
-  }
+  },
 ]);
