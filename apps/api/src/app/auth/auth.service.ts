@@ -42,7 +42,11 @@ export class AuthService {
       return null;
     }
 
-    return user;
+    const safeUser = {
+      ...(user as unknown as Record<string, unknown>),
+    };
+    delete (safeUser as Record<string, unknown>).password;
+    return safeUser as unknown as User;
   }
 
   async login(user: unknown) {

@@ -3,6 +3,8 @@ import { SurveysModule } from './surveys.module';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormArray, FormControl } from '@angular/forms';
 import { SurveyComponent } from './survey.component';
+import { FormStateService } from '../builder/form-state.service';
+import { DEMO_FORM } from './demo-data';
 
 describe('SurveyComponent page flow', () => {
   beforeEach(async () => {
@@ -12,6 +14,8 @@ describe('SurveyComponent page flow', () => {
   });
 
   it('jumps to page via radio pageFlow', () => {
+    const svc = TestBed.inject(FormStateService);
+    svc.setForm(JSON.parse(JSON.stringify(DEMO_FORM)));
     const fixture = TestBed.createComponent(SurveyComponent);
     const comp = fixture.componentInstance;
     fixture.detectChanges();

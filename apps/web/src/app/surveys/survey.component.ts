@@ -9,7 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MWForm, MWPage, MWOfferedAnswer } from './models';
-import { DEMO_SURVEY } from '../core/data/demo-survey.data';
+import { FormStateService } from '../builder/form-state.service';
 
 @Component({
   standalone: false,
@@ -25,9 +25,9 @@ export class SurveyComponent {
   showSuccess = false;
   isDemo = true;
 
-  constructor(private fb: FormBuilder) {
-    // Use the fixed demo survey
-    this.formDef = DEMO_SURVEY;
+  constructor(private fb: FormBuilder, private formState: FormStateService) {
+    this.formDef = this.formState.getForm();
+    this.isDemo = false;
     this.form = this.fb.group({});
     this.buildForm();
   }
@@ -271,20 +271,18 @@ export class SurveyComponent {
     // element-level overrides (first match wins)
     for (const el of page.elements) {
       const q = el.question;
-      if (q.pageFlowModifier) {
-        if (q.type === 'radio' && q.offeredAnswers) {
-          const selected = this.form.get(q.id)?.value as string;
-          const ans = q.offeredAnswers.find((a) => a.value === selected);
-          const target = this.answerFlowTarget(ans);
-          if (target !== null) return target;
-        } else if (q.type === 'checkbox' && q.offeredAnswers) {
-          const selectedArr = (this.form.get(q.id)?.value as string[]) || [];
-          const first = q.offeredAnswers.find((a) =>
-            selectedArr.includes(a.value)
-          );
-          const target = this.answerFlowTarget(first);
-          if (target !== null) return target;
-        }
+      if (q.type === 'radio' && q.offeredAnswers) {
+        const selected = this.form.get(q.id)?.value as string;
+        const ans = q.offeredAnswers.find((a) => a.value === selected);
+        const target = this.answerFlowTarget(ans);
+        if (target !== null) return target;
+      } else if (q.type === 'checkbox' && q.offeredAnswers) {
+        const selectedArr = (this.form.get(q.id)?.value as string[]) || [];
+        const first = q.offeredAnswers.find((a) =>
+          selectedArr.includes(a.value)
+        );
+        const target = this.answerFlowTarget(first);
+        if (target !== null) return target;
       }
     }
 
