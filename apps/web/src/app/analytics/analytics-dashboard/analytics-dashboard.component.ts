@@ -26,7 +26,7 @@ interface ResponseRow {
   [key: string]: unknown;
 }
 
-@Component({
+@Component({ standalone: false,
   selector: 'app-analytics-dashboard',
   templateUrl: './analytics-dashboard.component.html',
   styleUrls: ['./analytics-dashboard.component.scss'],

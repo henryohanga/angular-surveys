@@ -4,6 +4,7 @@ import { MWQuestion, MWPriorityItem } from '../models';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
+  standalone: false,
   selector: 'app-priority-question',
   templateUrl: './priority-question.component.html',
   styleUrls: ['./priority-question.component.scss'],

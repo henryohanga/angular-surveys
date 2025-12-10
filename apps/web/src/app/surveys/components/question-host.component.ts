@@ -4,6 +4,7 @@ import { MWQuestion } from '../models';
 import { QUESTION_COMPONENTS, QuestionComponentRegistry } from '../registry';
 
 @Component({
+  standalone: false,
   selector: 'app-question-host',
   template: '',
   changeDetection: ChangeDetectionStrategy.OnPush,

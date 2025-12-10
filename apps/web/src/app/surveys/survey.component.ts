@@ -12,6 +12,7 @@ import { MWForm, MWPage, MWOfferedAnswer } from './models';
 import { FormStateService } from '../builder/form-state.service';
 
 @Component({
+  standalone: false,
   selector: 'app-survey',
   templateUrl: './survey.component.html',
   styleUrls: ['./survey.component.scss'],

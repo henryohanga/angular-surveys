@@ -3,6 +3,7 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MWGrid, MWQuestion } from '../models';
 
 @Component({
+  standalone: false,
   selector: 'app-grid-question',
   templateUrl: './grid-question.component.html',
   styleUrls: ['./grid-question.component.scss'],

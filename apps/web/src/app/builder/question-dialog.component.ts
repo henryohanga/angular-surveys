@@ -17,7 +17,7 @@ export interface QuestionDialogData {
   mode: 'create' | 'edit';
 }
 
-@Component({
+@Component({ standalone: false,
   selector: 'app-question-dialog',
   templateUrl: './question-dialog.component.html',
   styleUrls: ['./question-dialog.component.scss'],

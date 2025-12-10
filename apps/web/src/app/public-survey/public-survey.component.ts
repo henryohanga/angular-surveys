@@ -12,7 +12,7 @@ import {
 import { StorageService, Survey } from '../core/services/storage.service';
 import { MWForm, MWPage, MWOfferedAnswer } from '../surveys/models';
 
-@Component({
+@Component({ standalone: false,
   selector: 'app-public-survey',
   templateUrl: './public-survey.component.html',
   styleUrls: ['./public-survey.component.scss'],

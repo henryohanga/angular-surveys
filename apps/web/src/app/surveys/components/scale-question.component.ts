@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MWQuestion } from '../models';
 
 @Component({
+  standalone: false,
   selector: 'app-scale-question',
   templateUrl: './scale-question.component.html',
   styleUrls: ['./scale-question.component.scss'],

@@ -3,7 +3,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { AuthService, User } from './core/services/auth.service';
 import { Observable } from 'rxjs';
 
-@Component({
+@Component({ standalone: false,
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

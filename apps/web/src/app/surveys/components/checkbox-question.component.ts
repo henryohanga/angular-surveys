@@ -3,6 +3,7 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MWQuestion, MWOfferedAnswer } from '../models';
 
 @Component({
+  standalone: false,
   selector: 'app-checkbox-question',
   templateUrl: './checkbox-question.component.html',
   styleUrls: ['./checkbox-question.component.scss'],

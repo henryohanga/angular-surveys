@@ -10,7 +10,7 @@ import {
 import { BUILT_IN_TEMPLATES } from '../core/data/templates.data';
 import { MWForm } from '../surveys/models';
 
-@Component({
+@Component({ standalone: false,
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],

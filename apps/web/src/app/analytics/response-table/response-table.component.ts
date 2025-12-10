@@ -9,7 +9,7 @@ interface ResponseRow {
   [key: string]: unknown;
 }
 
-@Component({
+@Component({ standalone: false,
   selector: 'app-response-table',
   templateUrl: './response-table.component.html',
   styleUrls: ['./response-table.component.scss'],

@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MWQuestion } from '../models';
 
 @Component({
+  standalone: false,
   selector: 'app-date-question',
   templateUrl: './date-question.component.html',
   styleUrls: ['./date-question.component.scss'],

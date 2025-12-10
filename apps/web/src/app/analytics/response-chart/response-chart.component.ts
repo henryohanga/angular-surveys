@@ -13,7 +13,7 @@ interface ChartData {
   color?: string;
 }
 
-@Component({
+@Component({ standalone: false,
   selector: 'app-response-chart',
   templateUrl: './response-chart.component.html',
   styleUrls: ['./response-chart.component.scss'],

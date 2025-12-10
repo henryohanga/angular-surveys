@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MWQuestion, MWOfferedAnswer } from '../models';
 
 @Component({
+  standalone: false,
   selector: 'app-radio-question',
   templateUrl: './radio-question.component.html',
   styleUrls: ['./radio-question.component.scss'],

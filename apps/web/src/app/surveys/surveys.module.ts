@@ -61,19 +61,11 @@ import { ScaleQuestionComponent } from './components/scale-question.component';
     MatProgressBarModule,
   ],
   exports: [
-    TextQuestionComponent,
-    TextareaQuestionComponent,
-    RadioQuestionComponent,
-    CheckboxQuestionComponent,
-    GridQuestionComponent,
-    PriorityQuestionComponent,
-    SelectQuestionComponent,
-    DateQuestionComponent,
-    TimeQuestionComponent,
-    ScaleQuestionComponent,
+    // Main components for routing
     SurveyComponent,
-    QuestionHostComponent,
     MaterialSurveyComponent,
+    // For use in other modules
+    QuestionHostComponent,
   ],
   providers: [
     {

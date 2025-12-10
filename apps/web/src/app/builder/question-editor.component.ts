@@ -10,7 +10,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MWQuestion } from '../surveys/models';
 import { FormStateService } from './form-state.service';
 
-@Component({
+@Component({ standalone: false,
   selector: 'app-question-editor',
   templateUrl: './question-editor.component.html',
   styleUrls: ['./question-editor.component.scss'],

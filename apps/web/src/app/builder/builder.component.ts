@@ -20,7 +20,7 @@ interface ComponentItem {
   description: string;
 }
 
-@Component({
+@Component({ standalone: false,
   selector: 'app-builder',
   templateUrl: './builder.component.html',
   styleUrls: ['./builder.component.scss'],

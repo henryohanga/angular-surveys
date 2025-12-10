@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MWForm, MWQuestion } from '../surveys/models';
 
-@Component({
+@Component({ standalone: false,
   selector: 'app-survey-preview-dialog',
   template: `
     <div class="preview-dialog">
