@@ -24,7 +24,8 @@
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",
-    "docker:clean": "docker compose down -v --rmi local"
+    "docker:clean": "docker compose down -v --rmi local",
+    "release": "release-it"
   },
   "dependencies": {
     "@angular/animations": "21.0.4",
@@ -65,8 +66,8 @@
     "zone.js": "^0.16.0"
   },
   "devDependencies": {
-    "@angular-devkit/core": "20.3.13",
     "@angular-devkit/architect": "0.2003.13",
+    "@angular-devkit/core": "20.3.13",
     "@angular-eslint/builder": "21.1.0",
     "@angular-eslint/schematics": "21.1.0",
     "@angular/build": "^21.0.3",
@@ -101,6 +102,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "^2.1.0",
     "nx": "22.2.0",
+    "release-it": "^19.1.0",
     "supertest": "^7.1.4",
     "ts-jest": "29.4.6",
     "ts-node": "^10.9.2",
