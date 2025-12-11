@@ -22,8 +22,8 @@ export class SurveyComponent {
   private readonly formState = inject(FormStateService);
 
   protected formDef: MWForm;
-  protected form: FormGroup;
-  protected currentPage = 0;
+  public form: FormGroup;
+  public currentPage = 0;
   protected showSummary = false;
   protected showSuccess = false;
   protected isDemo = true;
@@ -319,7 +319,7 @@ export class SurveyComponent {
     return true;
   }
 
-  protected next(): void {
+  public next(): void {
     if (!this.validatePage(this.currentPage)) return;
     const page = this.formDef.pages[this.currentPage];
     const targetIndex = this.resolveNextPageIndex(page) ?? this.currentPage + 1;

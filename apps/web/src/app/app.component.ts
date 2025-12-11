@@ -13,7 +13,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly destroy$ = new Subject<void>();
 
-  protected readonly title = 'angular-surveys';
+  public readonly title = 'angular-surveys';
   protected isHome = true;
   protected readonly isAuthenticated$: Observable<boolean>;
   protected readonly currentUser$: Observable<User | null>;
