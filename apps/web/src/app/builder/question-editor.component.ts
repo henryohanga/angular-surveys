@@ -5,26 +5,30 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
+  inject,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MWQuestion } from '../surveys/models';
 import { FormStateService } from './form-state.service';
 
-@Component({ standalone: false,
+@Component({
+  standalone: false,
   selector: 'app-question-editor',
   templateUrl: './question-editor.component.html',
   styleUrls: ['./question-editor.component.scss'],
 })
 export class QuestionEditorComponent implements OnChanges {
+  private readonly fb = inject(FormBuilder);
+  private readonly state = inject(FormStateService);
+
   @Input() initial: MWQuestion | null = null;
-  @Output() save = new EventEmitter<MWQuestion>();
-  @Output() dismissed = new EventEmitter<void>();
+  @Output() readonly save = new EventEmitter<MWQuestion>();
+  @Output() readonly dismissed = new EventEmitter<void>();
 
-  form: FormGroup;
+  protected form: FormGroup;
+  protected pageNumbers: number[] = [];
 
-  pageNumbers: number[] = [];
-
-  constructor(private fb: FormBuilder, private state: FormStateService) {
+  constructor() {
     this.form = this.fb.group({
       id: ['', Validators.required],
       text: ['', Validators.required],
@@ -50,32 +54,32 @@ export class QuestionEditorComponent implements OnChanges {
     this.pageNumbers = this.state.getForm().pages.map((p) => p.number);
   }
 
-  submit() {
+  protected submit(): void {
     if (this.form.valid) {
       this.save.emit(this.form.value as MWQuestion);
     }
   }
 
-  get offeredAnswers(): FormArray {
+  protected get offeredAnswers(): FormArray {
     return this.form.get('offeredAnswers') as FormArray;
   }
-  get grid(): FormGroup {
+  protected get grid(): FormGroup {
     return this.form.get('grid') as FormGroup;
   }
-  get gridRows(): FormArray {
+  protected get gridRows(): FormArray {
     return this.grid.get('rows') as FormArray;
   }
-  get gridCols(): FormArray {
+  protected get gridCols(): FormArray {
     return this.grid.get('cols') as FormArray;
   }
-  get priorityList(): FormArray {
+  protected get priorityList(): FormArray {
     return this.form.get('priorityList') as FormArray;
   }
-  get scale(): FormGroup {
+  protected get scale(): FormGroup {
     return this.form.get('scale') as FormGroup;
   }
 
-  addAnswer() {
+  protected addAnswer(): void {
     const index = this.offeredAnswers.length + 1;
     this.offeredAnswers.push(
       this.fb.group({

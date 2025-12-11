@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
@@ -45,14 +45,16 @@ interface ResponseRow {
   styleUrls: ['./analytics-dashboard.component.scss'],
 })
 export class AnalyticsDashboardComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly http = inject(HttpClient);
+
   @Input() surveyId?: string;
 
-  isLoading = true;
-  error?: string;
-  analytics?: SurveyAnalytics;
+  protected isLoading = true;
+  protected error?: string;
+  protected analytics?: SurveyAnalytics;
 
-  // Mock data for demo
-  mockAnalytics: SurveyAnalytics = {
+  protected readonly mockAnalytics: SurveyAnalytics = {
     surveyId: 'demo-survey',
     surveyName: 'Customer Satisfaction Survey',
     totalResponses: 247,
@@ -127,10 +129,8 @@ export class AnalyticsDashboardComponent implements OnInit {
     ],
   };
 
-  responseColumns: { key: string; label: string }[] = [];
-  individualResponses: ResponseRow[] = [];
-
-  constructor(private route: ActivatedRoute, private http: HttpClient) {}
+  protected responseColumns: { key: string; label: string }[] = [];
+  protected individualResponses: ResponseRow[] = [];
 
   ngOnInit(): void {
     this.surveyId = this.surveyId || this.route.snapshot.params['id'];
@@ -192,14 +192,14 @@ export class AnalyticsDashboardComponent implements OnInit {
     });
   }
 
-  formatTime(seconds: number): string {
+  protected formatTime(seconds: number): string {
     if (!seconds || seconds === 0) return '—';
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
   }
 
-  formatQuestionKey(key: string): string {
+  protected formatQuestionKey(key: string): string {
     // Convert question IDs like "q-1234567890" to readable labels
     if (key.startsWith('q-')) {
       return `Question ${key.substring(2, 8)}...`;
@@ -212,12 +212,12 @@ export class AnalyticsDashboardComponent implements OnInit {
       .trim();
   }
 
-  formatDate(dateStr: string): string {
+  protected formatDate(dateStr: string): string {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
-  getTodayCount(): number {
+  protected getTodayCount(): number {
     if (!this.analytics?.responsesByDate) return 0;
     const today = new Date().toISOString().split('T')[0];
     const todayData = this.analytics.responsesByDate.find(
@@ -226,7 +226,7 @@ export class AnalyticsDashboardComponent implements OnInit {
     return todayData?.count || 0;
   }
 
-  getBarHeight(count: number): number {
+  protected getBarHeight(count: number): number {
     if (!this.analytics?.responsesByDate) return 0;
     const maxCount = Math.max(
       ...this.analytics.responsesByDate.map((d) => d.count)
@@ -234,7 +234,7 @@ export class AnalyticsDashboardComponent implements OnInit {
     return maxCount > 0 ? (count / maxCount) * 100 : 0;
   }
 
-  copyShareLink(): void {
+  protected copyShareLink(): void {
     if (this.surveyId) {
       const shareUrl = `${window.location.origin}/s/${this.surveyId}`;
       navigator.clipboard.writeText(shareUrl);
@@ -242,7 +242,7 @@ export class AnalyticsDashboardComponent implements OnInit {
     }
   }
 
-  refresh(): void {
+  protected refresh(): void {
     this.loadAnalytics();
   }
 }

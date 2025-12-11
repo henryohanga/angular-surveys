@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -11,20 +11,18 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  loginForm!: FormGroup;
-  isLoading = false;
-  hidePassword = true;
-  returnUrl = '/dashboard';
-  emailFocused = false;
-  passwordFocused = false;
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly snackBar = inject(MatSnackBar);
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private snackBar: MatSnackBar
-  ) {}
+  protected loginForm!: FormGroup;
+  protected isLoading = false;
+  protected hidePassword = true;
+  protected returnUrl = '/dashboard';
+  protected emailFocused = false;
+  protected passwordFocused = false;
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -43,7 +41,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  onSubmit(): void {
+  protected onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
@@ -64,11 +62,11 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  get email() {
+  protected get email() {
     return this.loginForm.get('email');
   }
 
-  get password() {
+  protected get password() {
     return this.loginForm.get('password');
   }
 }

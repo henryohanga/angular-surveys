@@ -1,8 +1,9 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MWForm, MWQuestion } from '../surveys/models';
 
-@Component({ standalone: false,
+@Component({
+  standalone: false,
   selector: 'app-survey-preview-dialog',
   template: `
     <div class="preview-dialog">
@@ -24,7 +25,7 @@ import { MWForm, MWQuestion } from '../surveys/models';
               [class.active]="deviceView === 'desktop'"
               (click)="deviceView = 'desktop'"
               matTooltip="Desktop view"
-              >
+            >
               <mat-icon>computer</mat-icon>
             </button>
             <button
@@ -32,7 +33,7 @@ import { MWForm, MWQuestion } from '../surveys/models';
               [class.active]="deviceView === 'mobile'"
               (click)="deviceView = 'mobile'"
               matTooltip="Mobile view"
-              >
+            >
               <mat-icon>smartphone</mat-icon>
             </button>
           </div>
@@ -41,17 +42,17 @@ import { MWForm, MWQuestion } from '../surveys/models';
           </button>
         </div>
       </div>
-    
+
       <!-- Content -->
       <div class="preview-body">
         <div
           class="preview-canvas"
           [class.mobile-view]="deviceView === 'mobile'"
-          >
+        >
           <div
             class="device-frame"
             [class.mobile-frame]="deviceView === 'mobile'"
-            >
+          >
             <!-- Progress Bar -->
             <div class="progress-bar">
               <div
@@ -59,414 +60,370 @@ import { MWForm, MWQuestion } from '../surveys/models';
                 [style.width.%]="progressPercent"
               ></div>
             </div>
-    
+
             <!-- Survey Content -->
             <div class="survey-scroll">
               <div class="survey-content">
                 <!-- Survey Header -->
                 @if (currentPage) {
-                  <div class="survey-header">
-                    <h1 class="survey-title">
-                      {{ data.form.name || 'Untitled Survey' }}
-                    </h1>
-                    @if (data.form.description) {
-                      <p class="survey-description">
-                        {{ data.form.description }}
-                      </p>
-                    }
-                  </div>
+                <div class="survey-header">
+                  <h1 class="survey-title">
+                    {{ data.form.name || 'Untitled Survey' }}
+                  </h1>
+                  @if (data.form.description) {
+                  <p class="survey-description">
+                    {{ data.form.description }}
+                  </p>
+                  }
+                </div>
                 }
-    
+
                 <!-- Page Header -->
                 @if (currentPage && data.form.pages.length > 1) {
-                  <div
-                    class="page-header"
-                    >
-                    <span class="page-badge"
-                      >Page {{ currentPageIndex + 1 }} of
-                      {{ data.form.pages.length }}</span
-                      >
-                      @if (currentPage.name) {
-                        <h3 class="page-title">
-                          {{ currentPage.name }}
-                        </h3>
-                      }
-                      @if (currentPage.description) {
-                        <p class="page-description">
-                          {{ currentPage.description }}
-                        </p>
+                <div class="page-header">
+                  <span class="page-badge"
+                    >Page {{ currentPageIndex + 1 }} of
+                    {{ data.form.pages.length }}</span
+                  >
+                  @if (currentPage.name) {
+                  <h3 class="page-title">
+                    {{ currentPage.name }}
+                  </h3>
+                  } @if (currentPage.description) {
+                  <p class="page-description">
+                    {{ currentPage.description }}
+                  </p>
+                  }
+                </div>
+                }
+
+                <!-- Questions -->
+                @if (currentPage) {
+                <div class="questions-list">
+                  @for (el of currentPage.elements; track el; let i = $index) {
+                  <div class="question-card">
+                    <div class="question-header">
+                      <span class="question-number">{{
+                        getQuestionNumber(i)
+                      }}</span>
+                      <span class="question-text">{{ el.question.text }}</span>
+                      @if (el.question.required) {
+                      <span class="required-marker">*</span>
                       }
                     </div>
-                  }
-    
-                  <!-- Questions -->
-                  @if (currentPage) {
-                    <div class="questions-list">
-                      @for (el of currentPage.elements; track el; let i = $index) {
-                        <div
-                          class="question-card"
+                    <div class="question-input">
+                      @switch (el.question.type) {
+                      <!-- Text -->
+                      @case ('text') {
+                      <input
+                        type="text"
+                        class="text-input"
+                        [placeholder]="el.question.placeholder || 'Your answer'"
+                        disabled
+                      />
+                      }
+                      <!-- Email -->
+                      @case ('email') {
+                      <div class="input-with-icon">
+                        <mat-icon>email</mat-icon>
+                        <input
+                          type="email"
+                          class="text-input"
+                          placeholder="email@example.com"
+                          disabled
+                        />
+                      </div>
+                      }
+                      <!-- Phone -->
+                      @case ('phone') {
+                      <div class="input-with-icon">
+                        <mat-icon>phone</mat-icon>
+                        <input
+                          type="tel"
+                          class="text-input"
+                          placeholder="+1 (555) 000-0000"
+                          disabled
+                        />
+                      </div>
+                      }
+                      <!-- URL -->
+                      @case ('url') {
+                      <div class="input-with-icon">
+                        <mat-icon>link</mat-icon>
+                        <input
+                          type="url"
+                          class="text-input"
+                          placeholder="https://example.com"
+                          disabled
+                        />
+                      </div>
+                      }
+                      <!-- Number -->
+                      @case ('number') {
+                      <div class="number-input-wrapper">
+                        @if (el.question.numberConfig?.prefix) {
+                        <span class="number-prefix">{{
+                          el.question.numberConfig.prefix
+                        }}</span>
+                        }
+                        <input
+                          type="number"
+                          class="text-input number-input"
+                          placeholder="0"
+                          disabled
+                        />
+                        @if (el.question.numberConfig?.suffix) {
+                        <span class="number-suffix">{{
+                          el.question.numberConfig.suffix
+                        }}</span>
+                        }
+                      </div>
+                      }
+                      <!-- Textarea -->
+                      @case ('textarea') {
+                      <textarea
+                        class="textarea-input"
+                        [placeholder]="el.question.placeholder || 'Your answer'"
+                        rows="4"
+                        disabled
+                      ></textarea>
+                      }
+                      <!-- Radio -->
+                      @case ('radio') {
+                      <div class="options-group">
+                        @for (opt of el.question.offeredAnswers; track opt) {
+                        <div class="option-item radio">
+                          <div class="option-circle"></div>
+                          <span>{{ opt.value }}</span>
+                        </div>
+                        } @if (el.question.otherAnswer) {
+                        <div class="option-item radio">
+                          <div class="option-circle"></div>
+                          <span>Other...</span>
+                        </div>
+                        }
+                      </div>
+                      }
+                      <!-- Checkbox -->
+                      @case ('checkbox') {
+                      <div class="options-group">
+                        @for (opt of el.question.offeredAnswers; track opt) {
+                        <div class="option-item checkbox">
+                          <div class="option-square"></div>
+                          <span>{{ opt.value }}</span>
+                        </div>
+                        } @if (el.question.otherAnswer) {
+                        <div class="option-item checkbox">
+                          <div class="option-square"></div>
+                          <span>Other...</span>
+                        </div>
+                        }
+                      </div>
+                      }
+                      <!-- Select -->
+                      @case ('select') {
+                      <select class="select-input" disabled>
+                        <option value="">Select an option</option>
+                        @for (opt of el.question.offeredAnswers; track opt) {
+                        <option>
+                          {{ opt.value }}
+                        </option>
+                        }
+                      </select>
+                      }
+                      <!-- Date -->
+                      @case ('date') {
+                      <div class="input-with-icon">
+                        <mat-icon>calendar_today</mat-icon>
+                        <input type="date" class="text-input" disabled />
+                      </div>
+                      }
+                      <!-- Time -->
+                      @case ('time') {
+                      <div class="input-with-icon">
+                        <mat-icon>schedule</mat-icon>
+                        <input type="time" class="text-input" disabled />
+                      </div>
+                      }
+                      <!-- Scale -->
+                      @case ('scale') {
+                      <div class="scale-input">
+                        <span class="scale-label">{{
+                          el.question.scale?.minLabel ||
+                            el.question.scale?.min ||
+                            1
+                        }}</span>
+                        <div class="scale-points">
+                          @for (n of getScaleRange(el.question); track n) {
+                          <button class="scale-point" disabled>
+                            {{ n }}
+                          </button>
+                          }
+                        </div>
+                        <span class="scale-label">{{
+                          el.question.scale?.maxLabel ||
+                            el.question.scale?.max ||
+                            5
+                        }}</span>
+                      </div>
+                      }
+                      <!-- Rating -->
+                      @case ('rating') {
+                      <div class="rating-input">
+                        @for (n of getScaleRange(el.question); track n) {
+                        <mat-icon class="star-icon">star_outline</mat-icon>
+                        }
+                      </div>
+                      }
+                      <!-- NPS -->
+                      @case ('nps') {
+                      <div class="nps-input">
+                        <span class="nps-label">{{
+                          el.question.scale?.minLabel || 'Not likely'
+                        }}</span>
+                        <div class="nps-points">
+                          @for (n of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track
+                          n) {
+                          <button
+                            class="nps-point"
+                            [class.detractor]="n <= 6"
+                            [class.passive]="n >= 7 && n <= 8"
+                            [class.promoter]="n >= 9"
+                            disabled
                           >
-                          <div class="question-header">
-                            <span class="question-number">{{
-                              getQuestionNumber(i)
-                            }}</span>
-                            <span class="question-text">{{ el.question.text }}</span>
-                            @if (el.question.required) {
-                              <span class="required-marker"
-                                >*</span
-                                >
+                            {{ n }}
+                          </button>
+                          }
+                        </div>
+                        <span class="nps-label">{{
+                          el.question.scale?.maxLabel || 'Very likely'
+                        }}</span>
+                      </div>
+                      }
+                      <!-- Grid -->
+                      @case ('grid') {
+                      <div class="grid-input">
+                        <table class="grid-table">
+                          <thead>
+                            <tr>
+                              <th></th>
+                              @for (col of el.question.grid?.cols; track col) {
+                              <th>
+                                {{ col.label }}
+                              </th>
                               }
-                            </div>
-                            <div class="question-input">
-                              @switch (el.question.type) {
-                                <!-- Text -->
-                                @case ('text') {
-                                  <input
-                                    type="text"
-                                    class="text-input"
-                                    [placeholder]="el.question.placeholder || 'Your answer'"
-                                    disabled
-                                    />
-                                }
-                                <!-- Email -->
-                                @case ('email') {
-                                  <div class="input-with-icon">
-                                    <mat-icon>email</mat-icon>
-                                    <input
-                                      type="email"
-                                      class="text-input"
-                                      placeholder="email@example.com"
-                                      disabled
-                                      />
-                                  </div>
-                                }
-                                <!-- Phone -->
-                                @case ('phone') {
-                                  <div class="input-with-icon">
-                                    <mat-icon>phone</mat-icon>
-                                    <input
-                                      type="tel"
-                                      class="text-input"
-                                      placeholder="+1 (555) 000-0000"
-                                      disabled
-                                      />
-                                  </div>
-                                }
-                                <!-- URL -->
-                                @case ('url') {
-                                  <div class="input-with-icon">
-                                    <mat-icon>link</mat-icon>
-                                    <input
-                                      type="url"
-                                      class="text-input"
-                                      placeholder="https://example.com"
-                                      disabled
-                                      />
-                                  </div>
-                                }
-                                <!-- Number -->
-                                @case ('number') {
-                                  <div
-                                    class="number-input-wrapper"
-                                    >
-                                    @if (el.question.numberConfig?.prefix) {
-                                      <span
-                                        class="number-prefix"
-                                        >{{ el.question.numberConfig.prefix }}</span
-                                        >
-                                      }
-                                      <input
-                                        type="number"
-                                        class="text-input number-input"
-                                        placeholder="0"
-                                        disabled
-                                        />
-                                      @if (el.question.numberConfig?.suffix) {
-                                        <span
-                                          class="number-suffix"
-                                          >{{ el.question.numberConfig.suffix }}</span
-                                          >
-                                        }
-                                      </div>
-                                    }
-                                    <!-- Textarea -->
-                                    @case ('textarea') {
-                                      <textarea
-                                        class="textarea-input"
-                                        [placeholder]="el.question.placeholder || 'Your answer'"
-                                        rows="4"
-                                        disabled
-                                      ></textarea>
-                                    }
-                                    <!-- Radio -->
-                                    @case ('radio') {
-                                      <div class="options-group">
-                                        @for (opt of el.question.offeredAnswers; track opt) {
-                                          <div
-                                            class="option-item radio"
-                                            >
-                                            <div class="option-circle"></div>
-                                            <span>{{ opt.value }}</span>
-                                          </div>
-                                        }
-                                        @if (el.question.otherAnswer) {
-                                          <div
-                                            class="option-item radio"
-                                            >
-                                            <div class="option-circle"></div>
-                                            <span>Other...</span>
-                                          </div>
-                                        }
-                                      </div>
-                                    }
-                                    <!-- Checkbox -->
-                                    @case ('checkbox') {
-                                      <div class="options-group">
-                                        @for (opt of el.question.offeredAnswers; track opt) {
-                                          <div
-                                            class="option-item checkbox"
-                                            >
-                                            <div class="option-square"></div>
-                                            <span>{{ opt.value }}</span>
-                                          </div>
-                                        }
-                                        @if (el.question.otherAnswer) {
-                                          <div
-                                            class="option-item checkbox"
-                                            >
-                                            <div class="option-square"></div>
-                                            <span>Other...</span>
-                                          </div>
-                                        }
-                                      </div>
-                                    }
-                                    <!-- Select -->
-                                    @case ('select') {
-                                      <select
-                                        class="select-input"
-                                        disabled
-                                        >
-                                        <option value="">Select an option</option>
-                                        @for (opt of el.question.offeredAnswers; track opt) {
-                                          <option>
-                                            {{ opt.value }}
-                                          </option>
-                                        }
-                                      </select>
-                                    }
-                                    <!-- Date -->
-                                    @case ('date') {
-                                      <div class="input-with-icon">
-                                        <mat-icon>calendar_today</mat-icon>
-                                        <input type="date" class="text-input" disabled />
-                                      </div>
-                                    }
-                                    <!-- Time -->
-                                    @case ('time') {
-                                      <div class="input-with-icon">
-                                        <mat-icon>schedule</mat-icon>
-                                        <input type="time" class="text-input" disabled />
-                                      </div>
-                                    }
-                                    <!-- Scale -->
-                                    @case ('scale') {
-                                      <div class="scale-input">
-                                        <span class="scale-label">{{
-                                          el.question.scale?.minLabel ||
-                                          el.question.scale?.min ||
-                                          1
-                                        }}</span>
-                                        <div class="scale-points">
-                                          @for (n of getScaleRange(el.question); track n) {
-                                            <button
-                                              class="scale-point"
-                                              disabled
-                                              >
-                                              {{ n }}
-                                            </button>
-                                          }
-                                        </div>
-                                        <span class="scale-label">{{
-                                          el.question.scale?.maxLabel ||
-                                          el.question.scale?.max ||
-                                          5
-                                        }}</span>
-                                      </div>
-                                    }
-                                    <!-- Rating -->
-                                    @case ('rating') {
-                                      <div class="rating-input">
-                                        @for (n of getScaleRange(el.question); track n) {
-                                          <mat-icon
-                                            class="star-icon"
-                                            >star_outline</mat-icon
-                                            >
-                                          }
-                                        </div>
-                                      }
-                                      <!-- NPS -->
-                                      @case ('nps') {
-                                        <div class="nps-input">
-                                          <span class="nps-label">{{
-                                            el.question.scale?.minLabel || 'Not likely'
-                                          }}</span>
-                                          <div class="nps-points">
-                                            @for (n of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track n) {
-                                              <button
-                                                class="nps-point"
-                                                [class.detractor]="n <= 6"
-                                                [class.passive]="n >= 7 && n <= 8"
-                                                [class.promoter]="n >= 9"
-                                                disabled
-                                                >
-                                                {{ n }}
-                                              </button>
-                                            }
-                                          </div>
-                                          <span class="nps-label">{{
-                                            el.question.scale?.maxLabel || 'Very likely'
-                                          }}</span>
-                                        </div>
-                                      }
-                                      <!-- Grid -->
-                                      @case ('grid') {
-                                        <div class="grid-input">
-                                          <table class="grid-table">
-                                            <thead>
-                                              <tr>
-                                                <th></th>
-                                                @for (col of el.question.grid?.cols; track col) {
-                                                  <th>
-                                                    {{ col.label }}
-                                                  </th>
-                                                }
-                                              </tr>
-                                            </thead>
-                                            <tbody>
-                                              @for (row of el.question.grid?.rows; track row) {
-                                                <tr>
-                                                  <td class="row-label">{{ row.label }}</td>
-                                                  @for (col of el.question.grid?.cols; track col) {
-                                                    <td
-                                                      class="grid-cell"
-                                                      >
-                                                      <div
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @for (row of el.question.grid?.rows; track row) {
+                            <tr>
+                              <td class="row-label">{{ row.label }}</td>
+                              @for (col of el.question.grid?.cols; track col) {
+                              <td class="grid-cell">
+                                <div
                                   [class]="
                                     el.question.grid?.cellInputType === 'radio'
                                       ? 'option-circle'
                                       : 'option-square'
                                   "
-                                                      ></div>
-                                                    </td>
-                                                  }
-                                                </tr>
-                                              }
-                                            </tbody>
-                                          </table>
-                                        </div>
-                                      }
-                                      <!-- Priority/Ranking -->
-                                      @case ('priority') {
-                                        <div class="priority-input">
-                                          @for (
-                                            item of el.question.priorityList; track
-                                            item; let j = $index) {
-                                            <div
-                                              class="priority-item"
-                                              >
-                                              <mat-icon class="drag-icon">drag_indicator</mat-icon>
-                                              <span class="priority-number">{{ j + 1 }}</span>
-                                              <span class="priority-text">{{ item.value }}</span>
-                                            </div>
-                                          }
-                                        </div>
-                                      }
-                                      <!-- File Upload -->
-                                      @case ('file') {
-                                        <div class="file-input">
-                                          <div class="file-dropzone">
-                                            <mat-icon>cloud_upload</mat-icon>
-                                            <p>
-                                              Drag files here or
-                                              <span class="upload-link">browse</span>
-                                            </p>
-                                            <span class="file-hint">
-                                              Max {{ el.question.fileConfig?.maxSize || 10 }}MB
-                                              @if (el.question.fileConfig?.multiple) {
-                                                <span>
-                                                  • Multiple files allowed</span
-                                                  >
-                                                }
-                                              </span>
-                                            </div>
-                                          </div>
-                                        }
-                                        <!-- Signature -->
-                                        @case ('signature') {
-                                          <div class="signature-input">
-                                            <div class="signature-pad">
-                                              <mat-icon>gesture</mat-icon>
-                                              <p>Sign here</p>
-                                            </div>
-                                          </div>
-                                        }
-                                        <!-- Default -->
-                                        @default {
-                                          <input
-                                            type="text"
-                                            class="text-input"
-                                            placeholder="Your answer"
-                                            disabled
-                                            />
-                                        }
-                                      }
-                                    </div>
-                                  </div>
-                                }
-                                @if (!currentPage.elements.length) {
-                                  <div class="empty-state">
-                                    <mat-icon>quiz</mat-icon>
-                                    <p>No questions added yet</p>
-                                  </div>
-                                }
-                              </div>
+                                ></div>
+                              </td>
+                              }
+                            </tr>
                             }
-                          </div>
+                          </tbody>
+                        </table>
+                      </div>
+                      }
+                      <!-- Priority/Ranking -->
+                      @case ('priority') {
+                      <div class="priority-input">
+                        @for ( item of el.question.priorityList; track item; let
+                        j = $index) {
+                        <div class="priority-item">
+                          <mat-icon class="drag-icon">drag_indicator</mat-icon>
+                          <span class="priority-number">{{ j + 1 }}</span>
+                          <span class="priority-text">{{ item.value }}</span>
                         </div>
-    
-                        <!-- Footer Navigation -->
-                        <div class="survey-footer">
-                          <button
-                            class="nav-btn back"
-                            [disabled]="currentPageIndex === 0"
-                            (click)="previousPage()"
-                            >
-                            <mat-icon>arrow_back</mat-icon>
-                            <span>Back</span>
-                          </button>
-                          @if (currentPageIndex < data.form.pages.length - 1) {
-                            <button
-                              class="nav-btn next"
-                              (click)="nextPage()"
-                              >
-                              <span>Next</span>
-                              <mat-icon>arrow_forward</mat-icon>
-                            </button>
-                          }
-                          @if (currentPageIndex === data.form.pages.length - 1) {
-                            <button
-                              class="nav-btn submit"
-                              >
-                              <span>Submit</span>
-                              <mat-icon>check</mat-icon>
-                            </button>
-                          }
+                        }
+                      </div>
+                      }
+                      <!-- File Upload -->
+                      @case ('file') {
+                      <div class="file-input">
+                        <div class="file-dropzone">
+                          <mat-icon>cloud_upload</mat-icon>
+                          <p>
+                            Drag files here or
+                            <span class="upload-link">browse</span>
+                          </p>
+                          <span class="file-hint">
+                            Max {{ el.question.fileConfig?.maxSize || 10 }}MB
+                            @if (el.question.fileConfig?.multiple) {
+                            <span> • Multiple files allowed</span>
+                            }
+                          </span>
                         </div>
                       </div>
+                      }
+                      <!-- Signature -->
+                      @case ('signature') {
+                      <div class="signature-input">
+                        <div class="signature-pad">
+                          <mat-icon>gesture</mat-icon>
+                          <p>Sign here</p>
+                        </div>
+                      </div>
+                      }
+                      <!-- Default -->
+                      @default {
+                      <input
+                        type="text"
+                        class="text-input"
+                        placeholder="Your answer"
+                        disabled
+                      />
+                      } }
                     </div>
                   </div>
+                  } @if (!currentPage.elements.length) {
+                  <div class="empty-state">
+                    <mat-icon>quiz</mat-icon>
+                    <p>No questions added yet</p>
+                  </div>
+                  }
                 </div>
-    `,
+                }
+              </div>
+            </div>
+
+            <!-- Footer Navigation -->
+            <div class="survey-footer">
+              <button
+                class="nav-btn back"
+                [disabled]="currentPageIndex === 0"
+                (click)="previousPage()"
+              >
+                <mat-icon>arrow_back</mat-icon>
+                <span>Back</span>
+              </button>
+              @if (currentPageIndex < data.form.pages.length - 1) {
+              <button class="nav-btn next" (click)="nextPage()">
+                <span>Next</span>
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+              } @if (currentPageIndex === data.form.pages.length - 1) {
+              <button class="nav-btn submit">
+                <span>Submit</span>
+                <mat-icon>check</mat-icon>
+              </button>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,
   styles: [
     `
       .preview-dialog {
@@ -1115,23 +1072,23 @@ import { MWForm, MWQuestion } from '../surveys/models';
   ],
 })
 export class SurveyPreviewDialogComponent {
-  currentPageIndex = 0;
-  deviceView: 'desktop' | 'mobile' = 'desktop';
+  protected readonly dialogRef = inject(
+    MatDialogRef<SurveyPreviewDialogComponent>
+  );
+  protected readonly data = inject<{ form: MWForm }>(MAT_DIALOG_DATA);
 
-  constructor(
-    public dialogRef: MatDialogRef<SurveyPreviewDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { form: MWForm }
-  ) {}
+  protected currentPageIndex = 0;
+  protected deviceView: 'desktop' | 'mobile' = 'desktop';
 
-  get currentPage() {
+  protected get currentPage() {
     return this.data.form.pages[this.currentPageIndex];
   }
 
-  get progressPercent(): number {
+  protected get progressPercent(): number {
     return ((this.currentPageIndex + 1) / this.data.form.pages.length) * 100;
   }
 
-  getQuestionNumber(index: number): number {
+  protected getQuestionNumber(index: number): number {
     let count = 0;
     for (let i = 0; i < this.currentPageIndex; i++) {
       count += this.data.form.pages[i].elements.length;
@@ -1139,7 +1096,7 @@ export class SurveyPreviewDialogComponent {
     return count + index + 1;
   }
 
-  getScaleRange(question: MWQuestion): number[] {
+  protected getScaleRange(question: MWQuestion): number[] {
     const min = question.scale?.min || 1;
     const max = question.scale?.max || 5;
     const range: number[] = [];
@@ -1149,19 +1106,19 @@ export class SurveyPreviewDialogComponent {
     return range;
   }
 
-  nextPage() {
+  protected nextPage(): void {
     if (this.currentPageIndex < this.data.form.pages.length - 1) {
       this.currentPageIndex++;
     }
   }
 
-  previousPage() {
+  protected previousPage(): void {
     if (this.currentPageIndex > 0) {
       this.currentPageIndex--;
     }
   }
 
-  close() {
+  protected close(): void {
     this.dialogRef.close();
   }
 }

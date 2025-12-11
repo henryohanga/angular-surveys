@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, catchError, of } from 'rxjs';
 import { Router } from '@angular/router';
@@ -35,14 +35,17 @@ const USER_KEY = 'auth_user';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = environment.apiUrl || 'http://localhost:3000/api';
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
 
-  currentUser$ = this.currentUserSubject.asObservable();
-  isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+  private readonly apiUrl = environment.apiUrl || 'http://localhost:3000/api';
+  private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
+  private readonly isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
 
-  constructor(private http: HttpClient, private router: Router) {
+  readonly currentUser$ = this.currentUserSubject.asObservable();
+  readonly isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+
+  constructor() {
     this.loadStoredAuth();
   }
 

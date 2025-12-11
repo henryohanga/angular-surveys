@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -18,14 +18,17 @@ import { FormStateService } from '../builder/form-state.service';
   styleUrls: ['./survey.component.scss'],
 })
 export class SurveyComponent {
-  formDef: MWForm;
-  form: FormGroup;
-  currentPage = 0;
-  showSummary = false;
-  showSuccess = false;
-  isDemo = true;
+  private readonly fb = inject(FormBuilder);
+  private readonly formState = inject(FormStateService);
 
-  constructor(private fb: FormBuilder, private formState: FormStateService) {
+  protected formDef: MWForm;
+  protected form: FormGroup;
+  protected currentPage = 0;
+  protected showSummary = false;
+  protected showSuccess = false;
+  protected isDemo = true;
+
+  constructor() {
     this.formDef = this.formState.getForm();
     this.isDemo = false;
     this.form = this.fb.group({});
@@ -213,7 +216,7 @@ export class SurveyComponent {
     return String(value ?? '');
   }
 
-  gridRowsFor(qId: string): { id: string; label: string }[] {
+  protected gridRowsFor(qId: string): { id: string; label: string }[] {
     const q = this.formDef.pages
       .map((p) => p.elements)
       .reduce((acc, cur) => acc.concat(cur), [])
@@ -222,13 +225,13 @@ export class SurveyComponent {
     return q?.grid?.rows?.map((r) => ({ id: r.id, label: r.label })) ?? [];
   }
 
-  gridRowInvalid(qId: string, rowId: string): boolean {
+  protected gridRowInvalid(qId: string, rowId: string): boolean {
     const group = this.form.get(qId) as FormGroup;
     const ctrl = group?.get(rowId);
     return !!ctrl && ctrl.invalid;
   }
 
-  gridRowValueLabel(qId: string, rowId: string): string {
+  protected gridRowValueLabel(qId: string, rowId: string): string {
     const group = this.form.get(qId) as FormGroup;
     const q = this.formDef.pages
       .map((p) => p.elements)
@@ -316,7 +319,7 @@ export class SurveyComponent {
     return true;
   }
 
-  next() {
+  protected next(): void {
     if (!this.validatePage(this.currentPage)) return;
     const page = this.formDef.pages[this.currentPage];
     const targetIndex = this.resolveNextPageIndex(page) ?? this.currentPage + 1;
@@ -324,7 +327,7 @@ export class SurveyComponent {
     else this.showSummary = true;
   }
 
-  prev() {
+  protected prev(): void {
     if (this.showSummary) {
       this.showSummary = false;
       return;
@@ -332,7 +335,7 @@ export class SurveyComponent {
     if (this.currentPage > 0) this.currentPage--;
   }
 
-  submit() {
+  protected submit(): void {
     if (this.form.valid) {
       this.showSuccess = true;
     } else {

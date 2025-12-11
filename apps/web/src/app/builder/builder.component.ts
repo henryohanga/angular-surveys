@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { FormStateService } from './form-state.service';
@@ -50,24 +50,33 @@ interface ComponentItem {
   ],
 })
 export class BuilderComponent implements OnInit {
-  formDef!: MWForm;
-  survey: Survey | null = null;
-  surveyId: string | null = null;
-  selectedPage = 0;
-  editorOpen = false;
-  importText = '';
-  importError: string | null = null;
-  editingIndex: number | null = null;
-  editingInitial: MWQuestion | null = null;
-  isSaving = false;
-  isPublishing = false;
-  surveyStatus: 'draft' | 'published' = 'draft';
-  lastSaved: Date | null = null;
-  showComponentPanel = true;
-  isLoading = true;
+  private readonly state = inject(FormStateService);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly storage = inject(StorageService);
+  private readonly surveyApi = inject(SurveyApiService);
+  private readonly authService = inject(AuthService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
-  // Available input components for drag-and-drop
-  componentItems: ComponentItem[] = [
+  protected formDef!: MWForm;
+  protected survey: Survey | null = null;
+  protected surveyId: string | null = null;
+  protected selectedPage = 0;
+  protected editorOpen = false;
+  protected importText = '';
+  protected importError: string | null = null;
+  protected editingIndex: number | null = null;
+  protected editingInitial: MWQuestion | null = null;
+  protected isSaving = false;
+  protected isPublishing = false;
+  protected surveyStatus: 'draft' | 'published' = 'draft';
+  protected lastSaved: Date | null = null;
+  protected showComponentPanel = true;
+  protected isLoading = true;
+
+  protected readonly componentItems: ComponentItem[] = [
     // Input types
     {
       type: 'text',
@@ -177,18 +186,6 @@ export class BuilderComponent implements OnInit {
     },
   ];
 
-  constructor(
-    private state: FormStateService,
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar,
-    private storage: StorageService,
-    private surveyApi: SurveyApiService,
-    private authService: AuthService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private cdr: ChangeDetectorRef
-  ) {}
-
   async ngOnInit() {
     this.surveyId = this.route.snapshot.paramMap.get('id');
 
@@ -229,23 +226,22 @@ export class BuilderComponent implements OnInit {
     this.isLoading = false;
   }
 
-  addPage() {
+  protected addPage(): void {
     this.state.addPage();
     this.selectedPage = this.formDef.pages.length - 1;
   }
 
-  openEditor() {
+  protected openEditor(): void {
     this.editorOpen = true;
   }
 
-  closeEditor() {
+  protected closeEditor(): void {
     this.editorOpen = false;
     this.editingIndex = null;
     this.editingInitial = null;
   }
 
-  // Open the new question dialog
-  openQuestionDialog(question?: MWQuestion, index?: number) {
+  protected openQuestionDialog(question?: MWQuestion, index?: number): void {
     const dialogData: QuestionDialogData = {
       question: question,
       pageNumbers: this.formDef.pages.map((p) => p.number),
@@ -275,7 +271,7 @@ export class BuilderComponent implements OnInit {
     });
   }
 
-  addQuestion(q: MWQuestion) {
+  protected addQuestion(q: MWQuestion): void {
     if (this.editingIndex !== null) {
       this.state.updateQuestion(this.selectedPage, this.editingIndex, q);
       this.editingIndex = null;
@@ -287,13 +283,13 @@ export class BuilderComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  editQuestion(i: number) {
+  protected editQuestion(i: number): void {
     const el = this.formDef.pages[this.selectedPage].elements[i];
     // Use the new dialog instead
     this.openQuestionDialog(el.question, i);
   }
 
-  duplicateQuestion(i: number) {
+  protected duplicateQuestion(i: number): void {
     const el = this.formDef.pages[this.selectedPage].elements[i];
     const duplicate: MWQuestion = {
       ...JSON.parse(JSON.stringify(el.question)),
@@ -305,13 +301,13 @@ export class BuilderComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  deleteQuestion(i: number) {
+  protected deleteQuestion(i: number): void {
     this.state.deleteQuestion(this.selectedPage, i);
     this.snackBar.open('Question deleted', 'Undo', { duration: 3000 });
     this.cdr.detectChanges();
   }
 
-  drop(e: CdkDragDrop<MWElement[]>) {
+  protected drop(e: CdkDragDrop<MWElement[]>): void {
     this.state.reorderQuestion(
       this.selectedPage,
       e.previousIndex,
@@ -320,12 +316,12 @@ export class BuilderComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  exportJson() {
+  protected exportJson(): void {
     this.importText = this.state.exportJson();
     this.importError = null;
   }
 
-  importJson() {
+  protected importJson(): void {
     if (this.importText?.trim()) {
       try {
         const parsed = JSON.parse(this.importText) as MWForm;
@@ -344,25 +340,25 @@ export class BuilderComponent implements OnInit {
     }
   }
 
-  updatePageName(name: string) {
+  protected updatePageName(name: string): void {
     this.state.updatePageMeta(this.selectedPage, { name });
   }
 
-  updatePageDescription(description: string) {
+  protected updatePageDescription(description: string): void {
     this.state.updatePageMeta(this.selectedPage, { description });
   }
 
-  updateSurveyName(name: string) {
+  protected updateSurveyName(name: string): void {
     this.formDef.name = name;
     this.state.importJson(JSON.stringify(this.formDef));
   }
 
-  updateSurveyDescription(description: string) {
+  protected updateSurveyDescription(description: string): void {
     this.formDef.description = description;
     this.state.importJson(JSON.stringify(this.formDef));
   }
 
-  formatTimeAgo(date: Date): string {
+  protected formatTimeAgo(date: Date): string {
     const now = new Date();
     const diffMs = now.getTime() - new Date(date).getTime();
     const diffMins = Math.floor(diffMs / 60000);
@@ -377,33 +373,33 @@ export class BuilderComponent implements OnInit {
     return `${diffDays}d ago`;
   }
 
-  updateNamedPage(namedPage: boolean) {
+  protected updateNamedPage(namedPage: boolean): void {
     this.state.updatePageMeta(this.selectedPage, { namedPage });
   }
 
-  setPageGoTo(goToPage: number | null) {
+  protected setPageGoTo(goToPage: number | null): void {
     this.state.updatePageFlow(this.selectedPage, {
-      goToPage,
+      goToPage: goToPage ?? undefined,
       nextPage: !goToPage
         ? this.formDef.pages[this.selectedPage].pageFlow?.nextPage
         : false,
     });
   }
 
-  setPageNext(nextPage: boolean) {
+  protected setPageNext(nextPage: boolean): void {
     this.state.updatePageFlow(this.selectedPage, {
       nextPage,
       goToPage: nextPage
-        ? null
+        ? undefined
         : this.formDef.pages[this.selectedPage].pageFlow?.goToPage,
     });
   }
 
-  pageNumbers(): number[] {
+  protected pageNumbers(): number[] {
     return this.formDef.pages.map((p) => p.number);
   }
 
-  exportToFile() {
+  protected exportToFile(): void {
     const data = this.state.exportJson();
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -414,7 +410,7 @@ export class BuilderComponent implements OnInit {
     URL.revokeObjectURL(url);
   }
 
-  importFromFile(event: Event) {
+  protected importFromFile(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files && input.files[0];
     if (!file) return;
@@ -427,8 +423,7 @@ export class BuilderComponent implements OnInit {
     reader.readAsText(file);
   }
 
-  // Preview functionality
-  openPreview() {
+  protected openPreview(): void {
     this.dialog.open(SurveyPreviewDialogComponent, {
       width: '800px',
       maxWidth: '95vw',
@@ -438,8 +433,7 @@ export class BuilderComponent implements OnInit {
     });
   }
 
-  // Save functionality
-  async saveSurvey() {
+  protected async saveSurvey(): Promise<void> {
     this.isSaving = true;
     try {
       // Sync formDef with state
@@ -505,8 +499,7 @@ export class BuilderComponent implements OnInit {
     }
   }
 
-  // Publish functionality
-  async publishSurvey() {
+  protected async publishSurvey(): Promise<void> {
     // Save first if needed
     if (!this.surveyId) {
       await this.saveSurvey();
@@ -562,12 +555,11 @@ export class BuilderComponent implements OnInit {
     }
   }
 
-  goToDashboard() {
+  protected goToDashboard(): void {
     this.router.navigate(['/dashboard']);
   }
 
-  // Open live preview in new tab
-  openLivePreview() {
+  protected openLivePreview(): void {
     if (this.surveyId) {
       window.open(`/preview/${this.surveyId}`, '_blank');
     } else {
@@ -581,8 +573,7 @@ export class BuilderComponent implements OnInit {
     }
   }
 
-  // Copy share link to clipboard
-  copyShareLink() {
+  protected copyShareLink(): void {
     if (this.surveyId) {
       const shareUrl = `${window.location.origin}/s/${this.surveyId}`;
       navigator.clipboard.writeText(shareUrl);
@@ -592,15 +583,13 @@ export class BuilderComponent implements OnInit {
     }
   }
 
-  // Navigate to responses page
-  viewResponses() {
+  protected viewResponses(): void {
     if (this.surveyId) {
       this.router.navigate(['/responses', this.surveyId]);
     }
   }
 
-  // Unpublish survey
-  async unpublishSurvey() {
+  protected async unpublishSurvey(): Promise<void> {
     if (!this.surveyId) return;
 
     try {
@@ -621,8 +610,7 @@ export class BuilderComponent implements OnInit {
     }
   }
 
-  // Add question from component drag
-  addQuestionFromComponent(type: MWTextType) {
+  protected addQuestionFromComponent(type: MWTextType): void {
     const newQuestion: MWQuestion = {
       id: 'q-' + Date.now(),
       text: this.getDefaultQuestionText(type),
@@ -732,8 +720,9 @@ export class BuilderComponent implements OnInit {
     return labels[type] || 'New question';
   }
 
-  // Component drag handlers
-  dropFromToolbox(event: CdkDragDrop<ComponentItem[] | MWElement[]>) {
+  protected dropFromToolbox(
+    event: CdkDragDrop<ComponentItem[] | MWElement[]>
+  ): void {
     if (event.previousContainer === event.container) {
       // Reordering within the form
       this.state.reorderQuestion(
@@ -748,16 +737,16 @@ export class BuilderComponent implements OnInit {
     }
   }
 
-  getQuestionIcon(type: MWTextType): string {
+  protected getQuestionIcon(type: MWTextType): string {
     const item = this.componentItems.find((c) => c.type === type);
     return item?.icon || 'help_outline';
   }
 
-  toggleComponentPanel() {
+  protected toggleComponentPanel(): void {
     this.showComponentPanel = !this.showComponentPanel;
   }
 
-  deletePage(index: number) {
+  protected deletePage(index: number): void {
     if (this.formDef.pages.length > 1) {
       this.formDef.pages.splice(index, 1);
       // Renumber pages
@@ -768,7 +757,7 @@ export class BuilderComponent implements OnInit {
     }
   }
 
-  getTotalQuestions(): number {
+  protected getTotalQuestions(): number {
     return this.formDef.pages.reduce(
       (sum, page) => sum + page.elements.length,
       0

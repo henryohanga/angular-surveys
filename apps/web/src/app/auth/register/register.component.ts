@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -16,23 +16,19 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
-  registerForm!: FormGroup;
-  isLoading = false;
-  hidePassword = true;
-  hideConfirmPassword = true;
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly snackBar = inject(MatSnackBar);
 
-  // Focus states
-  nameFocused = false;
-  emailFocused = false;
-  passwordFocused = false;
-  confirmPasswordFocused = false;
-
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-    private snackBar: MatSnackBar
-  ) {}
+  protected registerForm!: FormGroup;
+  protected isLoading = false;
+  protected hidePassword = true;
+  protected hideConfirmPassword = true;
+  protected nameFocused = false;
+  protected emailFocused = false;
+  protected passwordFocused = false;
+  protected confirmPasswordFocused = false;
 
   ngOnInit(): void {
     this.registerForm = this.fb.group(
@@ -52,8 +48,7 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  // Password strength getters
-  get passwordStrength(): number {
+  protected get passwordStrength(): number {
     const pwd = this.password?.value || '';
     let strength = 0;
     if (pwd.length >= 8) strength++;
@@ -63,7 +58,7 @@ export class RegisterComponent implements OnInit {
     return strength;
   }
 
-  get passwordStrengthText(): string {
+  protected get passwordStrengthText(): string {
     switch (this.passwordStrength) {
       case 0:
         return '';
@@ -80,15 +75,15 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  get hasMinLength(): boolean {
+  protected get hasMinLength(): boolean {
     return (this.password?.value || '').length >= 8;
   }
 
-  get hasUppercase(): boolean {
+  protected get hasUppercase(): boolean {
     return /[A-Z]/.test(this.password?.value || '');
   }
 
-  get hasNumber(): boolean {
+  protected get hasNumber(): boolean {
     return /[0-9]/.test(this.password?.value || '');
   }
 
@@ -110,7 +105,7 @@ export class RegisterComponent implements OnInit {
     return null;
   }
 
-  onSubmit(): void {
+  protected onSubmit(): void {
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
@@ -136,19 +131,19 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  get name() {
+  protected get name() {
     return this.registerForm.get('name');
   }
 
-  get email() {
+  protected get email() {
     return this.registerForm.get('email');
   }
 
-  get password() {
+  protected get password() {
     return this.registerForm.get('password');
   }
 
-  get confirmPassword() {
+  protected get confirmPassword() {
     return this.registerForm.get('confirmPassword');
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -20,22 +20,20 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-  surveys: Survey[] = [];
-  templates: SurveyTemplate[] = [];
-  customTemplates: SurveyTemplate[] = [];
-  isLoading = true;
-  activeTab: 'surveys' | 'templates' = 'surveys';
-  searchQuery = '';
+  private readonly storage = inject(StorageService);
+  private readonly surveyApi = inject(SurveyApiService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
 
-  constructor(
-    private storage: StorageService,
-    private surveyApi: SurveyApiService,
-    private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar
-  ) {}
+  protected surveys: Survey[] = [];
+  protected templates: SurveyTemplate[] = [];
+  protected customTemplates: SurveyTemplate[] = [];
+  protected isLoading = true;
+  protected activeTab: 'surveys' | 'templates' = 'surveys';
+  protected searchQuery = '';
 
   async ngOnInit() {
     await this.loadData();
@@ -50,7 +48,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  async loadData() {
+  protected async loadData(): Promise<void> {
     this.isLoading = true;
     try {
       if (this.authService.isAuthenticated) {
@@ -76,7 +74,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  get filteredSurveys(): Survey[] {
+  protected get filteredSurveys(): Survey[] {
     if (!this.searchQuery) return this.surveys;
     const query = this.searchQuery.toLowerCase();
     return this.surveys.filter(
@@ -86,7 +84,7 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  get filteredTemplates(): SurveyTemplate[] {
+  protected get filteredTemplates(): SurveyTemplate[] {
     if (!this.searchQuery) return this.templates;
     const query = this.searchQuery.toLowerCase();
     return this.templates.filter(
@@ -97,7 +95,7 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  async createFromScratch() {
+  protected async createFromScratch(): Promise<void> {
     const blankForm: MWForm = {
       name: 'Untitled Survey',
       description: '',
@@ -138,7 +136,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  async createFromTemplate(template: SurveyTemplate) {
+  protected async createFromTemplate(template: SurveyTemplate): Promise<void> {
     const form = JSON.parse(JSON.stringify(template.form)) as MWForm; // Deep clone
     try {
       let surveyId: string;
@@ -164,11 +162,11 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  editSurvey(survey: Survey) {
+  protected editSurvey(survey: Survey): void {
     this.router.navigate(['/builder', survey.id]);
   }
 
-  async duplicateSurvey(survey: Survey, event: Event) {
+  protected async duplicateSurvey(survey: Survey, event: Event): Promise<void> {
     event.stopPropagation();
     try {
       let newSurvey: Survey;
@@ -189,7 +187,10 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  async exportResponsesCSV(survey: Survey, event: Event) {
+  protected async exportResponsesCSV(
+    survey: Survey,
+    event: Event
+  ): Promise<void> {
     event.stopPropagation();
     let responses;
     if (this.authService.isAuthenticated) {
@@ -275,7 +276,7 @@ export class DashboardComponent implements OnInit {
     return String(value);
   }
 
-  async deleteSurvey(survey: Survey, event: Event) {
+  protected async deleteSurvey(survey: Survey, event: Event): Promise<void> {
     event.stopPropagation();
     if (
       confirm(
@@ -298,17 +299,17 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  previewSurvey(survey: Survey, event: Event) {
+  protected previewSurvey(survey: Survey, event: Event): void {
     event.stopPropagation();
     this.router.navigate(['/preview', survey.id]);
   }
 
-  viewResponses(survey: Survey, event: Event) {
+  protected viewResponses(survey: Survey, event: Event): void {
     event.stopPropagation();
     this.router.navigate(['/responses', survey.id]);
   }
 
-  async togglePublish(survey: Survey, event: Event) {
+  protected async togglePublish(survey: Survey, event: Event): Promise<void> {
     event.stopPropagation();
     try {
       if (survey.status === 'published') {
@@ -350,7 +351,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  copyShareLink(survey: Survey) {
+  protected copyShareLink(survey: Survey): void {
     if (survey.shareUrl) {
       navigator.clipboard.writeText(survey.shareUrl);
       this.snackBar.open('Link copied to clipboard!', 'Close', {
@@ -359,21 +360,21 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  getQuestionCount(survey: Survey): number {
+  protected getQuestionCount(survey: Survey): number {
     return survey.form.pages.reduce(
       (sum, page) => sum + page.elements.length,
       0
     );
   }
 
-  getTemplateQuestionCount(template: SurveyTemplate): number {
+  protected getTemplateQuestionCount(template: SurveyTemplate): number {
     return template.form.pages.reduce(
       (sum, page) => sum + page.elements.length,
       0
     );
   }
 
-  formatDate(date: Date): string {
+  protected formatDate(date: Date): string {
     return new Date(date).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -381,7 +382,10 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  async deleteTemplate(template: SurveyTemplate, event: Event) {
+  protected async deleteTemplate(
+    template: SurveyTemplate,
+    event: Event
+  ): Promise<void> {
     event.stopPropagation();
     if (!template.isCustom) {
       this.snackBar.open('Built-in templates cannot be deleted', 'Close', {
@@ -406,10 +410,10 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  trackBySurvey(_i: number, s: Survey): string {
+  protected trackBySurvey(_i: number, s: Survey): string {
     return s.id;
   }
-  trackByTemplate(_i: number, t: SurveyTemplate): string {
+  protected trackByTemplate(_i: number, t: SurveyTemplate): string {
     return t.id;
   }
 }

@@ -4,14 +4,16 @@
 
 A modern, full-stack survey platform built with Angular and NestJS. Create beautiful, interactive surveys with an intuitive drag-and-drop interface, 18+ question types, real-time preview, and seamless data management.
 
-> This project is a modern evolution of the original [angular-surveys](https://github.com/mwasiluk/angular-surveys) by Marcin Wasiluk, completely rebuilt as an Nx monorepo with Angular 18, NestJS backend, and PostgreSQL.
+> This project is a modern evolution of the original [angular-surveys](https://github.com/mwasiluk/angular-surveys) by Marcin Wasiluk, completely rebuilt as an Nx monorepo with Angular 21, NestJS backend, and PostgreSQL. **Fully compliant with the [Angular Style Guide](https://angular.dev/style-guide)**.
 
-![Angular Surveys](https://img.shields.io/badge/Angular-18-red?style=flat-square)
-![NestJS](https://img.shields.io/badge/NestJS-10-red?style=flat-square)
-![Nx](https://img.shields.io/badge/Nx-Monorepo-blue?style=flat-square)
-![Material Design](https://img.shields.io/badge/Material-Design-blue?style=flat-square)
+![Angular Surveys](https://img.shields.io/badge/Angular-21-red?style=flat-square)
+![NestJS](https://img.shields.io/badge/NestJS-11-red?style=flat-square)
+![Nx](https://img.shields.io/badge/Nx-22-blue?style=flat-square)
+![Material Design](https://img.shields.io/badge/Material-Design%203-blue?style=flat-square)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 ![Question Types](https://img.shields.io/badge/Question%20Types-18+-purple?style=flat-square)
+![Style Guide](https://img.shields.io/badge/Angular-Style%20Guide-green?style=flat-square)
 
 ## ✨ Features
 
@@ -276,15 +278,36 @@ angular-surveys/
 └── package.json                 # Root package.json
 ```
 
+## 📚 Documentation
+
+- **[Architecture Guide](ARCHITECTURE.md)** - System architecture and design patterns
+- **[Style Guide](STYLE_GUIDE.md)** - Coding standards and best practices
+- **[Roadmap](ROADMAP.md)** - Planned features and bug fixes
+- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute to the project
+- **[Code of Conduct](CODE_OF_CONDUCT.md)** - Community guidelines
+
+## 🎯 Code Quality
+
+This project follows the official [Angular Style Guide](https://angular.dev/style-guide) with modern best practices:
+
+- ✅ **inject() function** for dependency injection
+- ✅ **Protected/readonly modifiers** for proper encapsulation
+- ✅ **OnPush change detection** for performance
+- ✅ **Proper memory management** with takeUntil pattern
+- ✅ **Type-safe** with TypeScript 5.9
+- ✅ **Comprehensive testing** with Jest and Playwright
+- ✅ **Nx monorepo** for scalable architecture
+
 ## 🤝 Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) and [Style Guide](STYLE_GUIDE.md) for guidelines.
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Follow the [Style Guide](STYLE_GUIDE.md)
+4. Commit your changes using [Conventional Commits](https://www.conventionalcommits.org/)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
 
 ## 📜 Code of Conduct
 
@@ -294,8 +317,18 @@ Please adhere to our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## 🗺️ Roadmap
+
+See our [Roadmap](ROADMAP.md) for planned features and improvements:
+
+- **Version 2.0** - Advanced question types, collaboration features, enhanced analytics
+- **Version 1.5** - Template marketplace, integrations, response management
+- **Future** - AI features, enterprise capabilities, mobile apps
+
 ## 🙏 Acknowledgments
 
 - Original [angular-surveys](https://github.com/mwasiluk/angular-surveys) by Marcin Wasiluk
-- [Angular](https://angular.io/) team
-- [Angular Material](https://material.angular.io/) team
+- [Angular](https://angular.io/) team for the excellent framework and style guide
+- [Angular Material](https://material.angular.io/) team for Material Design components
+- [Nx](https://nx.dev/) team for monorepo tooling
+- All our [contributors](https://github.com/henryohanga/angular-surveys/graphs/contributors)

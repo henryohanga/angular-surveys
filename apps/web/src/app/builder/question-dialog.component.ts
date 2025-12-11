@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MWQuestion, MWTextType } from '../surveys/models';
@@ -17,16 +17,21 @@ export interface QuestionDialogData {
   mode: 'create' | 'edit';
 }
 
-@Component({ standalone: false,
+@Component({
+  standalone: false,
   selector: 'app-question-dialog',
   templateUrl: './question-dialog.component.html',
   styleUrls: ['./question-dialog.component.scss'],
 })
 export class QuestionDialogComponent implements OnInit {
-  form!: FormGroup;
-  activeCategory: 'input' | 'choice' | 'advanced' | 'media' = 'input';
+  private readonly fb = inject(FormBuilder);
+  private readonly dialogRef = inject(MatDialogRef<QuestionDialogComponent>);
+  protected readonly data = inject<QuestionDialogData>(MAT_DIALOG_DATA);
 
-  questionTypes: QuestionTypeOption[] = [
+  protected form!: FormGroup;
+  protected activeCategory: 'input' | 'choice' | 'advanced' | 'media' = 'input';
+
+  protected readonly questionTypes: QuestionTypeOption[] = [
     // Input types
     {
       type: 'text',
@@ -173,12 +178,6 @@ export class QuestionDialogComponent implements OnInit {
     { value: '.pdf', label: 'PDF', icon: 'picture_as_pdf' },
     { value: '.doc,.docx', label: 'Documents', icon: 'description' },
   ];
-
-  constructor(
-    private fb: FormBuilder,
-    private dialogRef: MatDialogRef<QuestionDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: QuestionDialogData
-  ) {}
 
   ngOnInit() {
     this.initForm();
@@ -373,11 +372,7 @@ export class QuestionDialogComponent implements OnInit {
   }
 
   // Helper methods
-  createAnswerGroup(
-    id: string,
-    orderNo: number,
-    value = ''
-  ): FormGroup {
+  createAnswerGroup(id: string, orderNo: number, value = ''): FormGroup {
     return this.fb.group({
       id: [id],
       orderNo: [orderNo],
@@ -385,11 +380,7 @@ export class QuestionDialogComponent implements OnInit {
     });
   }
 
-  createGridItemGroup(
-    id: string,
-    orderNo: number,
-    label = ''
-  ): FormGroup {
+  createGridItemGroup(id: string, orderNo: number, label = ''): FormGroup {
     return this.fb.group({
       id: [id],
       orderNo: [orderNo],
@@ -397,11 +388,7 @@ export class QuestionDialogComponent implements OnInit {
     });
   }
 
-  createPriorityGroup(
-    id: string,
-    orderNo: number,
-    value = ''
-  ): FormGroup {
+  createPriorityGroup(id: string, orderNo: number, value = ''): FormGroup {
     return this.fb.group({
       id: [id],
       orderNo: [orderNo],

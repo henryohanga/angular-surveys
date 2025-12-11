@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../core/services/auth.service';
 import { Observable } from 'rxjs';
@@ -25,7 +25,10 @@ interface Template {
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  features: Feature[] = [
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+
+  protected readonly features: Feature[] = [
     {
       icon: 'drag_indicator',
       title: 'Drag & Drop Builder',
@@ -64,7 +67,7 @@ export class HomeComponent implements OnInit {
     },
   ];
 
-  templates: Template[] = [
+  protected readonly templates: Template[] = [
     {
       id: 'customer-satisfaction',
       name: 'Customer Satisfaction',
@@ -99,13 +102,10 @@ export class HomeComponent implements OnInit {
     },
   ];
 
-  isAuthenticated$: Observable<boolean>;
-  currentUser$: Observable<User | null>;
-
-  constructor(private router: Router, private authService: AuthService) {
-    this.isAuthenticated$ = this.authService.isAuthenticated$;
-    this.currentUser$ = this.authService.currentUser$;
-  }
+  protected readonly isAuthenticated$: Observable<boolean> =
+    this.authService.isAuthenticated$;
+  protected readonly currentUser$: Observable<User | null> =
+    this.authService.currentUser$;
 
   ngOnInit(): void {
     // Redirect to dashboard if user is already authenticated
@@ -114,11 +114,11 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  viewDemo() {
+  protected viewDemo(): void {
     this.router.navigate(['/demo']);
   }
 
-  useTemplate(templateId: string) {
+  protected useTemplate(templateId: string): void {
     // Redirect to dashboard with template parameter
     // Dashboard will handle creating survey from template
     if (this.authService.isAuthenticated) {

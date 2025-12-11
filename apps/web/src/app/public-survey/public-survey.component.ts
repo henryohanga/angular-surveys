@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormBuilder,
@@ -21,23 +21,21 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./public-survey.component.scss'],
 })
 export class PublicSurveyComponent implements OnInit {
-  survey: Survey | null = null;
-  formDef!: MWForm;
-  form!: FormGroup;
-  currentPage = 0;
-  showSummary = false;
-  isSubmitted = false;
-  isLoading = true;
-  error: string | null = null;
-  isPreview = false;
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly fb = inject(FormBuilder);
+  private readonly storage = inject(StorageService);
+  private readonly surveyApi = inject(SurveyApiService);
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private fb: FormBuilder,
-    private storage: StorageService,
-    private surveyApi: SurveyApiService
-  ) {}
+  protected survey: Survey | null = null;
+  protected formDef!: MWForm;
+  protected form!: FormGroup;
+  protected currentPage = 0;
+  protected showSummary = false;
+  protected isSubmitted = false;
+  protected isLoading = true;
+  protected error: string | null = null;
+  protected isPreview = false;
 
   async ngOnInit() {
     const surveyId = this.route.snapshot.paramMap.get('id');
@@ -184,7 +182,7 @@ export class PublicSurveyComponent implements OnInit {
     };
   }
 
-  get progressPercent(): number {
+  protected get progressPercent(): number {
     return ((this.currentPage + 1) / this.formDef.pages.length) * 100;
   }
 
@@ -255,7 +253,7 @@ export class PublicSurveyComponent implements OnInit {
     return this.currentPage + 1;
   }
 
-  next() {
+  protected next(): void {
     if (!this.validatePage(this.currentPage)) return;
     const page = this.formDef.pages[this.currentPage];
     const targetIndex = this.resolveNextPageIndex(page) ?? this.currentPage + 1;
@@ -267,7 +265,7 @@ export class PublicSurveyComponent implements OnInit {
     }
   }
 
-  prev() {
+  protected prev(): void {
     if (this.showSummary) {
       this.showSummary = false;
       return;
@@ -278,7 +276,7 @@ export class PublicSurveyComponent implements OnInit {
     }
   }
 
-  async submit() {
+  protected async submit(): Promise<void> {
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       this.showSummary = false;
@@ -306,7 +304,7 @@ export class PublicSurveyComponent implements OnInit {
     }
   }
 
-  answerLabel(qId: string, value: unknown): string {
+  protected answerLabel(qId: string, value: unknown): string {
     const q = this.formDef.pages
       .reduce(
         (acc, p) => acc.concat(p.elements),
@@ -334,7 +332,7 @@ export class PublicSurveyComponent implements OnInit {
     return String(value ?? '');
   }
 
-  gridRowsFor(qId: string): { id: string; label: string }[] {
+  protected gridRowsFor(qId: string): { id: string; label: string }[] {
     const q = this.formDef.pages
       .reduce(
         (acc, p) => acc.concat(p.elements),
@@ -345,7 +343,7 @@ export class PublicSurveyComponent implements OnInit {
     return q?.grid?.rows?.map((r) => ({ id: r.id, label: r.label })) ?? [];
   }
 
-  gridRowValueLabel(qId: string, rowId: string): string {
+  protected gridRowValueLabel(qId: string, rowId: string): string {
     const group = this.form.get(qId) as FormGroup;
     const q = this.formDef.pages
       .reduce(
@@ -370,7 +368,7 @@ export class PublicSurveyComponent implements OnInit {
     }
   }
 
-  goHome() {
+  protected goHome(): void {
     this.router.navigate(['/']);
   }
 }
