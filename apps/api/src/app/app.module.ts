@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { SurveysModule } from './surveys/surveys.module';
 import { ResponsesModule } from './responses/responses.module';
 import { UsersModule } from './users/users.module';
+import { WebhooksModule } from './webhooks/webhooks.module';
 import { CommonModule } from './common/common.module';
 import { SentryInterceptor } from './common/interceptors/sentry.interceptor';
 import { HealthController } from './health/health.controller';
@@ -67,6 +68,7 @@ import { HealthController } from './health/health.controller';
     SurveysModule,
     ResponsesModule,
     UsersModule,
+    WebhooksModule,
   ],
   controllers: [HealthController],
   providers: [

@@ -1,16 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Survey, SurveyStatus } from './entities/survey.entity';
 import { CreateSurveyDto } from './dto/create-survey.dto';
 import { UpdateSurveyDto } from './dto/update-survey.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { WebhooksService } from '../webhooks/webhooks.service';
 
 @Injectable()
 export class SurveysService {
   constructor(
     @InjectRepository(Survey)
-    private readonly surveysRepository: Repository<Survey>
+    private readonly surveysRepository: Repository<Survey>,
+    @Inject(forwardRef(() => WebhooksService))
+    private readonly webhooksService: WebhooksService
   ) {}
 
   async create(
@@ -73,14 +81,32 @@ export class SurveysService {
     survey.status = 'published';
     survey.publishedAt = new Date();
     survey.shareUrl = `/s/${id}`;
-    return this.surveysRepository.save(survey);
+    const saved = await this.surveysRepository.save(survey);
+
+    // Trigger webhooks for survey.published event
+    this.webhooksService
+      .triggerWebhooks(id, 'survey.published')
+      .catch((err) => {
+        console.error('Failed to trigger webhooks for publish:', err);
+      });
+
+    return saved;
   }
 
   async unpublish(id: string): Promise<Survey> {
     const survey = await this.findOne(id);
     survey.status = 'draft';
     survey.shareUrl = undefined;
-    return this.surveysRepository.save(survey);
+    const saved = await this.surveysRepository.save(survey);
+
+    // Trigger webhooks for survey.unpublished event
+    this.webhooksService
+      .triggerWebhooks(id, 'survey.unpublished')
+      .catch((err) => {
+        console.error('Failed to trigger webhooks for unpublish:', err);
+      });
+
+    return saved;
   }
 
   async duplicate(id: string, ownerId?: string): Promise<Survey> {

@@ -23,6 +23,9 @@ import { BuilderComponent } from './builder.component';
 import { QuestionEditorComponent } from './question-editor.component';
 import { SurveyPreviewDialogComponent } from './survey-preview-dialog.component';
 import { QuestionDialogComponent } from './question-dialog.component';
+import { DeveloperPanelComponent } from './developer-panel/developer-panel.component';
+import { DeveloperSettingsComponent } from './developer-settings/developer-settings.component';
+import { WebhookManagementComponent } from './webhook-management/webhook-management.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +56,9 @@ import { QuestionDialogComponent } from './question-dialog.component';
     MatRadioModule,
     MatSlideToggleModule,
     DragDropModule,
+    DeveloperPanelComponent,
+    DeveloperSettingsComponent,
+    WebhookManagementComponent,
   ],
 })
 export class BuilderModule {}

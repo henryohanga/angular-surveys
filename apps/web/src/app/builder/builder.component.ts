@@ -17,6 +17,10 @@ import {
   QuestionDialogComponent,
   QuestionDialogData,
 } from './question-dialog.component';
+import {
+  DeveloperPanelComponent,
+  DeveloperPanelData,
+} from './developer-panel/developer-panel.component';
 import { StorageService, Survey } from '../core/services/storage.service';
 import { SurveyApiService } from '../core/services/survey-api.service';
 import { AuthService } from '../core/services/auth.service';
@@ -841,5 +845,31 @@ export class BuilderComponent implements OnInit, OnDestroy {
       (sum, page) => sum + page.elements.length,
       0
     );
+  }
+
+  protected openDeveloperPanel(): void {
+    if (!this.surveyId) {
+      this.snackBar.open(
+        'Save the survey first to access developer tools',
+        'Close',
+        {
+          duration: 3000,
+        }
+      );
+      return;
+    }
+
+    const dialogData: DeveloperPanelData = {
+      surveyId: this.surveyId,
+      form: this.formDef,
+    };
+
+    this.dialog.open(DeveloperPanelComponent, {
+      width: '900px',
+      maxWidth: '95vw',
+      maxHeight: '85vh',
+      data: dialogData,
+      panelClass: 'developer-panel-container',
+    });
   }
 }

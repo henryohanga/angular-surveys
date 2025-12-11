@@ -1,16 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SurveyResponse } from './entities/response.entity';
 import { SubmitResponseDto } from './dto/submit-response.dto';
 import { SurveysService } from '../surveys/surveys.service';
+import { WebhooksService } from '../webhooks/webhooks.service';
 
 @Injectable()
 export class ResponsesService {
   constructor(
     @InjectRepository(SurveyResponse)
     private readonly responsesRepository: Repository<SurveyResponse>,
-    private readonly surveysService: SurveysService
+    private readonly surveysService: SurveysService,
+    @Inject(forwardRef(() => WebhooksService))
+    private readonly webhooksService: WebhooksService
   ) {}
 
   async submit(
@@ -33,6 +41,13 @@ export class ResponsesService {
 
     // Increment response count
     await this.surveysService.incrementResponseCount(surveyId);
+
+    // Trigger webhooks asynchronously
+    this.webhooksService
+      .triggerWebhooks(surveyId, 'response.submitted', saved)
+      .catch((err) => {
+        console.error('Failed to trigger webhooks:', err);
+      });
 
     return saved;
   }

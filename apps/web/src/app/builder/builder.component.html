@@ -126,6 +126,11 @@
         <span>Back to Dashboard</span>
       </button>
       <mat-divider></mat-divider>
+      <button mat-menu-item (click)="openDeveloperPanel()">
+        <mat-icon>code</mat-icon>
+        <span>Developer Tools</span>
+      </button>
+      <mat-divider></mat-divider>
       <button mat-menu-item (click)="exportToFile()">
         <mat-icon>download</mat-icon>
         <span>Export JSON</span>

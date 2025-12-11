@@ -21,4 +21,23 @@ export class UpdateSurveyDto {
   @IsOptional()
   @IsObject()
   settings?: Record<string, unknown>;
+
+  @ApiPropertyOptional({
+    description:
+      'Developer mode settings including API keys and question mappings',
+  })
+  @IsOptional()
+  @IsObject()
+  developerSettings?: {
+    enabled?: boolean;
+    apiKey?: string;
+    apiSecret?: string;
+    questionMappings?: {
+      questionId: string;
+      externalId: string;
+      fieldName?: string;
+      description?: string;
+    }[];
+    customMetadataFields?: string[];
+  };
 }

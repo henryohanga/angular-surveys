@@ -5,3 +5,4 @@ export * from './lib/survey.types';
 export * from './lib/user.types';
 export * from './lib/response.types';
 export * from './lib/api.types';
+export * from './lib/developer.types';
