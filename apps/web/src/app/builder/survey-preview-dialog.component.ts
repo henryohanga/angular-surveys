@@ -120,7 +120,8 @@ import { MWForm, MWQuestion } from '../surveys/models';
                 <!-- Questions -->
                 @if (currentPage) {
                 <div class="questions-list">
-                  @for (el of currentPage.elements; track el; let i = $index) {
+                  @for (el of currentPage.elements; track el.question.id; let i
+                  = $index) {
                   <div class="question-card">
                     <div class="question-header">
                       <span class="question-number">{{
@@ -211,7 +212,7 @@ import { MWForm, MWQuestion } from '../surveys/models';
                       <!-- Radio -->
                       @case ('radio') {
                       <div class="options-group">
-                        @for (opt of el.question.offeredAnswers; track opt) {
+                        @for (opt of el.question.offeredAnswers; track opt.id) {
                         <div class="option-item radio">
                           <div class="option-circle"></div>
                           <span>{{ opt.value }}</span>
@@ -227,7 +228,7 @@ import { MWForm, MWQuestion } from '../surveys/models';
                       <!-- Checkbox -->
                       @case ('checkbox') {
                       <div class="options-group">
-                        @for (opt of el.question.offeredAnswers; track opt) {
+                        @for (opt of el.question.offeredAnswers; track opt.id) {
                         <div class="option-item checkbox">
                           <div class="option-square"></div>
                           <span>{{ opt.value }}</span>
@@ -244,7 +245,7 @@ import { MWForm, MWQuestion } from '../surveys/models';
                       @case ('select') {
                       <select class="select-input" disabled>
                         <option value="">Select an option</option>
-                        @for (opt of el.question.offeredAnswers; track opt) {
+                        @for (opt of el.question.offeredAnswers; track opt.id) {
                         <option>
                           {{ opt.value }}
                         </option>
@@ -327,7 +328,8 @@ import { MWForm, MWQuestion } from '../surveys/models';
                           <thead>
                             <tr>
                               <th></th>
-                              @for (col of el.question.grid?.cols; track col) {
+                              @for (col of el.question.grid?.cols; track col.id)
+                              {
                               <th>
                                 {{ col.label }}
                               </th>
@@ -335,10 +337,11 @@ import { MWForm, MWQuestion } from '../surveys/models';
                             </tr>
                           </thead>
                           <tbody>
-                            @for (row of el.question.grid?.rows; track row) {
+                            @for (row of el.question.grid?.rows; track row.id) {
                             <tr>
                               <td class="row-label">{{ row.label }}</td>
-                              @for (col of el.question.grid?.cols; track col) {
+                              @for (col of el.question.grid?.cols; track col.id)
+                              {
                               <td class="grid-cell">
                                 <div
                                   [class]="
@@ -358,8 +361,8 @@ import { MWForm, MWQuestion } from '../surveys/models';
                       <!-- Priority/Ranking -->
                       @case ('priority') {
                       <div class="priority-input">
-                        @for ( item of el.question.priorityList; track item; let
-                        j = $index) {
+                        @for ( item of el.question.priorityList; track item.id;
+                        let j = $index) {
                         <div class="priority-item">
                           <mat-icon class="drag-icon">drag_indicator</mat-icon>
                           <span class="priority-number">{{ j + 1 }}</span>
@@ -1119,12 +1122,142 @@ import { MWForm, MWQuestion } from '../surveys/models';
           border-radius: 0;
         }
 
+        .preview-header {
+          padding: 12px 16px;
+        }
+
+        .header-text h2 {
+          font-size: 16px;
+        }
+
+        .header-text p {
+          display: none;
+        }
+
+        .mode-toggle {
+          display: none;
+        }
+
         .device-toggle {
           display: none;
         }
 
+        .preview-body {
+          padding: 12px;
+        }
+
         .survey-content {
-          padding: 20px;
+          padding: 16px;
+        }
+
+        .question-card {
+          padding: 16px;
+        }
+
+        /* Scale responsive */
+        .scale-input,
+        .nps-input {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .scale-points,
+        .nps-points {
+          flex-wrap: wrap;
+          gap: 6px;
+        }
+
+        .scale-point,
+        .nps-point {
+          width: 32px;
+          height: 32px;
+          font-size: 12px;
+        }
+
+        .scale-label,
+        .nps-label {
+          text-align: center;
+          max-width: 100%;
+        }
+
+        /* Grid responsive */
+        .grid-input {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .grid-table {
+          min-width: 400px;
+        }
+
+        .grid-table th,
+        .grid-table td {
+          padding: 8px;
+          font-size: 12px;
+        }
+
+        /* Rating responsive */
+        .rating-input {
+          flex-wrap: wrap;
+          gap: 4px;
+        }
+
+        .star-icon {
+          font-size: 28px;
+          width: 28px;
+          height: 28px;
+        }
+
+        /* File/Signature responsive */
+        .file-dropzone,
+        .signature-pad {
+          padding: 24px 16px;
+        }
+
+        .file-dropzone mat-icon,
+        .signature-pad mat-icon {
+          font-size: 36px;
+          width: 36px;
+          height: 36px;
+        }
+
+        /* Navigation responsive */
+        .survey-footer {
+          padding: 12px 16px;
+        }
+
+        .nav-btn {
+          padding: 10px 16px;
+          font-size: 13px;
+        }
+
+        .nav-btn span {
+          display: none;
+        }
+
+        .nav-btn mat-icon {
+          margin: 0;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .nps-points {
+          gap: 4px;
+        }
+
+        .nps-point {
+          width: 28px;
+          height: 28px;
+          font-size: 11px;
+          border-radius: 6px;
+        }
+
+        .option-item {
+          padding: 10px 12px;
+        }
+
+        .priority-item {
+          padding: 10px 12px;
         }
       }
     `,

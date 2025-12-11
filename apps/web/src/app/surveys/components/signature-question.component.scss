@@ -42,3 +42,18 @@
   margin-top: 8px;
   color: #f44336;
 }
+
+@media (max-width: 480px) {
+  .signature-canvas {
+    height: 120px;
+  }
+
+  .signature-actions {
+    flex-wrap: wrap;
+  }
+
+  .signature-actions button {
+    flex: 1;
+    min-width: 100px;
+  }
+}

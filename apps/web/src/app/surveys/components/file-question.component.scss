@@ -85,3 +85,28 @@
   margin-top: 8px;
   color: #f44336;
 }
+
+@media (max-width: 480px) {
+  .file-upload-area {
+    padding: 24px 16px;
+
+    mat-icon {
+      font-size: 36px;
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  .file-item {
+    flex-wrap: wrap;
+
+    .file-name {
+      width: calc(100% - 40px);
+    }
+
+    .file-size {
+      width: 100%;
+      margin-left: 32px;
+    }
+  }
+}

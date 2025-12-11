@@ -55,3 +55,21 @@
   margin-top: 8px;
   color: #f44336;
 }
+
+@media (max-width: 480px) {
+  .stars-container {
+    flex-wrap: wrap;
+  }
+
+  .star-btn mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .rating-label {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 8px;
+  }
+}
