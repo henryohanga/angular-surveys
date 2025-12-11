@@ -57,14 +57,14 @@
         [formGroup]="registerForm"
         (ngSubmit)="onSubmit()"
         class="auth-form"
-      >
+        >
         <div class="form-field">
           <label for="name">Full name</label>
           <div
             class="input-wrapper"
             [class.error]="name?.invalid && name?.touched"
             [class.focused]="nameFocused"
-          >
+            >
             <mat-icon class="field-icon">person_outline</mat-icon>
             <input
               id="name"
@@ -74,20 +74,22 @@
               autocomplete="name"
               (focus)="nameFocused = true"
               (blur)="nameFocused = false"
-            />
+              />
           </div>
-          <div
-            class="field-error"
-            *ngIf="name?.hasError('required') && name?.touched"
-          >
-            Name is required
-          </div>
-          <div
-            class="field-error"
-            *ngIf="name?.hasError('minlength') && name?.touched"
-          >
-            Name must be at least 2 characters
-          </div>
+          @if (name?.hasError('required') && name?.touched) {
+            <div
+              class="field-error"
+              >
+              Name is required
+            </div>
+          }
+          @if (name?.hasError('minlength') && name?.touched) {
+            <div
+              class="field-error"
+              >
+              Name must be at least 2 characters
+            </div>
+          }
         </div>
 
         <div class="form-field">
@@ -96,7 +98,7 @@
             class="input-wrapper"
             [class.error]="email?.invalid && email?.touched"
             [class.focused]="emailFocused"
-          >
+            >
             <mat-icon class="field-icon">mail_outline</mat-icon>
             <input
               id="email"
@@ -106,20 +108,22 @@
               autocomplete="email"
               (focus)="emailFocused = true"
               (blur)="emailFocused = false"
-            />
+              />
           </div>
-          <div
-            class="field-error"
-            *ngIf="email?.hasError('required') && email?.touched"
-          >
-            Email is required
-          </div>
-          <div
-            class="field-error"
-            *ngIf="email?.hasError('email') && email?.touched"
-          >
-            Please enter a valid email address
-          </div>
+          @if (email?.hasError('required') && email?.touched) {
+            <div
+              class="field-error"
+              >
+              Email is required
+            </div>
+          }
+          @if (email?.hasError('email') && email?.touched) {
+            <div
+              class="field-error"
+              >
+              Please enter a valid email address
+            </div>
+          }
         </div>
 
         <div class="form-field">
@@ -128,7 +132,7 @@
             class="input-wrapper"
             [class.error]="password?.invalid && password?.touched"
             [class.focused]="passwordFocused"
-          >
+            >
             <mat-icon class="field-icon">lock_outline</mat-icon>
             <input
               id="password"
@@ -138,13 +142,13 @@
               autocomplete="new-password"
               (focus)="passwordFocused = true"
               (blur)="passwordFocused = false"
-            />
+              />
             <button
               type="button"
               class="toggle-password"
               (click)="hidePassword = !hidePassword"
               tabindex="-1"
-            >
+              >
               <mat-icon>{{
                 hidePassword ? "visibility_off" : "visibility"
               }}</mat-icon>
@@ -152,41 +156,43 @@
           </div>
 
           <!-- Password Strength Indicator -->
-          <div class="password-strength" *ngIf="password?.value">
-            <div class="strength-bars">
-              <div
-                class="strength-bar"
-                [class.active]="passwordStrength >= 1"
+          @if (password?.value) {
+            <div class="password-strength">
+              <div class="strength-bars">
+                <div
+                  class="strength-bar"
+                  [class.active]="passwordStrength >= 1"
+                  [class.weak]="passwordStrength === 1"
+                  [class.medium]="passwordStrength === 2"
+                  [class.strong]="passwordStrength >= 3"
+                ></div>
+                <div
+                  class="strength-bar"
+                  [class.active]="passwordStrength >= 2"
+                  [class.medium]="passwordStrength === 2"
+                  [class.strong]="passwordStrength >= 3"
+                ></div>
+                <div
+                  class="strength-bar"
+                  [class.active]="passwordStrength >= 3"
+                  [class.strong]="passwordStrength >= 3"
+                ></div>
+                <div
+                  class="strength-bar"
+                  [class.active]="passwordStrength >= 4"
+                  [class.strong]="passwordStrength >= 4"
+                ></div>
+              </div>
+              <span
+                class="strength-text"
                 [class.weak]="passwordStrength === 1"
                 [class.medium]="passwordStrength === 2"
                 [class.strong]="passwordStrength >= 3"
-              ></div>
-              <div
-                class="strength-bar"
-                [class.active]="passwordStrength >= 2"
-                [class.medium]="passwordStrength === 2"
-                [class.strong]="passwordStrength >= 3"
-              ></div>
-              <div
-                class="strength-bar"
-                [class.active]="passwordStrength >= 3"
-                [class.strong]="passwordStrength >= 3"
-              ></div>
-              <div
-                class="strength-bar"
-                [class.active]="passwordStrength >= 4"
-                [class.strong]="passwordStrength >= 4"
-              ></div>
+                >
+                {{ passwordStrengthText }}
+              </span>
             </div>
-            <span
-              class="strength-text"
-              [class.weak]="passwordStrength === 1"
-              [class.medium]="passwordStrength === 2"
-              [class.strong]="passwordStrength >= 3"
-            >
-              {{ passwordStrengthText }}
-            </span>
-          </div>
+          }
 
           <div class="password-requirements">
             <div class="requirement" [class.met]="hasMinLength">
@@ -216,7 +222,7 @@
             class="input-wrapper"
             [class.error]="confirmPassword?.invalid && confirmPassword?.touched"
             [class.focused]="confirmPasswordFocused"
-          >
+            >
             <mat-icon class="field-icon">lock_outline</mat-icon>
             <input
               id="confirmPassword"
@@ -226,35 +232,37 @@
               autocomplete="new-password"
               (focus)="confirmPasswordFocused = true"
               (blur)="confirmPasswordFocused = false"
-            />
+              />
             <button
               type="button"
               class="toggle-password"
               (click)="hideConfirmPassword = !hideConfirmPassword"
               tabindex="-1"
-            >
+              >
               <mat-icon>{{
                 hideConfirmPassword ? "visibility_off" : "visibility"
               }}</mat-icon>
             </button>
           </div>
-          <div
-            class="field-error"
-            *ngIf="
-              confirmPassword?.hasError('required') && confirmPassword?.touched
-            "
-          >
-            Please confirm your password
-          </div>
-          <div
-            class="field-error"
-            *ngIf="
-              confirmPassword?.hasError('passwordMismatch') &&
-              confirmPassword?.touched
-            "
-          >
-            Passwords do not match
-          </div>
+          @if (
+            confirmPassword?.hasError('required') && confirmPassword?.touched
+            ) {
+            <div
+              class="field-error"
+              >
+              Please confirm your password
+            </div>
+          }
+          @if (
+            confirmPassword?.hasError('passwordMismatch') &&
+            confirmPassword?.touched
+            ) {
+            <div
+              class="field-error"
+              >
+              Passwords do not match
+            </div>
+          }
         </div>
 
         <div class="terms-agreement">
@@ -270,9 +278,13 @@
           class="submit-btn"
           [disabled]="isLoading || registerForm.invalid"
           [class.loading]="isLoading"
-        >
-          <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
-          <span *ngIf="!isLoading">Create account</span>
+          >
+          @if (isLoading) {
+            <mat-spinner diameter="20"></mat-spinner>
+          }
+          @if (!isLoading) {
+            <span>Create account</span>
+          }
         </button>
       </form>
 

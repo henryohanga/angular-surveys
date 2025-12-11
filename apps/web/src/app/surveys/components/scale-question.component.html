@@ -2,27 +2,32 @@
   <label class="q-label" [attr.for]="question.id">{{ question.text }}</label>
 
   <div class="scale-container">
-    <span class="scale-label min-label" *ngIf="minLabel()">{{
-      minLabel()
-    }}</span>
+    @if (minLabel()) {
+      <span class="scale-label min-label">{{
+        minLabel()
+      }}</span>
+    }
 
     <div class="scale-buttons">
-      <button
-        type="button"
-        *ngFor="let point of scalePoints"
-        class="scale-point"
-        [class.selected]="currentValue === point"
-        (click)="setValue(point)"
-        [attr.aria-label]="'Select ' + point"
-        [attr.aria-pressed]="currentValue === point"
-      >
-        {{ point }}
-      </button>
+      @for (point of scalePoints; track point) {
+        <button
+          type="button"
+          class="scale-point"
+          [class.selected]="currentValue === point"
+          (click)="setValue(point)"
+          [attr.aria-label]="'Select ' + point"
+          [attr.aria-pressed]="currentValue === point"
+          >
+          {{ point }}
+        </button>
+      }
     </div>
 
-    <span class="scale-label max-label" *ngIf="maxLabel()">{{
-      maxLabel()
-    }}</span>
+    @if (maxLabel()) {
+      <span class="scale-label max-label">{{
+        maxLabel()
+      }}</span>
+    }
   </div>
 
   <!-- Hidden input for form control -->

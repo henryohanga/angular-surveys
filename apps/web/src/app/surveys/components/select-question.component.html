@@ -3,7 +3,9 @@
   <mat-form-field appearance="outline" class="full">
     <mat-label>{{ question.text }}</mat-label>
     <mat-select [formControlName]="question.id">
-      <mat-option *ngFor="let a of answers()" [value]="a.value">{{ a.value }}</mat-option>
+      @for (a of answers(); track a) {
+        <mat-option [value]="a.value">{{ a.value }}</mat-option>
+      }
     </mat-select>
   </mat-form-field>
 </div>

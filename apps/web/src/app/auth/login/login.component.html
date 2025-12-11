@@ -56,7 +56,7 @@
             class="input-wrapper"
             [class.error]="email?.invalid && email?.touched"
             [class.focused]="emailFocused"
-          >
+            >
             <mat-icon class="field-icon">mail_outline</mat-icon>
             <input
               id="email"
@@ -66,20 +66,22 @@
               autocomplete="email"
               (focus)="emailFocused = true"
               (blur)="emailFocused = false"
-            />
+              />
           </div>
-          <div
-            class="field-error"
-            *ngIf="email?.hasError('required') && email?.touched"
-          >
-            Email is required
-          </div>
-          <div
-            class="field-error"
-            *ngIf="email?.hasError('email') && email?.touched"
-          >
-            Please enter a valid email address
-          </div>
+          @if (email?.hasError('required') && email?.touched) {
+            <div
+              class="field-error"
+              >
+              Email is required
+            </div>
+          }
+          @if (email?.hasError('email') && email?.touched) {
+            <div
+              class="field-error"
+              >
+              Please enter a valid email address
+            </div>
+          }
         </div>
 
         <div class="form-field">
@@ -87,71 +89,77 @@
             <label for="password">Password</label>
             <a class="forgot-link" routerLink="/forgot-password"
               >Forgot password?</a
+              >
+            </div>
+            <div
+              class="input-wrapper"
+              [class.error]="password?.invalid && password?.touched"
+              [class.focused]="passwordFocused"
+              >
+              <mat-icon class="field-icon">lock_outline</mat-icon>
+              <input
+                id="password"
+                [type]="hidePassword ? 'password' : 'text'"
+                formControlName="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                (focus)="passwordFocused = true"
+                (blur)="passwordFocused = false"
+                />
+              <button
+                type="button"
+                class="toggle-password"
+                (click)="hidePassword = !hidePassword"
+                tabindex="-1"
+                >
+                <mat-icon>{{
+                  hidePassword ? "visibility_off" : "visibility"
+                }}</mat-icon>
+              </button>
+            </div>
+            @if (password?.hasError('required') && password?.touched) {
+              <div
+                class="field-error"
+                >
+                Password is required
+              </div>
+            }
+            @if (password?.hasError('minlength') && password?.touched) {
+              <div
+                class="field-error"
+                >
+                Password must be at least 8 characters
+              </div>
+            }
+          </div>
+
+          <div class="remember-me">
+            <mat-checkbox formControlName="rememberMe" color="primary">
+              Remember me for 30 days
+            </mat-checkbox>
+          </div>
+
+          <button
+            type="submit"
+            class="submit-btn"
+            [disabled]="isLoading"
+            [class.loading]="isLoading"
             >
-          </div>
-          <div
-            class="input-wrapper"
-            [class.error]="password?.invalid && password?.touched"
-            [class.focused]="passwordFocused"
-          >
-            <mat-icon class="field-icon">lock_outline</mat-icon>
-            <input
-              id="password"
-              [type]="hidePassword ? 'password' : 'text'"
-              formControlName="password"
-              placeholder="Enter your password"
-              autocomplete="current-password"
-              (focus)="passwordFocused = true"
-              (blur)="passwordFocused = false"
-            />
-            <button
-              type="button"
-              class="toggle-password"
-              (click)="hidePassword = !hidePassword"
-              tabindex="-1"
-            >
-              <mat-icon>{{
-                hidePassword ? "visibility_off" : "visibility"
-              }}</mat-icon>
-            </button>
-          </div>
-          <div
-            class="field-error"
-            *ngIf="password?.hasError('required') && password?.touched"
-          >
-            Password is required
-          </div>
-          <div
-            class="field-error"
-            *ngIf="password?.hasError('minlength') && password?.touched"
-          >
-            Password must be at least 8 characters
-          </div>
+            @if (isLoading) {
+              <mat-spinner diameter="20"></mat-spinner>
+            }
+            @if (!isLoading) {
+              <span>Sign in</span>
+            }
+          </button>
+        </form>
+
+        <div class="auth-footer">
+          <p>
+            Don't have an account?
+            <a routerLink="/register">Create one for free</a>
+          </p>
         </div>
-
-        <div class="remember-me">
-          <mat-checkbox formControlName="rememberMe" color="primary">
-            Remember me for 30 days
-          </mat-checkbox>
-        </div>
-
-        <button
-          type="submit"
-          class="submit-btn"
-          [disabled]="isLoading"
-          [class.loading]="isLoading"
-        >
-          <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
-          <span *ngIf="!isLoading">Sign in</span>
-        </button>
-      </form>
-
-      <div class="auth-footer">
-        <p>
-          Don't have an account?
-          <a routerLink="/register">Create one for free</a>
-        </p>
       </div>
     </div>
   </div>
-</div>

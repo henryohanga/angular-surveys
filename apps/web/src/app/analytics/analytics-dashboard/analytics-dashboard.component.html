@@ -1,155 +1,165 @@
 <div class="analytics-dashboard">
   <!-- Loading State -->
-  <div class="loading-state" *ngIf="isLoading">
-    <mat-spinner diameter="48"></mat-spinner>
-    <p>Loading analytics...</p>
-  </div>
+  @if (isLoading) {
+    <div class="loading-state">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Loading analytics...</p>
+    </div>
+  }
 
   <!-- Error State -->
-  <div class="error-state" *ngIf="error && !isLoading">
-    <mat-icon>error_outline</mat-icon>
-    <h3>Failed to load analytics</h3>
-    <p>{{ error }}</p>
-    <button mat-raised-button color="primary" (click)="refresh()">
-      <mat-icon>refresh</mat-icon>
-      Try Again
-    </button>
-  </div>
-
-  <!-- Analytics Content -->
-  <div class="analytics-content" *ngIf="analytics && !isLoading">
-    <!-- Header -->
-    <div class="dashboard-header">
-      <div class="header-title">
-        <h1>{{ analytics.surveyName || "Survey Analytics" }}</h1>
-        <mat-chip-set>
-          <mat-chip color="primary" highlighted>
-            {{ analytics.totalResponses }}
-            {{ analytics.totalResponses === 1 ? "Response" : "Responses" }}
-          </mat-chip>
-        </mat-chip-set>
-      </div>
-      <div class="header-actions">
-        <button mat-stroked-button routerLink="/dashboard">
-          <mat-icon>arrow_back</mat-icon>
-          Back
-        </button>
-        <button mat-button (click)="refresh()">
-          <mat-icon>refresh</mat-icon>
-          Refresh
-        </button>
-      </div>
-    </div>
-
-    <!-- Empty State -->
-    <div class="empty-state" *ngIf="analytics.totalResponses === 0">
-      <mat-icon>inbox</mat-icon>
-      <h2>No Responses Yet</h2>
-      <p>Share your survey to start collecting responses.</p>
-      <button mat-raised-button color="primary" (click)="copyShareLink()">
-        <mat-icon>link</mat-icon>
-        Copy Share Link
+  @if (error && !isLoading) {
+    <div class="error-state">
+      <mat-icon>error_outline</mat-icon>
+      <h3>Failed to load analytics</h3>
+      <p>{{ error }}</p>
+      <button mat-raised-button color="primary" (click)="refresh()">
+        <mat-icon>refresh</mat-icon>
+        Try Again
       </button>
     </div>
+  }
 
-    <!-- Stats Cards (show only if there are responses) -->
-    <div class="stats-grid" *ngIf="analytics.totalResponses > 0">
-      <app-stat-card
-        title="Total Responses"
-        [value]="analytics.totalResponses"
-        icon="poll"
-        color="primary"
-      ></app-stat-card>
-
-      <app-stat-card
-        title="Completed"
-        [value]="analytics.completedResponses"
-        icon="check_circle"
-        color="success"
-        [subtitle]="analytics.completionRate.toFixed(0) + '% completion rate'"
-      ></app-stat-card>
-
-      <app-stat-card
-        title="Avg. Time"
-        [value]="formatTime(analytics.averageCompletionTime)"
-        icon="timer"
-        color="accent"
-        subtitle="to complete"
-      ></app-stat-card>
-
-      <app-stat-card
-        title="Today"
-        [value]="getTodayCount()"
-        icon="today"
-        color="warn"
-        subtitle="responses today"
-      ></app-stat-card>
-    </div>
-
-    <!-- Response Trend Chart -->
-    <mat-card
-      class="trend-section"
-      *ngIf="analytics.totalResponses > 0 && analytics.responsesByDate?.length"
-    >
-      <mat-card-header>
-        <mat-card-title>Response Trend</mat-card-title>
-        <mat-card-subtitle>Responses over the past days</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="trend-chart">
-          <div
-            class="trend-bar"
-            *ngFor="let day of analytics.responsesByDate"
-            [style.height.%]="getBarHeight(day.count)"
-            [matTooltip]="day.date + ': ' + day.count + ' responses'"
+  <!-- Analytics Content -->
+  @if (analytics && !isLoading) {
+    <div class="analytics-content">
+      <!-- Header -->
+      <div class="dashboard-header">
+        <div class="header-title">
+          <h1>{{ analytics.surveyName || "Survey Analytics" }}</h1>
+          <mat-chip-set>
+            <mat-chip color="primary" highlighted>
+              {{ analytics.totalResponses }}
+              {{ analytics.totalResponses === 1 ? "Response" : "Responses" }}
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+        <div class="header-actions">
+          <button mat-stroked-button routerLink="/dashboard">
+            <mat-icon>arrow_back</mat-icon>
+            Back
+          </button>
+          <button mat-button (click)="refresh()">
+            <mat-icon>refresh</mat-icon>
+            Refresh
+          </button>
+        </div>
+      </div>
+      <!-- Empty State -->
+      @if (analytics.totalResponses === 0) {
+        <div class="empty-state">
+          <mat-icon>inbox</mat-icon>
+          <h2>No Responses Yet</h2>
+          <p>Share your survey to start collecting responses.</p>
+          <button mat-raised-button color="primary" (click)="copyShareLink()">
+            <mat-icon>link</mat-icon>
+            Copy Share Link
+          </button>
+        </div>
+      }
+      <!-- Stats Cards (show only if there are responses) -->
+      @if (analytics.totalResponses > 0) {
+        <div class="stats-grid">
+          <app-stat-card
+            title="Total Responses"
+            [value]="analytics.totalResponses"
+            icon="poll"
+            color="primary"
+          ></app-stat-card>
+          <app-stat-card
+            title="Completed"
+            [value]="analytics.completedResponses"
+            icon="check_circle"
+            color="success"
+            [subtitle]="analytics.completionRate.toFixed(0) + '% completion rate'"
+          ></app-stat-card>
+          <app-stat-card
+            title="Avg. Time"
+            [value]="formatTime(analytics.averageCompletionTime)"
+            icon="timer"
+            color="accent"
+            subtitle="to complete"
+          ></app-stat-card>
+          <app-stat-card
+            title="Today"
+            [value]="getTodayCount()"
+            icon="today"
+            color="warn"
+            subtitle="responses today"
+          ></app-stat-card>
+        </div>
+      }
+      <!-- Response Trend Chart -->
+      @if (analytics.totalResponses > 0 && analytics.responsesByDate?.length) {
+        <mat-card
+          class="trend-section"
           >
-            <span class="bar-value">{{ day.count }}</span>
-          </div>
-        </div>
-        <div class="trend-labels">
-          <span *ngFor="let day of analytics.responsesByDate">{{
-            formatDate(day.date)
-          }}</span>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Question Analytics -->
-    <div class="charts-section" *ngIf="analytics.questionStats?.length">
-      <h2>Response Distribution by Question</h2>
-
-      <mat-tab-group>
-        <mat-tab
-          *ngFor="let question of analytics.questionStats"
-          [label]="question.questionText"
-        >
-          <div class="chart-tab-content">
-            <div class="question-info">
-              <mat-chip>{{ question.questionType }}</mat-chip>
+          <mat-card-header>
+            <mat-card-title>Response Trend</mat-card-title>
+            <mat-card-subtitle>Responses over the past days</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="trend-chart">
+              @for (day of analytics.responsesByDate; track day) {
+                <div
+                  class="trend-bar"
+                  [style.height.%]="getBarHeight(day.count)"
+                  [matTooltip]="day.date + ': ' + day.count + ' responses'"
+                  >
+                  <span class="bar-value">{{ day.count }}</span>
+                </div>
+              }
             </div>
-            <app-response-chart
-              [data]="question.answerDistribution"
-              [type]="question.questionType === 'checkbox' ? 'bar' : 'donut'"
-              [title]="question.questionText"
-            ></app-response-chart>
-          </div>
-        </mat-tab>
-      </mat-tab-group>
+            <div class="trend-labels">
+              @for (day of analytics.responsesByDate; track day) {
+                <span>{{
+                  formatDate(day.date)
+                }}</span>
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+      <!-- Question Analytics -->
+      @if (analytics.questionStats?.length) {
+        <div class="charts-section">
+          <h2>Response Distribution by Question</h2>
+          <mat-tab-group>
+            @for (question of analytics.questionStats; track question) {
+              <mat-tab
+                [label]="question.questionText"
+                >
+                <div class="chart-tab-content">
+                  <div class="question-info">
+                    <mat-chip>{{ question.questionType }}</mat-chip>
+                  </div>
+                  <app-response-chart
+                    [data]="question.answerDistribution"
+                    [type]="question.questionType === 'checkbox' ? 'bar' : 'donut'"
+                    [title]="question.questionText"
+                  ></app-response-chart>
+                </div>
+              </mat-tab>
+            }
+          </mat-tab-group>
+        </div>
+      }
+      <!-- Responses Table -->
+      @if (individualResponses.length > 0) {
+        <mat-card class="responses-section">
+          <mat-card-header>
+            <mat-card-title>
+              All Responses ({{ individualResponses.length }})
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <app-response-table
+              [responses]="individualResponses"
+              [columns]="responseColumns"
+            ></app-response-table>
+          </mat-card-content>
+        </mat-card>
+      }
     </div>
-
-    <!-- Responses Table -->
-    <mat-card class="responses-section" *ngIf="individualResponses.length > 0">
-      <mat-card-header>
-        <mat-card-title>
-          All Responses ({{ individualResponses.length }})
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <app-response-table
-          [responses]="individualResponses"
-          [columns]="responseColumns"
-        ></app-response-table>
-      </mat-card-content>
-    </mat-card>
-  </div>
+  }
 </div>

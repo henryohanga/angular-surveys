@@ -1,26 +1,36 @@
-<div [formGroup]="form" *ngIf="grid as g">
-  <div class="grid">
-    <div class="header">
-      <div class="cell"></div>
-      <div class="cell" *ngFor="let c of g.cols; trackBy: trackByCol">{{ c.label }}</div>
-    </div>
-    <div class="row" *ngFor="let r of g.rows; trackBy: trackByRow">
-      <div class="cell row-label">{{ r.label }}</div>
-      <div class="cells" [formGroup]="form.get(question.id)">
-        <ng-container [ngSwitch]="g.cellInputType">
-          <ng-container *ngSwitchCase="'radio'">
-            <mat-radio-group [formControlName]="r.id" class="radio-row">
-              <mat-radio-button *ngFor="let c of g.cols" [value]="c.id"></mat-radio-button>
-            </mat-radio-group>
-          </ng-container>
-          <ng-container *ngSwitchCase="'checkbox'">
-            <div class="checkbox-row">
-              <mat-checkbox *ngFor="let c of g.cols"
-                            (change)="toggleCheckboxRow(r.id, c.id, $event.checked)"></mat-checkbox>
-            </div>
-          </ng-container>
-        </ng-container>
+@if (grid; as g) {
+  <div [formGroup]="form">
+    <div class="grid">
+      <div class="header">
+        <div class="cell"></div>
+        @for (c of g.cols; track trackByCol($index, c)) {
+          <div class="cell">{{ c.label }}</div>
+        }
       </div>
+      @for (r of g.rows; track trackByRow($index, r)) {
+        <div class="row">
+          <div class="cell row-label">{{ r.label }}</div>
+          <div class="cells" [formGroup]="form.get(question.id)">
+            @switch (g.cellInputType) {
+              @case ('radio') {
+                <mat-radio-group [formControlName]="r.id" class="radio-row">
+                  @for (c of g.cols; track c) {
+                    <mat-radio-button [value]="c.id"></mat-radio-button>
+                  }
+                </mat-radio-group>
+              }
+              @case ('checkbox') {
+                <div class="checkbox-row">
+                  @for (c of g.cols; track c) {
+                    <mat-checkbox
+                    (change)="toggleCheckboxRow(r.id, c.id, $event.checked)"></mat-checkbox>
+                  }
+                </div>
+              }
+            }
+          </div>
+        </div>
+      }
     </div>
   </div>
-</div>
+}

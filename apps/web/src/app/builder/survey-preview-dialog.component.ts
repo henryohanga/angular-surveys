@@ -24,7 +24,7 @@ import { MWForm, MWQuestion } from '../surveys/models';
               [class.active]="deviceView === 'desktop'"
               (click)="deviceView = 'desktop'"
               matTooltip="Desktop view"
-            >
+              >
               <mat-icon>computer</mat-icon>
             </button>
             <button
@@ -32,7 +32,7 @@ import { MWForm, MWQuestion } from '../surveys/models';
               [class.active]="deviceView === 'mobile'"
               (click)="deviceView = 'mobile'"
               matTooltip="Mobile view"
-            >
+              >
               <mat-icon>smartphone</mat-icon>
             </button>
           </div>
@@ -41,17 +41,17 @@ import { MWForm, MWQuestion } from '../surveys/models';
           </button>
         </div>
       </div>
-
+    
       <!-- Content -->
       <div class="preview-body">
         <div
           class="preview-canvas"
           [class.mobile-view]="deviceView === 'mobile'"
-        >
+          >
           <div
             class="device-frame"
             [class.mobile-frame]="deviceView === 'mobile'"
-          >
+            >
             <!-- Progress Bar -->
             <div class="progress-bar">
               <div
@@ -59,363 +59,414 @@ import { MWForm, MWQuestion } from '../surveys/models';
                 [style.width.%]="progressPercent"
               ></div>
             </div>
-
+    
             <!-- Survey Content -->
             <div class="survey-scroll">
               <div class="survey-content">
                 <!-- Survey Header -->
-                <div class="survey-header" *ngIf="currentPage">
-                  <h1 class="survey-title">
-                    {{ data.form.name || 'Untitled Survey' }}
-                  </h1>
-                  <p class="survey-description" *ngIf="data.form.description">
-                    {{ data.form.description }}
-                  </p>
-                </div>
-
+                @if (currentPage) {
+                  <div class="survey-header">
+                    <h1 class="survey-title">
+                      {{ data.form.name || 'Untitled Survey' }}
+                    </h1>
+                    @if (data.form.description) {
+                      <p class="survey-description">
+                        {{ data.form.description }}
+                      </p>
+                    }
+                  </div>
+                }
+    
                 <!-- Page Header -->
-                <div
-                  class="page-header"
-                  *ngIf="currentPage && data.form.pages.length > 1"
-                >
-                  <span class="page-badge"
-                    >Page {{ currentPageIndex + 1 }} of
-                    {{ data.form.pages.length }}</span
-                  >
-                  <h3 class="page-title" *ngIf="currentPage.name">
-                    {{ currentPage.name }}
-                  </h3>
-                  <p class="page-description" *ngIf="currentPage.description">
-                    {{ currentPage.description }}
-                  </p>
-                </div>
-
-                <!-- Questions -->
-                <div class="questions-list" *ngIf="currentPage">
+                @if (currentPage && data.form.pages.length > 1) {
                   <div
-                    class="question-card"
-                    *ngFor="let el of currentPage.elements; let i = index"
-                  >
-                    <div class="question-header">
-                      <span class="question-number">{{
-                        getQuestionNumber(i)
-                      }}</span>
-                      <span class="question-text">{{ el.question.text }}</span>
-                      <span class="required-marker" *ngIf="el.question.required"
-                        >*</span
+                    class="page-header"
+                    >
+                    <span class="page-badge"
+                      >Page {{ currentPageIndex + 1 }} of
+                      {{ data.form.pages.length }}</span
                       >
+                      @if (currentPage.name) {
+                        <h3 class="page-title">
+                          {{ currentPage.name }}
+                        </h3>
+                      }
+                      @if (currentPage.description) {
+                        <p class="page-description">
+                          {{ currentPage.description }}
+                        </p>
+                      }
                     </div>
-
-                    <div class="question-input" [ngSwitch]="el.question.type">
-                      <!-- Text -->
-                      <input
-                        *ngSwitchCase="'text'"
-                        type="text"
-                        class="text-input"
-                        [placeholder]="el.question.placeholder || 'Your answer'"
-                        disabled
-                      />
-
-                      <!-- Email -->
-                      <div *ngSwitchCase="'email'" class="input-with-icon">
-                        <mat-icon>email</mat-icon>
-                        <input
-                          type="email"
-                          class="text-input"
-                          placeholder="email@example.com"
-                          disabled
-                        />
-                      </div>
-
-                      <!-- Phone -->
-                      <div *ngSwitchCase="'phone'" class="input-with-icon">
-                        <mat-icon>phone</mat-icon>
-                        <input
-                          type="tel"
-                          class="text-input"
-                          placeholder="+1 (555) 000-0000"
-                          disabled
-                        />
-                      </div>
-
-                      <!-- URL -->
-                      <div *ngSwitchCase="'url'" class="input-with-icon">
-                        <mat-icon>link</mat-icon>
-                        <input
-                          type="url"
-                          class="text-input"
-                          placeholder="https://example.com"
-                          disabled
-                        />
-                      </div>
-
-                      <!-- Number -->
-                      <div
-                        *ngSwitchCase="'number'"
-                        class="number-input-wrapper"
-                      >
-                        <span
-                          class="number-prefix"
-                          *ngIf="el.question.numberConfig?.prefix"
-                          >{{ el.question.numberConfig.prefix }}</span
-                        >
-                        <input
-                          type="number"
-                          class="text-input number-input"
-                          placeholder="0"
-                          disabled
-                        />
-                        <span
-                          class="number-suffix"
-                          *ngIf="el.question.numberConfig?.suffix"
-                          >{{ el.question.numberConfig.suffix }}</span
-                        >
-                      </div>
-
-                      <!-- Textarea -->
-                      <textarea
-                        *ngSwitchCase="'textarea'"
-                        class="textarea-input"
-                        [placeholder]="el.question.placeholder || 'Your answer'"
-                        rows="4"
-                        disabled
-                      ></textarea>
-
-                      <!-- Radio -->
-                      <div *ngSwitchCase="'radio'" class="options-group">
+                  }
+    
+                  <!-- Questions -->
+                  @if (currentPage) {
+                    <div class="questions-list">
+                      @for (el of currentPage.elements; track el; let i = $index) {
                         <div
-                          class="option-item radio"
-                          *ngFor="let opt of el.question.offeredAnswers"
-                        >
-                          <div class="option-circle"></div>
-                          <span>{{ opt.value }}</span>
-                        </div>
-                        <div
-                          class="option-item radio"
-                          *ngIf="el.question.otherAnswer"
-                        >
-                          <div class="option-circle"></div>
-                          <span>Other...</span>
-                        </div>
-                      </div>
-
-                      <!-- Checkbox -->
-                      <div *ngSwitchCase="'checkbox'" class="options-group">
-                        <div
-                          class="option-item checkbox"
-                          *ngFor="let opt of el.question.offeredAnswers"
-                        >
-                          <div class="option-square"></div>
-                          <span>{{ opt.value }}</span>
-                        </div>
-                        <div
-                          class="option-item checkbox"
-                          *ngIf="el.question.otherAnswer"
-                        >
-                          <div class="option-square"></div>
-                          <span>Other...</span>
-                        </div>
-                      </div>
-
-                      <!-- Select -->
-                      <select
-                        *ngSwitchCase="'select'"
-                        class="select-input"
-                        disabled
-                      >
-                        <option value="">Select an option</option>
-                        <option *ngFor="let opt of el.question.offeredAnswers">
-                          {{ opt.value }}
-                        </option>
-                      </select>
-
-                      <!-- Date -->
-                      <div *ngSwitchCase="'date'" class="input-with-icon">
-                        <mat-icon>calendar_today</mat-icon>
-                        <input type="date" class="text-input" disabled />
-                      </div>
-
-                      <!-- Time -->
-                      <div *ngSwitchCase="'time'" class="input-with-icon">
-                        <mat-icon>schedule</mat-icon>
-                        <input type="time" class="text-input" disabled />
-                      </div>
-
-                      <!-- Scale -->
-                      <div *ngSwitchCase="'scale'" class="scale-input">
-                        <span class="scale-label">{{
-                          el.question.scale?.minLabel ||
-                            el.question.scale?.min ||
-                            1
-                        }}</span>
-                        <div class="scale-points">
-                          <button
-                            *ngFor="let n of getScaleRange(el.question)"
-                            class="scale-point"
-                            disabled
+                          class="question-card"
                           >
-                            {{ n }}
-                          </button>
-                        </div>
-                        <span class="scale-label">{{
-                          el.question.scale?.maxLabel ||
-                            el.question.scale?.max ||
-                            5
-                        }}</span>
-                      </div>
-
-                      <!-- Rating -->
-                      <div *ngSwitchCase="'rating'" class="rating-input">
-                        <mat-icon
-                          *ngFor="let n of getScaleRange(el.question)"
-                          class="star-icon"
-                          >star_outline</mat-icon
-                        >
-                      </div>
-
-                      <!-- NPS -->
-                      <div *ngSwitchCase="'nps'" class="nps-input">
-                        <span class="nps-label">{{
-                          el.question.scale?.minLabel || 'Not likely'
-                        }}</span>
-                        <div class="nps-points">
-                          <button
-                            *ngFor="let n of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
-                            class="nps-point"
-                            [class.detractor]="n <= 6"
-                            [class.passive]="n >= 7 && n <= 8"
-                            [class.promoter]="n >= 9"
-                            disabled
-                          >
-                            {{ n }}
-                          </button>
-                        </div>
-                        <span class="nps-label">{{
-                          el.question.scale?.maxLabel || 'Very likely'
-                        }}</span>
-                      </div>
-
-                      <!-- Grid -->
-                      <div *ngSwitchCase="'grid'" class="grid-input">
-                        <table class="grid-table">
-                          <thead>
-                            <tr>
-                              <th></th>
-                              <th *ngFor="let col of el.question.grid?.cols">
-                                {{ col.label }}
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr *ngFor="let row of el.question.grid?.rows">
-                              <td class="row-label">{{ row.label }}</td>
-                              <td
-                                *ngFor="let col of el.question.grid?.cols"
-                                class="grid-cell"
-                              >
-                                <div
+                          <div class="question-header">
+                            <span class="question-number">{{
+                              getQuestionNumber(i)
+                            }}</span>
+                            <span class="question-text">{{ el.question.text }}</span>
+                            @if (el.question.required) {
+                              <span class="required-marker"
+                                >*</span
+                                >
+                              }
+                            </div>
+                            <div class="question-input">
+                              @switch (el.question.type) {
+                                <!-- Text -->
+                                @case ('text') {
+                                  <input
+                                    type="text"
+                                    class="text-input"
+                                    [placeholder]="el.question.placeholder || 'Your answer'"
+                                    disabled
+                                    />
+                                }
+                                <!-- Email -->
+                                @case ('email') {
+                                  <div class="input-with-icon">
+                                    <mat-icon>email</mat-icon>
+                                    <input
+                                      type="email"
+                                      class="text-input"
+                                      placeholder="email@example.com"
+                                      disabled
+                                      />
+                                  </div>
+                                }
+                                <!-- Phone -->
+                                @case ('phone') {
+                                  <div class="input-with-icon">
+                                    <mat-icon>phone</mat-icon>
+                                    <input
+                                      type="tel"
+                                      class="text-input"
+                                      placeholder="+1 (555) 000-0000"
+                                      disabled
+                                      />
+                                  </div>
+                                }
+                                <!-- URL -->
+                                @case ('url') {
+                                  <div class="input-with-icon">
+                                    <mat-icon>link</mat-icon>
+                                    <input
+                                      type="url"
+                                      class="text-input"
+                                      placeholder="https://example.com"
+                                      disabled
+                                      />
+                                  </div>
+                                }
+                                <!-- Number -->
+                                @case ('number') {
+                                  <div
+                                    class="number-input-wrapper"
+                                    >
+                                    @if (el.question.numberConfig?.prefix) {
+                                      <span
+                                        class="number-prefix"
+                                        >{{ el.question.numberConfig.prefix }}</span
+                                        >
+                                      }
+                                      <input
+                                        type="number"
+                                        class="text-input number-input"
+                                        placeholder="0"
+                                        disabled
+                                        />
+                                      @if (el.question.numberConfig?.suffix) {
+                                        <span
+                                          class="number-suffix"
+                                          >{{ el.question.numberConfig.suffix }}</span
+                                          >
+                                        }
+                                      </div>
+                                    }
+                                    <!-- Textarea -->
+                                    @case ('textarea') {
+                                      <textarea
+                                        class="textarea-input"
+                                        [placeholder]="el.question.placeholder || 'Your answer'"
+                                        rows="4"
+                                        disabled
+                                      ></textarea>
+                                    }
+                                    <!-- Radio -->
+                                    @case ('radio') {
+                                      <div class="options-group">
+                                        @for (opt of el.question.offeredAnswers; track opt) {
+                                          <div
+                                            class="option-item radio"
+                                            >
+                                            <div class="option-circle"></div>
+                                            <span>{{ opt.value }}</span>
+                                          </div>
+                                        }
+                                        @if (el.question.otherAnswer) {
+                                          <div
+                                            class="option-item radio"
+                                            >
+                                            <div class="option-circle"></div>
+                                            <span>Other...</span>
+                                          </div>
+                                        }
+                                      </div>
+                                    }
+                                    <!-- Checkbox -->
+                                    @case ('checkbox') {
+                                      <div class="options-group">
+                                        @for (opt of el.question.offeredAnswers; track opt) {
+                                          <div
+                                            class="option-item checkbox"
+                                            >
+                                            <div class="option-square"></div>
+                                            <span>{{ opt.value }}</span>
+                                          </div>
+                                        }
+                                        @if (el.question.otherAnswer) {
+                                          <div
+                                            class="option-item checkbox"
+                                            >
+                                            <div class="option-square"></div>
+                                            <span>Other...</span>
+                                          </div>
+                                        }
+                                      </div>
+                                    }
+                                    <!-- Select -->
+                                    @case ('select') {
+                                      <select
+                                        class="select-input"
+                                        disabled
+                                        >
+                                        <option value="">Select an option</option>
+                                        @for (opt of el.question.offeredAnswers; track opt) {
+                                          <option>
+                                            {{ opt.value }}
+                                          </option>
+                                        }
+                                      </select>
+                                    }
+                                    <!-- Date -->
+                                    @case ('date') {
+                                      <div class="input-with-icon">
+                                        <mat-icon>calendar_today</mat-icon>
+                                        <input type="date" class="text-input" disabled />
+                                      </div>
+                                    }
+                                    <!-- Time -->
+                                    @case ('time') {
+                                      <div class="input-with-icon">
+                                        <mat-icon>schedule</mat-icon>
+                                        <input type="time" class="text-input" disabled />
+                                      </div>
+                                    }
+                                    <!-- Scale -->
+                                    @case ('scale') {
+                                      <div class="scale-input">
+                                        <span class="scale-label">{{
+                                          el.question.scale?.minLabel ||
+                                          el.question.scale?.min ||
+                                          1
+                                        }}</span>
+                                        <div class="scale-points">
+                                          @for (n of getScaleRange(el.question); track n) {
+                                            <button
+                                              class="scale-point"
+                                              disabled
+                                              >
+                                              {{ n }}
+                                            </button>
+                                          }
+                                        </div>
+                                        <span class="scale-label">{{
+                                          el.question.scale?.maxLabel ||
+                                          el.question.scale?.max ||
+                                          5
+                                        }}</span>
+                                      </div>
+                                    }
+                                    <!-- Rating -->
+                                    @case ('rating') {
+                                      <div class="rating-input">
+                                        @for (n of getScaleRange(el.question); track n) {
+                                          <mat-icon
+                                            class="star-icon"
+                                            >star_outline</mat-icon
+                                            >
+                                          }
+                                        </div>
+                                      }
+                                      <!-- NPS -->
+                                      @case ('nps') {
+                                        <div class="nps-input">
+                                          <span class="nps-label">{{
+                                            el.question.scale?.minLabel || 'Not likely'
+                                          }}</span>
+                                          <div class="nps-points">
+                                            @for (n of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track n) {
+                                              <button
+                                                class="nps-point"
+                                                [class.detractor]="n <= 6"
+                                                [class.passive]="n >= 7 && n <= 8"
+                                                [class.promoter]="n >= 9"
+                                                disabled
+                                                >
+                                                {{ n }}
+                                              </button>
+                                            }
+                                          </div>
+                                          <span class="nps-label">{{
+                                            el.question.scale?.maxLabel || 'Very likely'
+                                          }}</span>
+                                        </div>
+                                      }
+                                      <!-- Grid -->
+                                      @case ('grid') {
+                                        <div class="grid-input">
+                                          <table class="grid-table">
+                                            <thead>
+                                              <tr>
+                                                <th></th>
+                                                @for (col of el.question.grid?.cols; track col) {
+                                                  <th>
+                                                    {{ col.label }}
+                                                  </th>
+                                                }
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              @for (row of el.question.grid?.rows; track row) {
+                                                <tr>
+                                                  <td class="row-label">{{ row.label }}</td>
+                                                  @for (col of el.question.grid?.cols; track col) {
+                                                    <td
+                                                      class="grid-cell"
+                                                      >
+                                                      <div
                                   [class]="
                                     el.question.grid?.cellInputType === 'radio'
                                       ? 'option-circle'
                                       : 'option-square'
                                   "
-                                ></div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-
-                      <!-- Priority/Ranking -->
-                      <div *ngSwitchCase="'priority'" class="priority-input">
-                        <div
-                          class="priority-item"
-                          *ngFor="
-                            let item of el.question.priorityList;
-                            let j = index
-                          "
-                        >
-                          <mat-icon class="drag-icon">drag_indicator</mat-icon>
-                          <span class="priority-number">{{ j + 1 }}</span>
-                          <span class="priority-text">{{ item.value }}</span>
+                                                      ></div>
+                                                    </td>
+                                                  }
+                                                </tr>
+                                              }
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      }
+                                      <!-- Priority/Ranking -->
+                                      @case ('priority') {
+                                        <div class="priority-input">
+                                          @for (
+                                            item of el.question.priorityList; track
+                                            item; let j = $index) {
+                                            <div
+                                              class="priority-item"
+                                              >
+                                              <mat-icon class="drag-icon">drag_indicator</mat-icon>
+                                              <span class="priority-number">{{ j + 1 }}</span>
+                                              <span class="priority-text">{{ item.value }}</span>
+                                            </div>
+                                          }
+                                        </div>
+                                      }
+                                      <!-- File Upload -->
+                                      @case ('file') {
+                                        <div class="file-input">
+                                          <div class="file-dropzone">
+                                            <mat-icon>cloud_upload</mat-icon>
+                                            <p>
+                                              Drag files here or
+                                              <span class="upload-link">browse</span>
+                                            </p>
+                                            <span class="file-hint">
+                                              Max {{ el.question.fileConfig?.maxSize || 10 }}MB
+                                              @if (el.question.fileConfig?.multiple) {
+                                                <span>
+                                                  • Multiple files allowed</span
+                                                  >
+                                                }
+                                              </span>
+                                            </div>
+                                          </div>
+                                        }
+                                        <!-- Signature -->
+                                        @case ('signature') {
+                                          <div class="signature-input">
+                                            <div class="signature-pad">
+                                              <mat-icon>gesture</mat-icon>
+                                              <p>Sign here</p>
+                                            </div>
+                                          </div>
+                                        }
+                                        <!-- Default -->
+                                        @default {
+                                          <input
+                                            type="text"
+                                            class="text-input"
+                                            placeholder="Your answer"
+                                            disabled
+                                            />
+                                        }
+                                      }
+                                    </div>
+                                  </div>
+                                }
+                                @if (!currentPage.elements.length) {
+                                  <div class="empty-state">
+                                    <mat-icon>quiz</mat-icon>
+                                    <p>No questions added yet</p>
+                                  </div>
+                                }
+                              </div>
+                            }
+                          </div>
                         </div>
-                      </div>
-
-                      <!-- File Upload -->
-                      <div *ngSwitchCase="'file'" class="file-input">
-                        <div class="file-dropzone">
-                          <mat-icon>cloud_upload</mat-icon>
-                          <p>
-                            Drag files here or
-                            <span class="upload-link">browse</span>
-                          </p>
-                          <span class="file-hint">
-                            Max {{ el.question.fileConfig?.maxSize || 10 }}MB
-                            <span *ngIf="el.question.fileConfig?.multiple">
-                              • Multiple files allowed</span
+    
+                        <!-- Footer Navigation -->
+                        <div class="survey-footer">
+                          <button
+                            class="nav-btn back"
+                            [disabled]="currentPageIndex === 0"
+                            (click)="previousPage()"
                             >
-                          </span>
+                            <mat-icon>arrow_back</mat-icon>
+                            <span>Back</span>
+                          </button>
+                          @if (currentPageIndex < data.form.pages.length - 1) {
+                            <button
+                              class="nav-btn next"
+                              (click)="nextPage()"
+                              >
+                              <span>Next</span>
+                              <mat-icon>arrow_forward</mat-icon>
+                            </button>
+                          }
+                          @if (currentPageIndex === data.form.pages.length - 1) {
+                            <button
+                              class="nav-btn submit"
+                              >
+                              <span>Submit</span>
+                              <mat-icon>check</mat-icon>
+                            </button>
+                          }
                         </div>
                       </div>
-
-                      <!-- Signature -->
-                      <div *ngSwitchCase="'signature'" class="signature-input">
-                        <div class="signature-pad">
-                          <mat-icon>gesture</mat-icon>
-                          <p>Sign here</p>
-                        </div>
-                      </div>
-
-                      <!-- Default -->
-                      <input
-                        *ngSwitchDefault
-                        type="text"
-                        class="text-input"
-                        placeholder="Your answer"
-                        disabled
-                      />
                     </div>
                   </div>
-
-                  <div class="empty-state" *ngIf="!currentPage.elements.length">
-                    <mat-icon>quiz</mat-icon>
-                    <p>No questions added yet</p>
-                  </div>
                 </div>
-              </div>
-            </div>
-
-            <!-- Footer Navigation -->
-            <div class="survey-footer">
-              <button
-                class="nav-btn back"
-                [disabled]="currentPageIndex === 0"
-                (click)="previousPage()"
-              >
-                <mat-icon>arrow_back</mat-icon>
-                <span>Back</span>
-              </button>
-              <button
-                class="nav-btn next"
-                *ngIf="currentPageIndex < data.form.pages.length - 1"
-                (click)="nextPage()"
-              >
-                <span>Next</span>
-                <mat-icon>arrow_forward</mat-icon>
-              </button>
-              <button
-                class="nav-btn submit"
-                *ngIf="currentPageIndex === data.form.pages.length - 1"
-              >
-                <span>Submit</span>
-                <mat-icon>check</mat-icon>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
+    `,
   styles: [
     `
       .preview-dialog {

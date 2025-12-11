@@ -1,13 +1,15 @@
 <div [formGroup]="form">
   <label class="q-label" [attr.for]="question.id">{{ question.text }}</label>
   <div class="checkbox-group">
-    <mat-checkbox *ngFor="let a of answers()" (change)="toggle(a.value, $event.checked)">{{ a.value }}</mat-checkbox>
-    <ng-container *ngIf="question.otherAnswer">
+    @for (a of answers(); track a) {
+      <mat-checkbox (change)="toggle(a.value, $event.checked)">{{ a.value }}</mat-checkbox>
+    }
+    @if (question.otherAnswer) {
       <mat-checkbox (change)="toggleOther($event.checked)">Other</mat-checkbox>
       <mat-form-field appearance="outline" class="full">
         <mat-label>Other</mat-label>
         <input matInput [value]="otherValue" (input)="onOtherInput($event)" />
       </mat-form-field>
-    </ng-container>
+    }
   </div>
 </div>

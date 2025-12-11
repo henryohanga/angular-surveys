@@ -5,15 +5,21 @@
   <div class="stat-card__content">
     <span class="stat-card__title">{{ title }}</span>
     <span class="stat-card__value">{{ value }}</span>
-    <span class="stat-card__subtitle" *ngIf="subtitle">{{ subtitle }}</span>
-    <div class="stat-card__trend" *ngIf="trend !== undefined">
-      <mat-icon [ngClass]="{ 'trend-up': trend >= 0, 'trend-down': trend < 0 }">
-        {{ trend >= 0 ? "trending_up" : "trending_down" }}
-      </mat-icon>
-      <span [ngClass]="{ 'trend-up': trend >= 0, 'trend-down': trend < 0 }">
-        {{ trend >= 0 ? "+" : "" }}{{ trend }}%
-      </span>
-      <span class="trend-label" *ngIf="trendLabel">{{ trendLabel }}</span>
-    </div>
+    @if (subtitle) {
+      <span class="stat-card__subtitle">{{ subtitle }}</span>
+    }
+    @if (trend !== undefined) {
+      <div class="stat-card__trend">
+        <mat-icon [ngClass]="{ 'trend-up': trend >= 0, 'trend-down': trend < 0 }">
+          {{ trend >= 0 ? "trending_up" : "trending_down" }}
+        </mat-icon>
+        <span [ngClass]="{ 'trend-up': trend >= 0, 'trend-down': trend < 0 }">
+          {{ trend >= 0 ? "+" : "" }}{{ trend }}%
+        </span>
+        @if (trendLabel) {
+          <span class="trend-label">{{ trendLabel }}</span>
+        }
+      </div>
+    }
   </div>
 </mat-card>

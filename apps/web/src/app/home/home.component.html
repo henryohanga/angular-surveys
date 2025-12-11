@@ -15,13 +15,13 @@
       preview.
     </p>
     <div class="hero-actions">
-      <ng-container *ngIf="(isAuthenticated$ | async) === false">
+      @if ((isAuthenticated$ | async) === false) {
         <a
           mat-raised-button
           color="primary"
           class="cta-primary"
           routerLink="/register"
-        >
+          >
           <mat-icon>rocket_launch</mat-icon>
           Get Started Free
         </a>
@@ -29,14 +29,14 @@
           <mat-icon>play_circle</mat-icon>
           Try Demo
         </a>
-      </ng-container>
-      <ng-container *ngIf="isAuthenticated$ | async">
+      }
+      @if (isAuthenticated$ | async) {
         <a
           mat-raised-button
           color="primary"
           class="cta-primary"
           routerLink="/dashboard"
-        >
+          >
           <mat-icon>dashboard</mat-icon>
           Go to Dashboard
         </a>
@@ -44,7 +44,7 @@
           <mat-icon>play_circle</mat-icon>
           Try Demo
         </a>
-      </ng-container>
+      }
     </div>
     <div class="hero-stats">
       <div class="stat">
@@ -100,13 +100,15 @@
     <p>Powerful features that make survey creation a breeze</p>
   </div>
   <div class="features-grid">
-    <div class="feature-card" *ngFor="let feature of features">
-      <div class="feature-icon">
-        <mat-icon>{{ feature.icon }}</mat-icon>
+    @for (feature of features; track feature) {
+      <div class="feature-card">
+        <div class="feature-icon">
+          <mat-icon>{{ feature.icon }}</mat-icon>
+        </div>
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.description }}</p>
       </div>
-      <h3>{{ feature.title }}</h3>
-      <p>{{ feature.description }}</p>
-    </div>
+    }
   </div>
 </section>
 
@@ -187,145 +189,146 @@
     <p>Get started faster with pre-built survey templates</p>
   </div>
   <div class="templates-grid">
-    <div
-      class="template-card"
-      *ngFor="let template of templates"
-      (click)="useTemplate(template.id)"
-      (keyup.enter)="useTemplate(template.id)"
-      tabindex="0"
-      role="button"
-      [attr.aria-label]="'Use ' + template.name + ' template'"
-    >
+    @for (template of templates; track template) {
       <div
-        class="template-icon"
-        [style.background-color]="template.color + '15'"
-        [style.color]="template.color"
-      >
-        <mat-icon>{{ template.icon }}</mat-icon>
-      </div>
-      <div class="template-info">
-        <h4>{{ template.name }}</h4>
-        <p>{{ template.description }}</p>
-        <span class="template-meta"
-          >{{ template.questionCount }} questions</span
+        class="template-card"
+        (click)="useTemplate(template.id)"
+        (keyup.enter)="useTemplate(template.id)"
+        tabindex="0"
+        role="button"
+        [attr.aria-label]="'Use ' + template.name + ' template'"
         >
-      </div>
-      <mat-icon class="template-arrow">arrow_forward</mat-icon>
+        <div
+          class="template-icon"
+          [style.background-color]="template.color + '15'"
+          [style.color]="template.color"
+          >
+          <mat-icon>{{ template.icon }}</mat-icon>
+        </div>
+        <div class="template-info">
+          <h4>{{ template.name }}</h4>
+          <p>{{ template.description }}</p>
+          <span class="template-meta"
+            >{{ template.questionCount }} questions</span
+            >
+          </div>
+          <mat-icon class="template-arrow">arrow_forward</mat-icon>
+        </div>
+      }
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- How It Works Section -->
-<section class="how-it-works">
-  <div class="section-header">
-    <h2>How It Works</h2>
-    <p>Create professional surveys in three simple steps</p>
-  </div>
-  <div class="steps">
-    <div class="step">
-      <div class="step-number">1</div>
-      <div class="step-content">
-        <h3>Design Your Survey</h3>
-        <p>
-          Use the drag-and-drop builder to add questions, configure options, and
-          arrange your survey pages.
-        </p>
+  <!-- How It Works Section -->
+  <section class="how-it-works">
+    <div class="section-header">
+      <h2>How It Works</h2>
+      <p>Create professional surveys in three simple steps</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Design Your Survey</h3>
+          <p>
+            Use the drag-and-drop builder to add questions, configure options, and
+            arrange your survey pages.
+          </p>
+        </div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Add Logic & Flow</h3>
+          <p>
+            Set up conditional logic to show or hide questions based on responses.
+            Create branching paths.
+          </p>
+        </div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>Preview & Export</h3>
+          <p>
+            Test your survey with the live preview, then export as JSON or
+            integrate into your application.
+          </p>
+        </div>
       </div>
     </div>
-    <div class="step-connector"></div>
-    <div class="step">
-      <div class="step-number">2</div>
-      <div class="step-content">
-        <h3>Add Logic & Flow</h3>
-        <p>
-          Set up conditional logic to show or hide questions based on responses.
-          Create branching paths.
-        </p>
-      </div>
-    </div>
-    <div class="step-connector"></div>
-    <div class="step">
-      <div class="step-number">3</div>
-      <div class="step-content">
-        <h3>Preview & Export</h3>
-        <p>
-          Test your survey with the live preview, then export as JSON or
-          integrate into your application.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
 
-<!-- CTA Section -->
-<section class="cta-section">
-  <div class="cta-content">
-    <h2>Ready to Build Your Survey?</h2>
-    <p>Start creating beautiful, interactive surveys today. Free forever.</p>
-    <ng-container *ngIf="(isAuthenticated$ | async) === false">
-      <a
-        mat-raised-button
-        color="primary"
-        class="cta-button"
-        routerLink="/register"
-      >
-        <mat-icon>rocket_launch</mat-icon>
-        Get Started Free
-      </a>
-    </ng-container>
-    <ng-container *ngIf="isAuthenticated$ | async">
-      <a
-        mat-raised-button
-        color="primary"
-        class="cta-button"
-        routerLink="/dashboard"
-      >
-        <mat-icon>dashboard</mat-icon>
-        Go to Dashboard
-      </a>
-    </ng-container>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="footer">
-  <div class="footer-content">
-    <div class="footer-brand">
-      <div class="brand-logo">
-        <mat-icon>poll</mat-icon>
-        <span>Angular Surveys</span>
-      </div>
-      <p>Modern survey builder for Angular applications</p>
-    </div>
-    <div class="footer-links">
-      <div class="link-group">
-        <h5>Product</h5>
-        <a routerLink="/dashboard">Dashboard</a>
-        <a routerLink="/demo">Try Demo</a>
-        <a href="#features">Features</a>
-      </div>
-      <div class="link-group">
-        <h5>Resources</h5>
-        <a href="https://github.com/henryohanga/angular-surveys" target="_blank"
-          >GitHub</a
-        >
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2>Ready to Build Your Survey?</h2>
+      <p>Start creating beautiful, interactive surveys today. Free forever.</p>
+      @if ((isAuthenticated$ | async) === false) {
         <a
-          href="https://github.com/henryohanga/angular-surveys#readme"
-          target="_blank"
-          >Documentation</a
-        >
-        <a href="https://github.com/mwasiluk/angular-surveys" target="_blank"
-          >Original Project</a
-        >
-      </div>
+          mat-raised-button
+          color="primary"
+          class="cta-button"
+          routerLink="/register"
+          >
+          <mat-icon>rocket_launch</mat-icon>
+          Get Started Free
+        </a>
+      }
+      @if (isAuthenticated$ | async) {
+        <a
+          mat-raised-button
+          color="primary"
+          class="cta-button"
+          routerLink="/dashboard"
+          >
+          <mat-icon>dashboard</mat-icon>
+          Go to Dashboard
+        </a>
+      }
     </div>
-  </div>
-  <div class="footer-bottom">
-    <p>
-      Built with Angular · Inspired by
-      <a href="https://github.com/mwasiluk/angular-surveys" target="_blank"
-        >angular-surveys</a
-      >
-    </p>
-  </div>
-</footer>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <mat-icon>poll</mat-icon>
+          <span>Angular Surveys</span>
+        </div>
+        <p>Modern survey builder for Angular applications</p>
+      </div>
+      <div class="footer-links">
+        <div class="link-group">
+          <h5>Product</h5>
+          <a routerLink="/dashboard">Dashboard</a>
+          <a routerLink="/demo">Try Demo</a>
+          <a href="#features">Features</a>
+        </div>
+        <div class="link-group">
+          <h5>Resources</h5>
+          <a href="https://github.com/henryohanga/angular-surveys" target="_blank"
+            >GitHub</a
+            >
+            <a
+              href="https://github.com/henryohanga/angular-surveys#readme"
+              target="_blank"
+              >Documentation</a
+              >
+              <a href="https://github.com/mwasiluk/angular-surveys" target="_blank"
+                >Original Project</a
+                >
+              </div>
+            </div>
+          </div>
+          <div class="footer-bottom">
+            <p>
+              Built with Angular · Inspired by
+              <a href="https://github.com/mwasiluk/angular-surveys" target="_blank"
+                >angular-surveys</a
+                >
+              </p>
+            </div>
+          </footer>

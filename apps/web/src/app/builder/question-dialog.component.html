@@ -17,7 +17,7 @@
       class="close-btn"
       (click)="cancel()"
       aria-label="Close"
-    >
+      >
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -56,492 +56,504 @@
 
         <!-- Category Tabs -->
         <div class="category-tabs">
-          <button
-            *ngFor="let cat of categories"
-            type="button"
-            class="category-tab"
-            [class.active]="activeCategory === cat.id"
-            (click)="selectCategory($any(cat.id))"
-          >
-            <mat-icon>{{ cat.icon }}</mat-icon>
-            <span>{{ cat.label }}</span>
-          </button>
+          @for (cat of categories; track cat) {
+            <button
+              type="button"
+              class="category-tab"
+              [class.active]="activeCategory === cat.id"
+              (click)="selectCategory($any(cat.id))"
+              >
+              <mat-icon>{{ cat.icon }}</mat-icon>
+              <span>{{ cat.label }}</span>
+            </button>
+          }
         </div>
 
         <!-- Type Grid -->
         <div class="type-grid">
-          <button
-            *ngFor="let qtype of filteredTypes"
-            type="button"
-            class="type-card"
-            [class.selected]="currentType === qtype.type"
-            (click)="selectType(qtype.type)"
-          >
-            <div class="type-icon">
-              <mat-icon>{{ qtype.icon }}</mat-icon>
-            </div>
-            <div class="type-info">
-              <span class="type-label">{{ qtype.label }}</span>
-              <span class="type-desc">{{ qtype.description }}</span>
-            </div>
-            <mat-icon class="check-icon" *ngIf="currentType === qtype.type"
-              >check_circle</mat-icon
-            >
-          </button>
-        </div>
-      </div>
-
-      <!-- Placeholder (for input types) -->
-      <div class="form-section" *ngIf="showPlaceholder">
-        <div class="section-header">
-          <mat-icon class="section-icon">text_format</mat-icon>
-          <span class="section-title">Placeholder Text</span>
-          <span class="optional-badge">Optional</span>
-        </div>
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Placeholder</mat-label>
-          <input
-            matInput
-            formControlName="placeholder"
-            placeholder="e.g., Enter your answer..."
-          />
-          <mat-hint>Shown when the field is empty</mat-hint>
-        </mat-form-field>
-      </div>
-
-      <!-- Options Section (for choice types) -->
-      <div class="form-section options-section" *ngIf="showOptions">
-        <div class="section-header">
-          <mat-icon class="section-icon">list</mat-icon>
-          <span class="section-title">Answer Options</span>
-          <button
-            mat-button
-            type="button"
-            class="add-btn"
-            (click)="addAnswer()"
-          >
-            <mat-icon>add</mat-icon>
-            Add Option
-          </button>
-        </div>
-
-        <div
-          class="options-list"
-          cdkDropList
-          (cdkDropListDropped)="dropOption($event)"
-          formArrayName="offeredAnswers"
-        >
-          <div
-            *ngFor="let answer of offeredAnswers.controls; let i = index"
-            class="option-item"
-            cdkDrag
-            [formGroupName]="i"
-          >
-            <mat-icon class="drag-handle" cdkDragHandle
-              >drag_indicator</mat-icon
-            >
-            <span class="option-number">{{ i + 1 }}</span>
-            <mat-form-field appearance="outline" class="option-field">
-              <input
-                matInput
-                [formControl]="$any(answer.get('value'))"
-                placeholder="Option {{ i + 1 }}"
-              />
-            </mat-form-field>
+          @for (qtype of filteredTypes; track qtype) {
             <button
-              mat-icon-button
               type="button"
-              class="remove-btn"
-              (click)="removeAnswer(i)"
-              [disabled]="offeredAnswers.length <= 1"
-            >
-              <mat-icon>close</mat-icon>
-            </button>
-          </div>
-        </div>
-
-        <mat-checkbox formControlName="otherAnswer" class="other-option">
-          Allow "Other" option with text input
-        </mat-checkbox>
-      </div>
-
-      <!-- Scale Configuration -->
-      <div class="form-section scale-section" *ngIf="showScale">
-        <div class="section-header">
-          <mat-icon class="section-icon">linear_scale</mat-icon>
-          <span class="section-title">Scale Settings</span>
-        </div>
-
-        <div class="scale-config" [formGroup]="scale">
-          <div class="scale-range">
-            <mat-form-field appearance="outline">
-              <mat-label>Min</mat-label>
-              <input matInput type="number" formControlName="min" />
-            </mat-form-field>
-            <span class="range-separator">to</span>
-            <mat-form-field appearance="outline">
-              <mat-label>Max</mat-label>
-              <input matInput type="number" formControlName="max" />
-            </mat-form-field>
-          </div>
-
-          <div class="scale-labels">
-            <mat-form-field appearance="outline">
-              <mat-label>Min Label</mat-label>
-              <input
-                matInput
-                formControlName="minLabel"
-                placeholder="e.g., Poor"
-              />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Max Label</mat-label>
-              <input
-                matInput
-                formControlName="maxLabel"
-                placeholder="e.g., Excellent"
-              />
-            </mat-form-field>
-          </div>
-
-          <div class="scale-preview">
-            <span class="preview-label">Preview:</span>
-            <div class="preview-scale">
-              <span class="min-label">{{
-                scale.get("minLabel")?.value || "Min"
-              }}</span>
-              <div class="preview-points">
-                <span
-                  *ngFor="let point of getScalePreview()"
-                  class="preview-point"
-                  >{{ point }}</span
-                >
-              </div>
-              <span class="max-label">{{
-                scale.get("maxLabel")?.value || "Max"
-              }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Star Rating Configuration -->
-      <div class="form-section rating-section" *ngIf="showRating">
-        <div class="section-header">
-          <mat-icon class="section-icon">star</mat-icon>
-          <span class="section-title">Star Rating</span>
-        </div>
-
-        <div class="rating-config" [formGroup]="scale">
-          <mat-form-field appearance="outline">
-            <mat-label>Number of Stars</mat-label>
-            <mat-select formControlName="max">
-              <mat-option [value]="3">3 Stars</mat-option>
-              <mat-option [value]="4">4 Stars</mat-option>
-              <mat-option [value]="5">5 Stars</mat-option>
-              <mat-option [value]="10">10 Stars</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <div class="rating-preview">
-            <span class="preview-label">Preview:</span>
-            <div class="stars-preview">
-              <mat-icon *ngFor="let star of getRatingStars()">star</mat-icon>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- NPS Configuration -->
-      <div class="form-section nps-section" *ngIf="showNps">
-        <div class="section-header">
-          <mat-icon class="section-icon">speed</mat-icon>
-          <span class="section-title">Net Promoter Score</span>
-        </div>
-
-        <div class="nps-config" [formGroup]="scale">
-          <div class="scale-labels">
-            <mat-form-field appearance="outline">
-              <mat-label>Left Label (0)</mat-label>
-              <input
-                matInput
-                formControlName="minLabel"
-                placeholder="Not at all likely"
-              />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Right Label (10)</mat-label>
-              <input
-                matInput
-                formControlName="maxLabel"
-                placeholder="Extremely likely"
-              />
-            </mat-form-field>
-          </div>
-
-          <div class="nps-preview">
-            <span class="preview-label">Preview:</span>
-            <div class="nps-scale">
-              <span class="nps-min-label">{{
-                scale.get("minLabel")?.value || "Not likely"
-              }}</span>
-              <div class="nps-points">
-                <span
-                  *ngFor="let point of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
-                  class="nps-point"
-                  [class.detractor]="point <= 6"
-                  [class.passive]="point >= 7 && point <= 8"
-                  [class.promoter]="point >= 9"
-                  >{{ point }}</span
-                >
-              </div>
-              <span class="nps-max-label">{{
-                scale.get("maxLabel")?.value || "Very likely"
-              }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Grid Configuration -->
-      <div class="form-section grid-section" *ngIf="showGrid">
-        <div class="section-header">
-          <mat-icon class="section-icon">grid_on</mat-icon>
-          <span class="section-title">Matrix Grid</span>
-        </div>
-
-        <div class="grid-config" [formGroup]="grid">
-          <mat-form-field appearance="outline" class="cell-type-field">
-            <mat-label>Response Type</mat-label>
-            <mat-select formControlName="cellInputType">
-              <mat-option value="radio">Single choice per row</mat-option>
-              <mat-option value="checkbox">Multiple choices per row</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <div class="grid-columns-config">
-            <!-- Rows -->
-            <div class="grid-column">
-              <div class="column-header">
-                <span>Rows</span>
-                <button mat-button type="button" (click)="addGridRow()">
-                  <mat-icon>add</mat-icon>
-                </button>
-              </div>
-              <div class="column-items" formArrayName="rows">
-                <div
-                  *ngFor="let row of gridRows.controls; let i = index"
-                  class="grid-item"
-                  [formGroupName]="i"
-                >
-                  <input
-                    class="grid-input"
-                    [formControl]="$any(row.get('label'))"
-                    placeholder="Row {{ i + 1 }}"
-                  />
-                  <button
-                    mat-icon-button
-                    type="button"
-                    (click)="removeGridRow(i)"
-                    [disabled]="gridRows.length <= 1"
-                  >
-                    <mat-icon>close</mat-icon>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Columns -->
-            <div class="grid-column">
-              <div class="column-header">
-                <span>Columns</span>
-                <button mat-button type="button" (click)="addGridCol()">
-                  <mat-icon>add</mat-icon>
-                </button>
-              </div>
-              <div class="column-items" formArrayName="cols">
-                <div
-                  *ngFor="let col of gridCols.controls; let i = index"
-                  class="grid-item"
-                  [formGroupName]="i"
-                >
-                  <input
-                    class="grid-input"
-                    [formControl]="$any(col.get('label'))"
-                    placeholder="Column {{ i + 1 }}"
-                  />
-                  <button
-                    mat-icon-button
-                    type="button"
-                    (click)="removeGridCol(i)"
-                    [disabled]="gridCols.length <= 1"
-                  >
-                    <mat-icon>close</mat-icon>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Priority/Ranking Configuration -->
-      <div class="form-section priority-section" *ngIf="showPriority">
-        <div class="section-header">
-          <mat-icon class="section-icon">format_list_numbered</mat-icon>
-          <span class="section-title">Ranking Items</span>
-          <button
-            mat-button
-            type="button"
-            class="add-btn"
-            (click)="addPriorityItem()"
-          >
-            <mat-icon>add</mat-icon>
-            Add Item
-          </button>
-        </div>
-
-        <p class="section-hint">
-          Respondents will drag to rank these items in order of preference
-        </p>
-
-        <div
-          class="options-list"
-          cdkDropList
-          (cdkDropListDropped)="dropPriority($event)"
-          formArrayName="priorityList"
-        >
-          <div
-            *ngFor="let item of priorityList.controls; let i = index"
-            class="option-item"
-            cdkDrag
-            [formGroupName]="i"
-          >
-            <mat-icon class="drag-handle" cdkDragHandle
-              >drag_indicator</mat-icon
-            >
-            <span class="option-number">{{ i + 1 }}</span>
-            <mat-form-field appearance="outline" class="option-field">
-              <input
-                matInput
-                [formControl]="$any(item.get('value'))"
-                placeholder="Item {{ i + 1 }}"
-              />
-            </mat-form-field>
-            <button
-              mat-icon-button
-              type="button"
-              class="remove-btn"
-              (click)="removePriorityItem(i)"
-              [disabled]="priorityList.length <= 2"
-            >
-              <mat-icon>close</mat-icon>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- File Upload Configuration -->
-      <div class="form-section file-section" *ngIf="showFile">
-        <div class="section-header">
-          <mat-icon class="section-icon">cloud_upload</mat-icon>
-          <span class="section-title">File Upload Settings</span>
-        </div>
-
-        <div class="file-config" [formGroup]="fileConfig">
-          <div class="file-types">
-            <span class="config-label">Allowed file types:</span>
-            <div class="file-type-chips">
-              <button
-                *ngFor="let fileType of fileTypeOptions"
-                type="button"
-                class="file-type-chip"
-                [class.selected]="isFileTypeSelected(fileType.value)"
-                (click)="toggleFileType(fileType.value)"
+              class="type-card"
+              [class.selected]="currentType === qtype.type"
+              (click)="selectType(qtype.type)"
               >
-                <mat-icon>{{ fileType.icon }}</mat-icon>
-                <span>{{ fileType.label }}</span>
+              <div class="type-icon">
+                <mat-icon>{{ qtype.icon }}</mat-icon>
+              </div>
+              <div class="type-info">
+                <span class="type-label">{{ qtype.label }}</span>
+                <span class="type-desc">{{ qtype.description }}</span>
+              </div>
+              @if (currentType === qtype.type) {
+                <mat-icon class="check-icon"
+                  >check_circle</mat-icon
+                  >
+                }
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Placeholder (for input types) -->
+        @if (showPlaceholder) {
+          <div class="form-section">
+            <div class="section-header">
+              <mat-icon class="section-icon">text_format</mat-icon>
+              <span class="section-title">Placeholder Text</span>
+              <span class="optional-badge">Optional</span>
+            </div>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Placeholder</mat-label>
+              <input
+                matInput
+                formControlName="placeholder"
+                placeholder="e.g., Enter your answer..."
+                />
+              <mat-hint>Shown when the field is empty</mat-hint>
+            </mat-form-field>
+          </div>
+        }
+
+        <!-- Options Section (for choice types) -->
+        @if (showOptions) {
+          <div class="form-section options-section">
+            <div class="section-header">
+              <mat-icon class="section-icon">list</mat-icon>
+              <span class="section-title">Answer Options</span>
+              <button
+                mat-button
+                type="button"
+                class="add-btn"
+                (click)="addAnswer()"
+                >
+                <mat-icon>add</mat-icon>
+                Add Option
               </button>
             </div>
-          </div>
+            <div
+              class="options-list"
+              cdkDropList
+              (cdkDropListDropped)="dropOption($event)"
+              formArrayName="offeredAnswers"
+              >
+              @for (answer of offeredAnswers.controls; track answer; let i = $index) {
+                <div
+                  class="option-item"
+                  cdkDrag
+                  [formGroupName]="i"
+                  >
+                  <mat-icon class="drag-handle" cdkDragHandle
+                    >drag_indicator</mat-icon
+                    >
+                    <span class="option-number">{{ i + 1 }}</span>
+                    <mat-form-field appearance="outline" class="option-field">
+                      <input
+                        matInput
+                        [formControl]="$any(answer.get('value'))"
+                        placeholder="Option {{ i + 1 }}"
+                        />
+                    </mat-form-field>
+                    <button
+                      mat-icon-button
+                      type="button"
+                      class="remove-btn"
+                      (click)="removeAnswer(i)"
+                      [disabled]="offeredAnswers.length <= 1"
+                      >
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+              <mat-checkbox formControlName="otherAnswer" class="other-option">
+                Allow "Other" option with text input
+              </mat-checkbox>
+            </div>
+          }
 
-          <div class="file-options">
-            <mat-form-field appearance="outline">
-              <mat-label>Max file size (MB)</mat-label>
-              <input
-                matInput
-                type="number"
-                formControlName="maxSize"
-                min="1"
-                max="100"
-              />
-            </mat-form-field>
+          <!-- Scale Configuration -->
+          @if (showScale) {
+            <div class="form-section scale-section">
+              <div class="section-header">
+                <mat-icon class="section-icon">linear_scale</mat-icon>
+                <span class="section-title">Scale Settings</span>
+              </div>
+              <div class="scale-config" [formGroup]="scale">
+                <div class="scale-range">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Min</mat-label>
+                    <input matInput type="number" formControlName="min" />
+                  </mat-form-field>
+                  <span class="range-separator">to</span>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Max</mat-label>
+                    <input matInput type="number" formControlName="max" />
+                  </mat-form-field>
+                </div>
+                <div class="scale-labels">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Min Label</mat-label>
+                    <input
+                      matInput
+                      formControlName="minLabel"
+                      placeholder="e.g., Poor"
+                      />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Max Label</mat-label>
+                    <input
+                      matInput
+                      formControlName="maxLabel"
+                      placeholder="e.g., Excellent"
+                      />
+                  </mat-form-field>
+                </div>
+                <div class="scale-preview">
+                  <span class="preview-label">Preview:</span>
+                  <div class="preview-scale">
+                    <span class="min-label">{{
+                      scale.get("minLabel")?.value || "Min"
+                    }}</span>
+                    <div class="preview-points">
+                      @for (point of getScalePreview(); track point) {
+                        <span
+                          class="preview-point"
+                          >{{ point }}</span
+                          >
+                        }
+                      </div>
+                      <span class="max-label">{{
+                        scale.get("maxLabel")?.value || "Max"
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
 
-            <mat-checkbox formControlName="multiple"
-              >Allow multiple files</mat-checkbox
-            >
-          </div>
-        </div>
-      </div>
+            <!-- Star Rating Configuration -->
+            @if (showRating) {
+              <div class="form-section rating-section">
+                <div class="section-header">
+                  <mat-icon class="section-icon">star</mat-icon>
+                  <span class="section-title">Star Rating</span>
+                </div>
+                <div class="rating-config" [formGroup]="scale">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Number of Stars</mat-label>
+                    <mat-select formControlName="max">
+                      <mat-option [value]="3">3 Stars</mat-option>
+                      <mat-option [value]="4">4 Stars</mat-option>
+                      <mat-option [value]="5">5 Stars</mat-option>
+                      <mat-option [value]="10">10 Stars</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <div class="rating-preview">
+                    <span class="preview-label">Preview:</span>
+                    <div class="stars-preview">
+                      @for (star of getRatingStars(); track star) {
+                        <mat-icon>star</mat-icon>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
 
-      <!-- Number Configuration -->
-      <div class="form-section number-section" *ngIf="showNumber">
-        <div class="section-header">
-          <mat-icon class="section-icon">pin</mat-icon>
-          <span class="section-title">Number Settings</span>
-        </div>
+            <!-- NPS Configuration -->
+            @if (showNps) {
+              <div class="form-section nps-section">
+                <div class="section-header">
+                  <mat-icon class="section-icon">speed</mat-icon>
+                  <span class="section-title">Net Promoter Score</span>
+                </div>
+                <div class="nps-config" [formGroup]="scale">
+                  <div class="scale-labels">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Left Label (0)</mat-label>
+                      <input
+                        matInput
+                        formControlName="minLabel"
+                        placeholder="Not at all likely"
+                        />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Right Label (10)</mat-label>
+                      <input
+                        matInput
+                        formControlName="maxLabel"
+                        placeholder="Extremely likely"
+                        />
+                    </mat-form-field>
+                  </div>
+                  <div class="nps-preview">
+                    <span class="preview-label">Preview:</span>
+                    <div class="nps-scale">
+                      <span class="nps-min-label">{{
+                        scale.get("minLabel")?.value || "Not likely"
+                      }}</span>
+                      <div class="nps-points">
+                        @for (point of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track point) {
+                          <span
+                            class="nps-point"
+                            [class.detractor]="point <= 6"
+                            [class.passive]="point >= 7 && point <= 8"
+                            [class.promoter]="point >= 9"
+                            >{{ point }}</span
+                            >
+                          }
+                        </div>
+                        <span class="nps-max-label">{{
+                          scale.get("maxLabel")?.value || "Very likely"
+                        }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
 
-        <div class="number-config" [formGroup]="numberConfig">
-          <div class="number-range">
-            <mat-form-field appearance="outline">
-              <mat-label>Minimum</mat-label>
-              <input matInput type="number" formControlName="min" />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Maximum</mat-label>
-              <input matInput type="number" formControlName="max" />
-            </mat-form-field>
-          </div>
+              <!-- Grid Configuration -->
+              @if (showGrid) {
+                <div class="form-section grid-section">
+                  <div class="section-header">
+                    <mat-icon class="section-icon">grid_on</mat-icon>
+                    <span class="section-title">Matrix Grid</span>
+                  </div>
+                  <div class="grid-config" [formGroup]="grid">
+                    <mat-form-field appearance="outline" class="cell-type-field">
+                      <mat-label>Response Type</mat-label>
+                      <mat-select formControlName="cellInputType">
+                        <mat-option value="radio">Single choice per row</mat-option>
+                        <mat-option value="checkbox">Multiple choices per row</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <div class="grid-columns-config">
+                      <!-- Rows -->
+                      <div class="grid-column">
+                        <div class="column-header">
+                          <span>Rows</span>
+                          <button mat-button type="button" (click)="addGridRow()">
+                            <mat-icon>add</mat-icon>
+                          </button>
+                        </div>
+                        <div class="column-items" formArrayName="rows">
+                          @for (row of gridRows.controls; track row; let i = $index) {
+                            <div
+                              class="grid-item"
+                              [formGroupName]="i"
+                              >
+                              <input
+                                class="grid-input"
+                                [formControl]="$any(row.get('label'))"
+                                placeholder="Row {{ i + 1 }}"
+                                />
+                              <button
+                                mat-icon-button
+                                type="button"
+                                (click)="removeGridRow(i)"
+                                [disabled]="gridRows.length <= 1"
+                                >
+                                <mat-icon>close</mat-icon>
+                              </button>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                      <!-- Columns -->
+                      <div class="grid-column">
+                        <div class="column-header">
+                          <span>Columns</span>
+                          <button mat-button type="button" (click)="addGridCol()">
+                            <mat-icon>add</mat-icon>
+                          </button>
+                        </div>
+                        <div class="column-items" formArrayName="cols">
+                          @for (col of gridCols.controls; track col; let i = $index) {
+                            <div
+                              class="grid-item"
+                              [formGroupName]="i"
+                              >
+                              <input
+                                class="grid-input"
+                                [formControl]="$any(col.get('label'))"
+                                placeholder="Column {{ i + 1 }}"
+                                />
+                              <button
+                                mat-icon-button
+                                type="button"
+                                (click)="removeGridCol(i)"
+                                [disabled]="gridCols.length <= 1"
+                                >
+                                <mat-icon>close</mat-icon>
+                              </button>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
 
-          <div class="number-format">
-            <mat-form-field appearance="outline">
-              <mat-label>Prefix</mat-label>
-              <input matInput formControlName="prefix" placeholder="e.g., $" />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Suffix</mat-label>
-              <input matInput formControlName="suffix" placeholder="e.g., kg" />
-            </mat-form-field>
-          </div>
-        </div>
-      </div>
+              <!-- Priority/Ranking Configuration -->
+              @if (showPriority) {
+                <div class="form-section priority-section">
+                  <div class="section-header">
+                    <mat-icon class="section-icon">format_list_numbered</mat-icon>
+                    <span class="section-title">Ranking Items</span>
+                    <button
+                      mat-button
+                      type="button"
+                      class="add-btn"
+                      (click)="addPriorityItem()"
+                      >
+                      <mat-icon>add</mat-icon>
+                      Add Item
+                    </button>
+                  </div>
+                  <p class="section-hint">
+                    Respondents will drag to rank these items in order of preference
+                  </p>
+                  <div
+                    class="options-list"
+                    cdkDropList
+                    (cdkDropListDropped)="dropPriority($event)"
+                    formArrayName="priorityList"
+                    >
+                    @for (item of priorityList.controls; track item; let i = $index) {
+                      <div
+                        class="option-item"
+                        cdkDrag
+                        [formGroupName]="i"
+                        >
+                        <mat-icon class="drag-handle" cdkDragHandle
+                          >drag_indicator</mat-icon
+                          >
+                          <span class="option-number">{{ i + 1 }}</span>
+                          <mat-form-field appearance="outline" class="option-field">
+                            <input
+                              matInput
+                              [formControl]="$any(item.get('value'))"
+                              placeholder="Item {{ i + 1 }}"
+                              />
+                          </mat-form-field>
+                          <button
+                            mat-icon-button
+                            type="button"
+                            class="remove-btn"
+                            (click)="removePriorityItem(i)"
+                            [disabled]="priorityList.length <= 2"
+                            >
+                            <mat-icon>close</mat-icon>
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
 
-      <!-- Required Toggle -->
-      <div class="form-section required-section">
-        <div class="required-toggle">
-          <mat-slide-toggle formControlName="required" color="primary">
-            Required question
-          </mat-slide-toggle>
-          <span class="toggle-hint"
-            >Respondents must answer this question to continue</span
-          >
-        </div>
-      </div>
-    </form>
-  </div>
+                <!-- File Upload Configuration -->
+                @if (showFile) {
+                  <div class="form-section file-section">
+                    <div class="section-header">
+                      <mat-icon class="section-icon">cloud_upload</mat-icon>
+                      <span class="section-title">File Upload Settings</span>
+                    </div>
+                    <div class="file-config" [formGroup]="fileConfig">
+                      <div class="file-types">
+                        <span class="config-label">Allowed file types:</span>
+                        <div class="file-type-chips">
+                          @for (fileType of fileTypeOptions; track fileType) {
+                            <button
+                              type="button"
+                              class="file-type-chip"
+                              [class.selected]="isFileTypeSelected(fileType.value)"
+                              (click)="toggleFileType(fileType.value)"
+                              >
+                              <mat-icon>{{ fileType.icon }}</mat-icon>
+                              <span>{{ fileType.label }}</span>
+                            </button>
+                          }
+                        </div>
+                      </div>
+                      <div class="file-options">
+                        <mat-form-field appearance="outline">
+                          <mat-label>Max file size (MB)</mat-label>
+                          <input
+                            matInput
+                            type="number"
+                            formControlName="maxSize"
+                            min="1"
+                            max="100"
+                            />
+                        </mat-form-field>
+                        <mat-checkbox formControlName="multiple"
+                          >Allow multiple files</mat-checkbox
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  }
 
-  <!-- Footer -->
-  <div class="dialog-footer">
-    <button mat-button class="cancel-btn" (click)="cancel()">Cancel</button>
-    <button
-      mat-raised-button
-      color="primary"
-      class="save-btn"
-      (click)="save()"
-      [disabled]="!isFormValid()"
-    >
-      <mat-icon>{{ data.mode === "edit" ? "save" : "add" }}</mat-icon>
-      {{ data.mode === "edit" ? "Save Changes" : "Add Question" }}
-    </button>
-  </div>
-</div>
+                  <!-- Number Configuration -->
+                  @if (showNumber) {
+                    <div class="form-section number-section">
+                      <div class="section-header">
+                        <mat-icon class="section-icon">pin</mat-icon>
+                        <span class="section-title">Number Settings</span>
+                      </div>
+                      <div class="number-config" [formGroup]="numberConfig">
+                        <div class="number-range">
+                          <mat-form-field appearance="outline">
+                            <mat-label>Minimum</mat-label>
+                            <input matInput type="number" formControlName="min" />
+                          </mat-form-field>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Maximum</mat-label>
+                            <input matInput type="number" formControlName="max" />
+                          </mat-form-field>
+                        </div>
+                        <div class="number-format">
+                          <mat-form-field appearance="outline">
+                            <mat-label>Prefix</mat-label>
+                            <input matInput formControlName="prefix" placeholder="e.g., $" />
+                          </mat-form-field>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Suffix</mat-label>
+                            <input matInput formControlName="suffix" placeholder="e.g., kg" />
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    </div>
+                  }
+
+                  <!-- Required Toggle -->
+                  <div class="form-section required-section">
+                    <div class="required-toggle">
+                      <mat-slide-toggle formControlName="required" color="primary">
+                        Required question
+                      </mat-slide-toggle>
+                      <span class="toggle-hint"
+                        >Respondents must answer this question to continue</span
+                        >
+                      </div>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Footer -->
+                <div class="dialog-footer">
+                  <button mat-button class="cancel-btn" (click)="cancel()">Cancel</button>
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    class="save-btn"
+                    (click)="save()"
+                    [disabled]="!isFormValid()"
+                    >
+                    <mat-icon>{{ data.mode === "edit" ? "save" : "add" }}</mat-icon>
+                    {{ data.mode === "edit" ? "Save Changes" : "Add Question" }}
+                  </button>
+                </div>
+              </div>

@@ -1,53 +1,68 @@
 <div class="chart-container" #chartContainer>
-  <h3 class="chart-title" *ngIf="title">{{ title }}</h3>
+  @if (title) {
+    <h3 class="chart-title">{{ title }}</h3>
+  }
 
   <!-- Bar Chart -->
-  <div class="bar-chart" *ngIf="type === 'bar'" [style.height.px]="height">
-    <div class="bar-item" *ngFor="let item of data; let i = index">
-      <div class="bar-label">{{ item.label }}</div>
-      <div class="bar-wrapper">
-        <div
-          class="bar"
-          [style.width.%]="getBarWidth(item.value)"
-          [style.backgroundColor]="getColor(i, item)"
-        ></div>
-        <span class="bar-value"
-          >{{ item.value }} ({{ getPercentage(item.value) }}%)</span
-        >
+  @if (type === 'bar') {
+    <div class="bar-chart" [style.height.px]="height">
+      @for (item of data; track item; let i = $index) {
+        <div class="bar-item">
+          <div class="bar-label">{{ item.label }}</div>
+          <div class="bar-wrapper">
+            <div
+              class="bar"
+              [style.width.%]="getBarWidth(item.value)"
+              [style.backgroundColor]="getColor(i, item)"
+            ></div>
+            <span class="bar-value"
+              >{{ item.value }} ({{ getPercentage(item.value) }}%)</span
+              >
+            </div>
+          </div>
+        }
       </div>
-    </div>
-  </div>
+    }
 
-  <!-- Pie Chart -->
-  <div class="pie-chart" *ngIf="type === 'pie' || type === 'donut'">
-    <div class="pie-visual" [class.donut]="type === 'donut'">
-      <div
-        class="pie-slice"
-        *ngFor="let item of data; let i = index"
-        [ngStyle]="getPieSliceStyle(i)"
-      ></div>
-      <div class="pie-center" *ngIf="type === 'donut'">
-        <span class="pie-total">{{ total }}</span>
-        <span class="pie-label">Total</span>
-      </div>
-    </div>
-    <div class="pie-legend">
-      <div class="legend-item" *ngFor="let item of data; let i = index">
-        <span
-          class="legend-color"
-          [style.backgroundColor]="getColor(i, item)"
-        ></span>
-        <span class="legend-label">{{ item.label }}</span>
-        <span class="legend-value"
-          >{{ item.value }} ({{ getPercentage(item.value) }}%)</span
-        >
-      </div>
-    </div>
-  </div>
+    <!-- Pie Chart -->
+    @if (type === 'pie' || type === 'donut') {
+      <div class="pie-chart">
+        <div class="pie-visual" [class.donut]="type === 'donut'">
+          @for (item of data; track item; let i = $index) {
+            <div
+              class="pie-slice"
+              [ngStyle]="getPieSliceStyle(i)"
+            ></div>
+          }
+          @if (type === 'donut') {
+            <div class="pie-center">
+              <span class="pie-total">{{ total }}</span>
+              <span class="pie-label">Total</span>
+            </div>
+          }
+        </div>
+        <div class="pie-legend">
+          @for (item of data; track item; let i = $index) {
+            <div class="legend-item">
+              <span
+                class="legend-color"
+                [style.backgroundColor]="getColor(i, item)"
+              ></span>
+              <span class="legend-label">{{ item.label }}</span>
+              <span class="legend-value"
+                >{{ item.value }} ({{ getPercentage(item.value) }}%)</span
+                >
+              </div>
+            }
+          </div>
+        </div>
+      }
 
-  <!-- Empty state -->
-  <div class="empty-state" *ngIf="data.length === 0">
-    <mat-icon>bar_chart</mat-icon>
-    <p>No data available</p>
-  </div>
-</div>
+      <!-- Empty state -->
+      @if (data.length === 0) {
+        <div class="empty-state">
+          <mat-icon>bar_chart</mat-icon>
+          <p>No data available</p>
+        </div>
+      }
+    </div>

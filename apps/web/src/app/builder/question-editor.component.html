@@ -32,188 +32,199 @@
         <mat-option value="signature">Signature</mat-option>
       </mat-select>
     </mat-form-field>
-    <div
-      *ngIf="form.get('type')?.value === 'checkbox'"
-      aria-labelledby="pfm-heading"
-    >
-      <h5 class="q-label" id="pfm-heading">Page Flow</h5>
-      <mat-checkbox formControlName="pageFlowModifier"
-        >Enable page flow</mat-checkbox
-      >
-    </div>
-    <div
-      *ngIf="
+    @if (form.get('type')?.value === 'checkbox') {
+      <div
+        aria-labelledby="pfm-heading"
+        >
+        <h5 class="q-label" id="pfm-heading">Page Flow</h5>
+        <mat-checkbox formControlName="pageFlowModifier"
+          >Enable page flow</mat-checkbox
+          >
+        </div>
+      }
+      @if (
         form.get('type')?.value === 'radio' ||
         form.get('type')?.value === 'checkbox' ||
         form.get('type')?.value === 'select'
-      "
-      aria-labelledby="options-heading"
-    >
-      <h5 class="q-label" id="options-heading">Options</h5>
-      <div formArrayName="offeredAnswers">
+        ) {
         <div
-          *ngFor="let a of offeredAnswers.controls; let i = index"
-          [formGroupName]="i"
-          class="option-row"
-        >
-          <mat-form-field appearance="outline" class="full">
-            <mat-label>Value</mat-label>
-            <input matInput formControlName="value" />
-          </mat-form-field>
-          <div [formGroup]="a.get('pageFlow')">
-            <mat-form-field appearance="outline" class="full">
-              <mat-label>Go to page</mat-label>
-              <mat-select formControlName="goToPage">
-                <mat-option [value]="null">None</mat-option>
-                <mat-option *ngFor="let n of pageNumbers" [value]="n"
-                  >Page {{ n }}</mat-option
+          aria-labelledby="options-heading"
+          >
+          <h5 class="q-label" id="options-heading">Options</h5>
+          <div formArrayName="offeredAnswers">
+            @for (a of offeredAnswers.controls; track a; let i = $index) {
+              <div
+                [formGroupName]="i"
+                class="option-row"
                 >
-              </mat-select>
-            </mat-form-field>
-            <mat-checkbox formControlName="nextPage">Next page</mat-checkbox>
-          </div>
-          <button
-            mat-button
-            color="warn"
-            type="button"
-            (click)="removeAnswer(i)"
-          >
-            Remove
-          </button>
-        </div>
-      </div>
-      <button mat-stroked-button type="button" (click)="addAnswer()">
-        Add Option
-      </button>
-      <mat-checkbox formControlName="otherAnswer"
-        >Allow other answer</mat-checkbox
-      >
-    </div>
+                <mat-form-field appearance="outline" class="full">
+                  <mat-label>Value</mat-label>
+                  <input matInput formControlName="value" />
+                </mat-form-field>
+                <div [formGroup]="a.get('pageFlow')">
+                  <mat-form-field appearance="outline" class="full">
+                    <mat-label>Go to page</mat-label>
+                    <mat-select formControlName="goToPage">
+                      <mat-option [value]="null">None</mat-option>
+                      @for (n of pageNumbers; track n) {
+                        <mat-option [value]="n"
+                          >Page {{ n }}</mat-option
+                          >
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-checkbox formControlName="nextPage">Next page</mat-checkbox>
+                  </div>
+                  <button
+                    mat-button
+                    color="warn"
+                    type="button"
+                    (click)="removeAnswer(i)"
+                    >
+                    Remove
+                  </button>
+                </div>
+              }
+            </div>
+            <button mat-stroked-button type="button" (click)="addAnswer()">
+              Add Option
+            </button>
+            <mat-checkbox formControlName="otherAnswer"
+              >Allow other answer</mat-checkbox
+              >
+            </div>
+          }
 
-    <div
-      *ngIf="form.get('type')?.value === 'grid'"
-      [formGroup]="grid"
-      aria-labelledby="grid-heading"
-    >
-      <h5 class="q-label" id="grid-heading">Grid</h5>
-      <mat-form-field appearance="outline" class="full">
-        <mat-label>Cell input type</mat-label>
-        <mat-select formControlName="cellInputType">
-          <mat-option value="radio">Radio</mat-option>
-          <mat-option value="checkbox">Checkbox</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <div formArrayName="rows">
-        <h6 class="q-label">Rows</h6>
-        <div
-          *ngFor="let r of gridRows.controls; let i = index"
-          [formGroupName]="i"
-          class="option-row"
-        >
-          <mat-form-field appearance="outline" class="full">
-            <mat-label>Row label</mat-label>
-            <input matInput formControlName="label" />
-          </mat-form-field>
-          <button
-            mat-button
-            color="warn"
-            type="button"
-            (click)="removeGridRow(i)"
-          >
-            Remove
-          </button>
-        </div>
-        <button mat-stroked-button type="button" (click)="addGridRow()">
-          Add Row
-        </button>
-      </div>
-      <div formArrayName="cols">
-        <h6 class="q-label">Columns</h6>
-        <div
-          *ngFor="let c of gridCols.controls; let i = index"
-          [formGroupName]="i"
-          class="option-row"
-        >
-          <mat-form-field appearance="outline" class="full">
-            <mat-label>Column label</mat-label>
-            <input matInput formControlName="label" />
-          </mat-form-field>
-          <button
-            mat-button
-            color="warn"
-            type="button"
-            (click)="removeGridCol(i)"
-          >
-            Remove
-          </button>
-        </div>
-        <button mat-stroked-button type="button" (click)="addGridCol()">
-          Add Column
-        </button>
-      </div>
-    </div>
+          @if (form.get('type')?.value === 'grid') {
+            <div
+              [formGroup]="grid"
+              aria-labelledby="grid-heading"
+              >
+              <h5 class="q-label" id="grid-heading">Grid</h5>
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Cell input type</mat-label>
+                <mat-select formControlName="cellInputType">
+                  <mat-option value="radio">Radio</mat-option>
+                  <mat-option value="checkbox">Checkbox</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div formArrayName="rows">
+                <h6 class="q-label">Rows</h6>
+                @for (r of gridRows.controls; track r; let i = $index) {
+                  <div
+                    [formGroupName]="i"
+                    class="option-row"
+                    >
+                    <mat-form-field appearance="outline" class="full">
+                      <mat-label>Row label</mat-label>
+                      <input matInput formControlName="label" />
+                    </mat-form-field>
+                    <button
+                      mat-button
+                      color="warn"
+                      type="button"
+                      (click)="removeGridRow(i)"
+                      >
+                      Remove
+                    </button>
+                  </div>
+                }
+                <button mat-stroked-button type="button" (click)="addGridRow()">
+                  Add Row
+                </button>
+              </div>
+              <div formArrayName="cols">
+                <h6 class="q-label">Columns</h6>
+                @for (c of gridCols.controls; track c; let i = $index) {
+                  <div
+                    [formGroupName]="i"
+                    class="option-row"
+                    >
+                    <mat-form-field appearance="outline" class="full">
+                      <mat-label>Column label</mat-label>
+                      <input matInput formControlName="label" />
+                    </mat-form-field>
+                    <button
+                      mat-button
+                      color="warn"
+                      type="button"
+                      (click)="removeGridCol(i)"
+                      >
+                      Remove
+                    </button>
+                  </div>
+                }
+                <button mat-stroked-button type="button" (click)="addGridCol()">
+                  Add Column
+                </button>
+              </div>
+            </div>
+          }
 
-    <div
-      *ngIf="form.get('type')?.value === 'priority'"
-      formArrayName="priorityList"
-      aria-labelledby="prio-heading"
-    >
-      <h5 class="q-label" id="prio-heading">Priority Items</h5>
-      <div
-        *ngFor="let it of priorityList.controls; let i = index"
-        [formGroupName]="i"
-        class="option-row"
-      >
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Item</mat-label>
-          <input matInput formControlName="value" />
-        </mat-form-field>
-        <button
-          mat-button
-          color="warn"
-          type="button"
-          (click)="removePriorityItem(i)"
-        >
-          Remove
-        </button>
-      </div>
-      <button mat-stroked-button type="button" (click)="addPriorityItem()">
-        Add Item
-      </button>
-    </div>
+          @if (form.get('type')?.value === 'priority') {
+            <div
+              formArrayName="priorityList"
+              aria-labelledby="prio-heading"
+              >
+              <h5 class="q-label" id="prio-heading">Priority Items</h5>
+              @for (it of priorityList.controls; track it; let i = $index) {
+                <div
+                  [formGroupName]="i"
+                  class="option-row"
+                  >
+                  <mat-form-field appearance="outline" class="full">
+                    <mat-label>Item</mat-label>
+                    <input matInput formControlName="value" />
+                  </mat-form-field>
+                  <button
+                    mat-button
+                    color="warn"
+                    type="button"
+                    (click)="removePriorityItem(i)"
+                    >
+                    Remove
+                  </button>
+                </div>
+              }
+              <button mat-stroked-button type="button" (click)="addPriorityItem()">
+                Add Item
+              </button>
+            </div>
+          }
 
-    <div
-      *ngIf="form.get('type')?.value === 'scale'"
-      [formGroup]="scale"
-      aria-labelledby="scale-heading"
-    >
-      <h5 class="q-label" id="scale-heading">Scale</h5>
-      <div class="option-row">
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Min</mat-label>
-          <input matInput type="number" formControlName="min" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Max</mat-label>
-          <input matInput type="number" formControlName="max" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Step</mat-label>
-          <input matInput type="number" formControlName="step" />
-        </mat-form-field>
-      </div>
-      <div class="option-row">
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Min Label (e.g. "Poor")</mat-label>
-          <input matInput formControlName="minLabel" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Max Label (e.g. "Excellent")</mat-label>
-          <input matInput formControlName="maxLabel" />
-        </mat-form-field>
-      </div>
-    </div>
-    <button mat-button type="button" (click)="dismissed.emit()">Cancel</button>
-    <button mat-raised-button color="primary" type="submit">Add</button>
-  </form>
-</mat-card>
+          @if (form.get('type')?.value === 'scale') {
+            <div
+              [formGroup]="scale"
+              aria-labelledby="scale-heading"
+              >
+              <h5 class="q-label" id="scale-heading">Scale</h5>
+              <div class="option-row">
+                <mat-form-field appearance="outline" class="full">
+                  <mat-label>Min</mat-label>
+                  <input matInput type="number" formControlName="min" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full">
+                  <mat-label>Max</mat-label>
+                  <input matInput type="number" formControlName="max" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full">
+                  <mat-label>Step</mat-label>
+                  <input matInput type="number" formControlName="step" />
+                </mat-form-field>
+              </div>
+              <div class="option-row">
+                <mat-form-field appearance="outline" class="full">
+                  <mat-label>Min Label (e.g. "Poor")</mat-label>
+                  <input matInput formControlName="minLabel" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full">
+                  <mat-label>Max Label (e.g. "Excellent")</mat-label>
+                  <input matInput formControlName="maxLabel" />
+                </mat-form-field>
+              </div>
+            </div>
+          }
+          <button mat-button type="button" (click)="dismissed.emit()">Cancel</button>
+          <button mat-raised-button color="primary" type="submit">Add</button>
+        </form>
+      </mat-card>

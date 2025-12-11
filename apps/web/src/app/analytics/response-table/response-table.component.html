@@ -6,103 +6,110 @@
       color="primary"
       (click)="exportCsv()"
       [disabled]="dataSource.data.length === 0"
-    >
+      >
       <mat-icon>download</mat-icon>
       Export CSV
     </button>
   </div>
 
-  <div class="table-wrapper" *ngIf="dataSource.data.length > 0">
-    <table mat-table [dataSource]="dataSource" matSort>
-      <!-- Submitted At Column -->
-      <ng-container matColumnDef="submittedAt">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Submitted</th>
-        <td mat-cell *matCellDef="let row">
-          {{ formatDate(row.submittedAt) }}
-        </td>
-      </ng-container>
+  @if (dataSource.data.length > 0) {
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="dataSource" matSort>
+        <!-- Submitted At Column -->
+        <ng-container matColumnDef="submittedAt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Submitted</th>
+          <td mat-cell *matCellDef="let row">
+            {{ formatDate(row.submittedAt) }}
+          </td>
+        </ng-container>
+        <!-- Dynamic columns -->
+        @for (col of columns; track col) {
+          <ng-container [matColumnDef]="col.key">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ col.label }}
+            </th>
+            <td mat-cell *matCellDef="let row">{{ formatValue(row[col.key]) }}</td>
+          </ng-container>
+        }
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let row">
+            <button
+              mat-icon-button
+              matTooltip="View details"
+              (click)="viewDetails(row)"
+              >
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              matTooltip="Delete"
+              (click)="deleteResponse(row)"
+              class="delete-btn"
+              >
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+      <mat-paginator
+        [pageSizeOptions]="[10, 25, 50]"
+        showFirstLastButtons
+      ></mat-paginator>
+    </div>
+  }
 
-      <!-- Dynamic columns -->
-      <ng-container *ngFor="let col of columns" [matColumnDef]="col.key">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
-          {{ col.label }}
-        </th>
-        <td mat-cell *matCellDef="let row">{{ formatValue(row[col.key]) }}</td>
-      </ng-container>
-
-      <!-- Actions Column -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let row">
-          <button
-            mat-icon-button
-            matTooltip="View details"
-            (click)="viewDetails(row)"
-          >
-            <mat-icon>visibility</mat-icon>
-          </button>
-          <button
-            mat-icon-button
-            matTooltip="Delete"
-            (click)="deleteResponse(row)"
-            class="delete-btn"
-          >
-            <mat-icon>delete_outline</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-
-    <mat-paginator
-      [pageSizeOptions]="[10, 25, 50]"
-      showFirstLastButtons
-    ></mat-paginator>
-  </div>
-
-  <div class="empty-state" *ngIf="dataSource.data.length === 0">
-    <mat-icon>inbox</mat-icon>
-    <p>No responses yet</p>
-  </div>
+  @if (dataSource.data.length === 0) {
+    <div class="empty-state">
+      <mat-icon>inbox</mat-icon>
+      <p>No responses yet</p>
+    </div>
+  }
 
   <!-- Detail Panel -->
-  <div
-    class="detail-overlay"
-    *ngIf="showDetailPanel"
-    (click)="closeDetails()"
-    (keydown.escape)="closeDetails()"
-    tabindex="0"
-    role="button"
-    aria-label="Close details"
-  ></div>
-  <div class="detail-panel" *ngIf="showDetailPanel && selectedResponse">
-    <div class="detail-header">
-      <h3>Response Details</h3>
-      <button mat-icon-button (click)="closeDetails()">
-        <mat-icon>close</mat-icon>
-      </button>
+  @if (showDetailPanel) {
+    <div
+      class="detail-overlay"
+      (click)="closeDetails()"
+      (keydown.escape)="closeDetails()"
+      tabindex="0"
+      role="button"
+      aria-label="Close details"
+    ></div>
+  }
+  @if (showDetailPanel && selectedResponse) {
+    <div class="detail-panel">
+      <div class="detail-header">
+        <h3>Response Details</h3>
+        <button mat-icon-button (click)="closeDetails()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="detail-content">
+        <div class="detail-item">
+          <span class="detail-label">Submitted</span>
+          <span class="detail-value">{{
+            formatDate(selectedResponse.submittedAt)
+          }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Response ID</span>
+          <span class="detail-value id-value">{{ selectedResponse.id }}</span>
+        </div>
+        <mat-divider></mat-divider>
+        <h4>Answers</h4>
+        @for (col of columns; track col) {
+          <div class="detail-item">
+            <span class="detail-label">{{ col.label }}</span>
+            <span class="detail-value">{{
+              formatValue(selectedResponse[col.key])
+            }}</span>
+          </div>
+        }
+      </div>
     </div>
-    <div class="detail-content">
-      <div class="detail-item">
-        <span class="detail-label">Submitted</span>
-        <span class="detail-value">{{
-          formatDate(selectedResponse.submittedAt)
-        }}</span>
-      </div>
-      <div class="detail-item">
-        <span class="detail-label">Response ID</span>
-        <span class="detail-value id-value">{{ selectedResponse.id }}</span>
-      </div>
-      <mat-divider></mat-divider>
-      <h4>Answers</h4>
-      <div class="detail-item" *ngFor="let col of columns">
-        <span class="detail-label">{{ col.label }}</span>
-        <span class="detail-value">{{
-          formatValue(selectedResponse[col.key])
-        }}</span>
-      </div>
-    </div>
-  </div>
+  }
 </div>
