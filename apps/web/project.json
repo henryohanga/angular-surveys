@@ -11,7 +11,7 @@
   "prefix": "app",
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:application",
+      "executor": "@angular/build:application",
       "options": {
         "outputPath": "dist/apps/web",
         "index": "apps/web/src/index.html",
@@ -24,7 +24,7 @@
           "apps/web/src/assets"
         ],
         "styles": [
-          "@angular/material/prebuilt-themes/azure-blue.css",
+          "@angular/material/prebuilt-themes/indigo-pink.css",
           "apps/web/src/styles.scss"
         ],
         "scripts": [],
@@ -69,7 +69,7 @@
       "defaultConfiguration": "development"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
           "buildTarget": "web:build:production"
@@ -88,10 +88,12 @@
       }
     },
     "test": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "@angular/build:karma",
       "options": {
         "main": "apps/web/src/test.ts",
-        "polyfills": "apps/web/src/polyfills.ts",
+        "polyfills": [
+          "apps/web/src/polyfills.ts"
+        ],
         "tsConfig": "apps/web/tsconfig.spec.json",
         "karmaConfig": "apps/web/karma.conf.js",
         "assets": [
@@ -99,10 +101,11 @@
           "apps/web/src/assets"
         ],
         "styles": [
-          "@angular/material/prebuilt-themes/azure-blue.css",
+          "@angular/material/prebuilt-themes/indigo-pink.css",
           "apps/web/src/styles.scss"
         ],
-        "scripts": []
+        "scripts": [],
+        "watch": false
       }
     },
     "lint": {

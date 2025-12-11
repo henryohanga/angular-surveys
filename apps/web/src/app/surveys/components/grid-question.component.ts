@@ -11,10 +11,10 @@ import { MWGrid, MWQuestion } from '../models';
 })
 export class GridQuestionComponent {
   @Input() question!: MWQuestion;
-  @Input() form!: FormGroup;
+  @Input() form: FormGroup = new FormGroup({});
 
   get grid(): MWGrid | undefined {
-    return this.question.grid;
+    return this.question?.grid;
   }
 
   rowControl(rowId: string): FormControl | FormArray | null {

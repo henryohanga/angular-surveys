@@ -10,25 +10,27 @@
       @for (r of g.rows; track trackByRow($index, r)) {
         <div class="row">
           <div class="cell row-label">{{ r.label }}</div>
-          <div class="cells" [formGroup]="form.get(question.id)">
-            @switch (g.cellInputType) {
-              @case ('radio') {
-                <mat-radio-group [formControlName]="r.id" class="radio-row">
-                  @for (c of g.cols; track c) {
-                    <mat-radio-button [value]="c.id"></mat-radio-button>
-                  }
-                </mat-radio-group>
+          @if (question && form.get(question.id); as rowGroup) {
+            <div class="cells" [formGroup]="rowGroup">
+              @switch (g.cellInputType) {
+                @case ('radio') {
+                  <mat-radio-group [formControlName]="r.id" class="radio-row">
+                    @for (c of g.cols; track c) {
+                      <mat-radio-button [value]="c.id"></mat-radio-button>
+                    }
+                  </mat-radio-group>
+                }
+                @case ('checkbox') {
+                  <div class="checkbox-row">
+                    @for (c of g.cols; track c) {
+                      <mat-checkbox
+                      (change)="toggleCheckboxRow(r.id, c.id, $event.checked)"></mat-checkbox>
+                    }
+                  </div>
+                }
               }
-              @case ('checkbox') {
-                <div class="checkbox-row">
-                  @for (c of g.cols; track c) {
-                    <mat-checkbox
-                    (change)="toggleCheckboxRow(r.id, c.id, $event.checked)"></mat-checkbox>
-                  }
-                </div>
-              }
-            }
-          </div>
+            </div>
+          }
         </div>
       }
     </div>
