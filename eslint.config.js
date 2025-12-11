@@ -5,8 +5,9 @@ const tseslint = require("typescript-eslint");
 const angular = require("angular-eslint");
 
 module.exports = defineConfig([
+  // Angular web app (TypeScript + inline templates)
   {
-    files: ["**/*.ts"],
+    files: ["apps/web/**/*.ts"],
     extends: [
       eslint.configs.recommended,
       tseslint.configs.recommended,
@@ -31,15 +32,26 @@ module.exports = defineConfig([
           style: "kebab-case",
         },
       ],
-      // Allow using non-standalone components while the app still uses NgModules
+      "@angular-eslint/prefer-inject": "off",
       "@angular-eslint/prefer-standalone": "off",
     },
   },
+  // Angular web app (HTML templates)
   {
-    files: ["**/*.html"],
+    files: ["apps/web/**/*.html"],
     extends: [
       angular.configs.templateRecommended,
       angular.configs.templateAccessibility,
+    ],
+    rules: {},
+  },
+  // Node/NestJS and libraries (no Angular rules)
+  {
+    files: ["apps/api/**/*.ts", "libs/**/*.ts"],
+    extends: [
+      eslint.configs.recommended,
+      tseslint.configs.recommended,
+      tseslint.configs.stylistic,
     ],
     rules: {},
   },
