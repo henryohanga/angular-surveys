@@ -289,7 +289,7 @@ export class SurveyComponent {
     // element-level overrides (first match wins)
     for (const el of page.elements) {
       const q = el.question;
-      if (q.type === 'radio' && q.offeredAnswers) {
+      if ((q.type === 'radio' || q.type === 'select') && q.offeredAnswers) {
         const selected = this.form.get(q.id)?.value as string;
         const ans = q.offeredAnswers.find((a) => a.value === selected);
         const target = this.answerFlowTarget(ans);

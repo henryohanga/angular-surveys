@@ -213,12 +213,39 @@ import { MWForm, MWQuestion } from '../surveys/models';
                       @case ('radio') {
                       <div class="options-group">
                         @for (opt of el.question.offeredAnswers; track opt.id) {
-                        <div class="option-item radio">
+                        <div
+                          class="option-item radio"
+                          [class.selected]="
+                            getAnswer(el.question.id) === opt.value
+                          "
+                          [class.interactive]="interactiveMode"
+                          [tabindex]="interactiveMode ? 0 : -1"
+                          (click)="
+                            interactiveMode &&
+                              setAnswer(el.question.id, opt.value)
+                          "
+                          (keydown.enter)="
+                            interactiveMode &&
+                              setAnswer(el.question.id, opt.value)
+                          "
+                          (keydown.space)="
+                            interactiveMode &&
+                              setAnswer(el.question.id, opt.value)
+                          "
+                        >
                           <div class="option-circle"></div>
                           <span>{{ opt.value }}</span>
+                          @if (opt.pageFlow?.goToPage) {
+                          <span class="flow-hint"
+                            >→ Page {{ opt.pageFlow.goToPage }}</span
+                          >
+                          }
                         </div>
                         } @if (el.question.otherAnswer) {
-                        <div class="option-item radio">
+                        <div
+                          class="option-item radio"
+                          [class.interactive]="interactiveMode"
+                        >
                           <div class="option-circle"></div>
                           <span>Other...</span>
                         </div>
@@ -243,10 +270,16 @@ import { MWForm, MWQuestion } from '../surveys/models';
                       }
                       <!-- Select -->
                       @case ('select') {
-                      <select class="select-input" disabled>
+                      <select
+                        class="select-input"
+                        [disabled]="!interactiveMode"
+                        (change)="
+                          setAnswer(el.question.id, $any($event.target).value)
+                        "
+                      >
                         <option value="">Select an option</option>
                         @for (opt of el.question.offeredAnswers; track opt.id) {
-                        <option>
+                        <option [value]="opt.value">
                           {{ opt.value }}
                         </option>
                         }
@@ -821,6 +854,31 @@ import { MWForm, MWQuestion } from '../surveys/models';
         background: #faf5ff;
       }
 
+      .option-item.interactive {
+        cursor: pointer;
+      }
+
+      .option-item.selected {
+        border-color: #6366f1;
+        background: #ede9fe;
+      }
+
+      .option-item.selected .option-circle {
+        border-color: #6366f1;
+        background: #6366f1;
+        box-shadow: inset 0 0 0 3px white;
+      }
+
+      .flow-hint {
+        margin-left: auto;
+        font-size: 11px;
+        color: #6366f1;
+        background: #ede9fe;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
       .option-circle {
         width: 20px;
         height: 20px;
@@ -1273,6 +1331,9 @@ export class SurveyPreviewDialogComponent {
   protected deviceView: 'desktop' | 'mobile' = 'desktop';
   protected interactiveMode = false;
 
+  // Track answers for page flow in interactive mode
+  protected previewAnswers: Record<string, string | string[]> = {};
+
   protected get currentPage() {
     return this.data.form.pages[this.currentPageIndex];
   }
@@ -1299,9 +1360,58 @@ export class SurveyPreviewDialogComponent {
     return range;
   }
 
+  // Set answer value (for interactive mode)
+  protected setAnswer(questionId: string, value: string | string[]): void {
+    this.previewAnswers[questionId] = value;
+  }
+
+  // Get answer value
+  protected getAnswer(questionId: string): string | string[] | undefined {
+    return this.previewAnswers[questionId];
+  }
+
+  // Resolve next page based on page flow settings
+  private resolveNextPageIndex(): number {
+    const page = this.currentPage;
+    if (!page) return this.currentPageIndex + 1;
+
+    // Check element-level page flow (radio/select questions)
+    for (const el of page.elements) {
+      const q = el.question;
+      if ((q.type === 'radio' || q.type === 'select') && q.offeredAnswers) {
+        const selected = this.previewAnswers[q.id] as string;
+        if (selected) {
+          const ans = q.offeredAnswers.find((a) => a.value === selected);
+          if (ans?.pageFlow?.goToPage) {
+            const idx = this.data.form.pages.findIndex(
+              (p) => p.number === ans.pageFlow!.goToPage
+            );
+            if (idx >= 0) return idx;
+          }
+        }
+      }
+    }
+
+    // Check page-level flow
+    const flow = page.pageFlow;
+    if (flow?.goToPage) {
+      const idx = this.data.form.pages.findIndex(
+        (p) => p.number === flow.goToPage
+      );
+      if (idx >= 0) return idx;
+    }
+
+    // Default: next page
+    return this.currentPageIndex + 1;
+  }
+
   protected nextPage(): void {
-    if (this.currentPageIndex < this.data.form.pages.length - 1) {
-      this.currentPageIndex++;
+    const targetIndex = this.interactiveMode
+      ? this.resolveNextPageIndex()
+      : this.currentPageIndex + 1;
+
+    if (targetIndex < this.data.form.pages.length) {
+      this.currentPageIndex = targetIndex;
     }
   }
 

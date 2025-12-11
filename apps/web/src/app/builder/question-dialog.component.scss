@@ -339,6 +339,10 @@
   }
 }
 
+.flow-wrapper {
+  display: contents;
+}
+
 .flow-field {
   width: 120px;
   flex-shrink: 0;

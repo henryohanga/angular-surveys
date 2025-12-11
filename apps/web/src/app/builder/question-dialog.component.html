@@ -155,19 +155,17 @@
               />
             </mat-form-field>
             @if (showPageFlow) {
-            <mat-form-field
-              appearance="outline"
-              class="flow-field"
-              formGroupName="pageFlow"
-            >
-              <mat-label>Go to</mat-label>
-              <mat-select formControlName="goToPage">
-                <mat-option [value]="null">Next page</mat-option>
-                @for (pageNum of data.pageNumbers; track pageNum) {
-                <mat-option [value]="pageNum">Page {{ pageNum }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
+            <div formGroupName="pageFlow" class="flow-wrapper">
+              <mat-form-field appearance="outline" class="flow-field">
+                <mat-label>Go to</mat-label>
+                <mat-select formControlName="goToPage">
+                  <mat-option [value]="null">Next page</mat-option>
+                  @for (pageNum of data.pageNumbers; track pageNum) {
+                  <mat-option [value]="pageNum">Page {{ pageNum }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
             }
             <button
               mat-icon-button
