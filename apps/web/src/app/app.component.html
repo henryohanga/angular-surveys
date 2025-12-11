@@ -1,88 +1,86 @@
 @if (!isHome) {
-  <header
-    class="site-topbar"
-    role="banner"
-    aria-label="Site header"
+<header class="site-topbar" role="banner" aria-label="Site header">
+  <a class="brand" routerLink="/">
+    <mat-icon class="logo">poll</mat-icon>
+    <h2>Angular Surveys</h2>
+  </a>
+  <nav class="actions" aria-label="Primary actions">
+    @if (isAuthenticated$ | async) {
+    <a
+      mat-button
+      routerLink="/dashboard"
+      routerLinkActive="active"
+      aria-label="My Surveys"
     >
-    <a class="brand" routerLink="/">
-      <mat-icon class="logo">poll</mat-icon>
-      <h2>Angular Surveys</h2>
+      <mat-icon>dashboard</mat-icon>
+      Dashboard
     </a>
-    <nav class="actions" aria-label="Primary actions">
-      @if (isAuthenticated$ | async) {
-        <a
-          mat-button
-          routerLink="/dashboard"
-          routerLinkActive="active"
-          aria-label="My Surveys"
-          >
-          <mat-icon>dashboard</mat-icon>
-          Dashboard
-        </a>
-      }
-      <a
-        mat-button
-        routerLink="/demo"
-        routerLinkActive="active"
-        aria-label="Try Demo Survey"
-        >
-        <mat-icon>play_circle</mat-icon>
-        Try Demo
-      </a>
-      <a
-        mat-button
-        href="https://github.com/henryohanga/angular-surveys"
-        target="_blank"
-        rel="noopener"
-        aria-label="GitHub Repository"
-        >
-        <mat-icon>code</mat-icon>
-        GitHub
-      </a>
-      <!-- Auth buttons -->
-      @if ((isAuthenticated$ | async) === false) {
-        <a mat-button routerLink="/login" class="auth-button">
-          <mat-icon>login</mat-icon>
-          Sign In
-        </a>
-        <a
-          mat-raised-button
-          color="primary"
-          routerLink="/register"
-          class="auth-button"
-          >
-          Get Started
-        </a>
-      }
-      <!-- User menu -->
-      @if (isAuthenticated$ | async) {
-        <button
-          mat-button
-          [matMenuTriggerFor]="userMenu"
-          class="user-menu-trigger"
-          >
-          <mat-icon>account_circle</mat-icon>
-          <span class="user-name">{{ (currentUser$ | async)?.name }}</span>
-          <mat-icon>arrow_drop_down</mat-icon>
-        </button>
-        <mat-menu #userMenu="matMenu">
-          <button mat-menu-item routerLink="/dashboard">
-            <mat-icon>dashboard</mat-icon>
-            <span>Dashboard</span>
-          </button>
-          <button mat-menu-item disabled>
-            <mat-icon>settings</mat-icon>
-            <span>Settings</span>
-          </button>
-          <mat-divider></mat-divider>
-          <button mat-menu-item (click)="logout()">
-            <mat-icon>logout</mat-icon>
-            <span>Sign Out</span>
-          </button>
-        </mat-menu>
-      }
-    </nav>
-  </header>
+    } @if (isAuthenticated$ | async) {
+    <a mat-button href="/demo" target="_blank" aria-label="Try Demo Survey">
+      <mat-icon>play_circle</mat-icon>
+      Try Demo
+    </a>
+    } @else {
+    <a
+      mat-button
+      routerLink="/demo"
+      routerLinkActive="active"
+      aria-label="Try Demo Survey"
+    >
+      <mat-icon>play_circle</mat-icon>
+      Try Demo
+    </a>
+    }
+    <a
+      mat-button
+      href="https://github.com/henryohanga/angular-surveys"
+      target="_blank"
+      rel="noopener"
+      aria-label="GitHub Repository"
+    >
+      <mat-icon>code</mat-icon>
+      GitHub
+    </a>
+    <!-- Auth buttons -->
+    @if ((isAuthenticated$ | async) === false) {
+    <a mat-button routerLink="/login" class="auth-button">
+      <mat-icon>login</mat-icon>
+      Sign In
+    </a>
+    <a
+      mat-raised-button
+      color="primary"
+      routerLink="/register"
+      class="auth-button"
+    >
+      Get Started
+    </a>
+    }
+    <!-- User menu -->
+    @if (isAuthenticated$ | async) {
+    <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-trigger">
+      <mat-icon>account_circle</mat-icon>
+      <span class="user-name">{{ (currentUser$ | async)?.name }}</span>
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item routerLink="/dashboard">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </button>
+      <button mat-menu-item disabled>
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Sign Out</span>
+      </button>
+    </mat-menu>
+    }
+  </nav>
+</header>
 }
 
 <router-outlet></router-outlet>

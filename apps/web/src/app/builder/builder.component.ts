@@ -20,7 +20,7 @@ import {
 import { StorageService, Survey } from '../core/services/storage.service';
 import { SurveyApiService } from '../core/services/survey-api.service';
 import { AuthService } from '../core/services/auth.service';
-import { firstValueFrom, Subject, takeUntil } from 'rxjs';
+import { firstValueFrom, Subject, takeUntil, debounceTime, skip } from 'rxjs';
 
 interface ComponentItem {
   type: MWTextType;
@@ -82,6 +82,9 @@ export class BuilderComponent implements OnInit, OnDestroy {
   protected lastSaved: Date | null = null;
   protected showComponentPanel = true;
   protected isLoading = true;
+  protected hasUnsavedChanges = false;
+  protected autoSaveEnabled = true;
+  private autoSaveDebounceMs = 3000; // 3 seconds
 
   protected readonly componentItems: ComponentItem[] = [
     // Input types
@@ -197,6 +200,29 @@ export class BuilderComponent implements OnInit, OnDestroy {
     // Subscribe to form state changes for reactive updates
     this.state.form$.pipe(takeUntil(this.destroy$)).subscribe((form) => {
       this.formDef = form;
+      this.cdr.markForCheck();
+    });
+
+    // Auto-save: debounce form changes and save automatically
+    this.state.form$
+      .pipe(
+        takeUntil(this.destroy$),
+        skip(1), // Skip initial emission
+        debounceTime(this.autoSaveDebounceMs)
+      )
+      .subscribe(() => {
+        if (this.autoSaveEnabled && this.surveyId && !this.isSaving) {
+          this.autoSave();
+        } else if (!this.surveyId) {
+          // Mark as having unsaved changes for new surveys
+          this.hasUnsavedChanges = true;
+          this.cdr.markForCheck();
+        }
+      });
+
+    // Track unsaved changes on any form modification
+    this.state.form$.pipe(takeUntil(this.destroy$), skip(1)).subscribe(() => {
+      this.hasUnsavedChanges = true;
       this.cdr.markForCheck();
     });
 
@@ -505,6 +531,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
       }
 
       this.lastSaved = new Date();
+      this.hasUnsavedChanges = false;
       this.snackBar.open('Survey saved successfully!', 'Dismiss', {
         duration: 3000,
         horizontalPosition: 'end',
@@ -517,11 +544,46 @@ export class BuilderComponent implements OnInit, OnDestroy {
     }
   }
 
-  protected async publishSurvey(): Promise<void> {
-    // Save first if needed
-    if (!this.surveyId) {
-      await this.saveSurvey();
+  /** Silent auto-save without snackbar notifications */
+  private async autoSave(): Promise<void> {
+    if (this.isSaving || !this.surveyId) return;
+
+    this.isSaving = true;
+    try {
+      this.formDef = this.state.getForm();
+      const errs = this.state.validateForm(this.formDef);
+      if (errs.length) {
+        // Don't auto-save invalid forms, but don't show error
+        return;
+      }
+
+      if (this.authService.isAuthenticated && this.survey) {
+        const apiSurvey = await firstValueFrom(
+          this.surveyApi.updateSurvey(this.surveyId, {
+            name: this.formDef.name,
+            description: this.formDef.description,
+            form: this.formDef,
+          })
+        );
+        this.survey = this.surveyApi.toLocalSurvey(apiSurvey);
+      } else if (this.survey) {
+        this.survey.form = this.formDef;
+        this.survey = await this.storage.saveSurvey(this.survey);
+      }
+
+      this.lastSaved = new Date();
+      this.hasUnsavedChanges = false;
+      this.cdr.markForCheck();
+    } catch {
+      // Silent fail for auto-save - user can manually save
+    } finally {
+      this.isSaving = false;
     }
+  }
+
+  protected async publishSurvey(): Promise<void> {
+    // Always save before publishing to ensure latest changes are included
+    await this.saveSurvey();
 
     if (!this.surveyId) return;
 

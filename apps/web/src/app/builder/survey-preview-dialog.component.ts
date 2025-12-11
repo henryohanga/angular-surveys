@@ -19,6 +19,26 @@ import { MWForm, MWQuestion } from '../surveys/models';
           </div>
         </div>
         <div class="header-actions">
+          <div class="mode-toggle">
+            <button
+              class="mode-btn"
+              [class.active]="!interactiveMode"
+              (click)="interactiveMode = false"
+              matTooltip="Visual preview"
+            >
+              <mat-icon>visibility</mat-icon>
+              <span>Preview</span>
+            </button>
+            <button
+              class="mode-btn"
+              [class.active]="interactiveMode"
+              (click)="interactiveMode = true"
+              matTooltip="Try filling the form"
+            >
+              <mat-icon>touch_app</mat-icon>
+              <span>Interactive</span>
+            </button>
+          </div>
           <div class="device-toggle">
             <button
               class="device-btn"
@@ -119,7 +139,7 @@ import { MWForm, MWQuestion } from '../surveys/models';
                         type="text"
                         class="text-input"
                         [placeholder]="el.question.placeholder || 'Your answer'"
-                        disabled
+                        [disabled]="!interactiveMode"
                       />
                       }
                       <!-- Email -->
@@ -130,7 +150,7 @@ import { MWForm, MWQuestion } from '../surveys/models';
                           type="email"
                           class="text-input"
                           placeholder="email@example.com"
-                          disabled
+                          [disabled]="!interactiveMode"
                         />
                       </div>
                       }
@@ -142,7 +162,7 @@ import { MWForm, MWQuestion } from '../surveys/models';
                           type="tel"
                           class="text-input"
                           placeholder="+1 (555) 000-0000"
-                          disabled
+                          [disabled]="!interactiveMode"
                         />
                       </div>
                       }
@@ -154,7 +174,7 @@ import { MWForm, MWQuestion } from '../surveys/models';
                           type="url"
                           class="text-input"
                           placeholder="https://example.com"
-                          disabled
+                          [disabled]="!interactiveMode"
                         />
                       </div>
                       }
@@ -170,7 +190,7 @@ import { MWForm, MWQuestion } from '../surveys/models';
                           type="number"
                           class="text-input number-input"
                           placeholder="0"
-                          disabled
+                          [disabled]="!interactiveMode"
                         />
                         @if (el.question.numberConfig?.suffix) {
                         <span class="number-suffix">{{
@@ -185,7 +205,7 @@ import { MWForm, MWQuestion } from '../surveys/models';
                         class="textarea-input"
                         [placeholder]="el.question.placeholder || 'Your answer'"
                         rows="4"
-                        disabled
+                        [disabled]="!interactiveMode"
                       ></textarea>
                       }
                       <!-- Radio -->
@@ -479,6 +499,45 @@ import { MWForm, MWQuestion } from '../surveys/models';
         display: flex;
         align-items: center;
         gap: 16px;
+      }
+
+      .mode-toggle {
+        display: flex;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        padding: 4px;
+        gap: 2px;
+      }
+
+      .mode-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border: none;
+        background: transparent;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: all 0.2s;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .mode-btn mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+
+      .mode-btn:hover {
+        opacity: 1;
+      }
+
+      .mode-btn.active {
+        background: rgba(255, 255, 255, 0.25);
+        opacity: 1;
       }
 
       .device-toggle {
@@ -1079,6 +1138,7 @@ export class SurveyPreviewDialogComponent {
 
   protected currentPageIndex = 0;
   protected deviceView: 'desktop' | 'mobile' = 'desktop';
+  protected interactiveMode = false;
 
   protected get currentPage() {
     return this.data.form.pages[this.currentPageIndex];

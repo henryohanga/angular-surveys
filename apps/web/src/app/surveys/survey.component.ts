@@ -366,9 +366,21 @@ export class SurveyComponent {
   protected submit(): void {
     if (this.form.valid) {
       this.showSuccess = true;
+      this.scrollToTop();
     } else {
       this.form.markAllAsTouched();
       this.showSummary = false;
+    }
+  }
+
+  protected submitSinglePage(): void {
+    if (!this.validatePage(this.currentPage)) return;
+
+    if (this.form.valid) {
+      this.showSuccess = true;
+      this.scrollToTop();
+    } else {
+      this.form.markAllAsTouched();
     }
   }
 }

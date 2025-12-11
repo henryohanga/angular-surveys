@@ -46,11 +46,51 @@
 .toolbar-center {
   display: flex;
   align-items: center;
+  gap: var(--spacing-md);
 }
 
 .stats {
   font-size: 13px;
   color: var(--text-secondary);
+}
+
+.save-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--supporting);
+
+  mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+
+  .saving-icon {
+    animation: spin 1s linear infinite;
+    color: var(--primary);
+  }
+
+  .unsaved-icon {
+    color: #f59e0b;
+  }
+
+  .saved-icon {
+    color: var(--accent);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .toolbar-right {
@@ -562,24 +602,101 @@
   border: 2px dashed var(--surface-border);
   border-radius: var(--radius-sm);
   background: var(--supporting);
+  min-height: 400px;
 }
 
-.empty-state mat-icon {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
+.empty-state .empty-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
   margin-bottom: var(--spacing-md);
-  opacity: 0.5;
+  opacity: 0.4;
+  color: var(--primary);
 }
 
 .empty-state h4 {
   margin: 0 0 var(--spacing-xs);
   color: var(--text-primary);
+  font-size: 20px;
 }
 
 .empty-state p {
-  margin: 0;
+  margin: 0 0 var(--spacing-lg);
+  font-size: 14px;
+}
+
+.quick-add-section {
+  margin-bottom: var(--spacing-md);
+}
+
+.quick-add-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary);
+}
+
+.quick-add-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  justify-content: center;
+}
+
+.quick-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 13px;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.empty-divider {
+  display: flex;
+  align-items: center;
+  width: 200px;
+  margin: var(--spacing-md) 0;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--surface-border);
+  }
+
+  span {
+    padding: 0 var(--spacing-sm);
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+}
+
+.add-first-btn {
+  margin-bottom: var(--spacing-md);
+}
+
+.drag-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  opacity: 0.7;
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
 }
 
 /* Add Question Button */

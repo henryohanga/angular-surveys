@@ -314,6 +314,11 @@ export class PublicSurveyComponent implements OnInit {
     }
   }
 
+  protected async submitSinglePage(): Promise<void> {
+    if (!this.validatePage(this.currentPage)) return;
+    await this.submit();
+  }
+
   protected answerLabel(qId: string, value: unknown): string {
     const q = this.formDef.pages
       .reduce(
