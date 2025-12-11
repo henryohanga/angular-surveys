@@ -1,15 +1,24 @@
 <div [formGroup]="form">
-  <label class="q-label" [attr.for]="question.id">{{ question.text }}</label>
+  <label class="q-label" [attr.for]="question.id"
+    >{{ question.text }}{{ question.required ? " *" : "" }}</label
+  >
   <div class="checkbox-group">
     @for (a of answers(); track a) {
-      <mat-checkbox (change)="toggle(a.value, $event.checked)">{{ a.value }}</mat-checkbox>
-    }
-    @if (question.otherAnswer) {
-      <mat-checkbox (change)="toggleOther($event.checked)">Other</mat-checkbox>
-      <mat-form-field appearance="outline" class="full">
-        <mat-label>Other</mat-label>
-        <input matInput [value]="otherValue" (input)="onOtherInput($event)" />
-      </mat-form-field>
+    <mat-checkbox (change)="toggle(a.value, $event.checked)">{{
+      a.value
+    }}</mat-checkbox>
+    } @if (question.otherAnswer) {
+    <mat-checkbox (change)="toggleOther($event.checked)">Other</mat-checkbox>
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Other</mat-label>
+      <input matInput [value]="otherValue" (input)="onOtherInput($event)" />
+    </mat-form-field>
     }
   </div>
+  @if (form.get(question.id)?.touched &&
+  form.get(question.id)?.hasError('minSelected')) {
+  <mat-error class="standalone-error"
+    >Please select at least one option</mat-error
+  >
+  }
 </div>

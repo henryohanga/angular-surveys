@@ -9,7 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MWForm, MWPage, MWOfferedAnswer } from './models';
-import { FormStateService } from '../builder/form-state.service';
+import { DEMO_FORM } from './demo-data';
 
 @Component({
   standalone: false,
@@ -19,7 +19,6 @@ import { FormStateService } from '../builder/form-state.service';
 })
 export class SurveyComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly formState = inject(FormStateService);
 
   protected formDef: MWForm;
   public form: FormGroup;
@@ -29,8 +28,8 @@ export class SurveyComponent {
   protected isDemo = true;
 
   constructor() {
-    this.formDef = this.formState.getForm();
-    this.isDemo = false;
+    // Load demo form directly - deep clone to avoid mutations
+    this.formDef = JSON.parse(JSON.stringify(DEMO_FORM));
     this.form = this.fb.group({});
     this.buildForm();
   }
@@ -130,10 +129,7 @@ export class SurveyComponent {
           case 'scale':
             this.form.addControl(
               key,
-              new FormControl(
-                q.scale?.min ?? 1,
-                q.required ? Validators.required : []
-              )
+              new FormControl(null, q.required ? Validators.required : [])
             );
             break;
           case 'grid': {
@@ -162,6 +158,25 @@ export class SurveyComponent {
             this.form.addControl(key, arr);
             break;
           }
+          case 'file': {
+            const arr = this.fb.array([]);
+            if (q.required) arr.addValidators(this.arrayLengthMinValidator(1));
+            this.form.addControl(key, arr);
+            break;
+          }
+          case 'rating':
+          case 'nps':
+            this.form.addControl(
+              key,
+              new FormControl(null, q.required ? Validators.required : [])
+            );
+            break;
+          case 'signature':
+            this.form.addControl(
+              key,
+              new FormControl(null, q.required ? Validators.required : [])
+            );
+            break;
           default:
             this.form.addControl(key, new FormControl(''));
         }
@@ -323,16 +338,29 @@ export class SurveyComponent {
     if (!this.validatePage(this.currentPage)) return;
     const page = this.formDef.pages[this.currentPage];
     const targetIndex = this.resolveNextPageIndex(page) ?? this.currentPage + 1;
-    if (targetIndex < this.formDef.pages.length) this.currentPage = targetIndex;
-    else this.showSummary = true;
+    if (targetIndex < this.formDef.pages.length) {
+      this.currentPage = targetIndex;
+      this.scrollToTop();
+    } else {
+      this.showSummary = true;
+      this.scrollToTop();
+    }
   }
 
   protected prev(): void {
     if (this.showSummary) {
       this.showSummary = false;
+      this.scrollToTop();
       return;
     }
-    if (this.currentPage > 0) this.currentPage--;
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.scrollToTop();
+    }
+  }
+
+  private scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   protected submit(): void {

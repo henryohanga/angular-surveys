@@ -1,0 +1,30 @@
+<div [formGroup]="form" class="rating-question">
+  <span class="q-label"
+    >{{ question.text }}{{ question.required ? " *" : "" }}</span
+  >
+
+  <div class="stars-container">
+    @for (star of stars; track star) {
+    <button
+      type="button"
+      class="star-btn"
+      [class.active]="isActive(star)"
+      (click)="setRating(star)"
+      (mouseenter)="onHover(star)"
+      (mouseleave)="onLeave()"
+      [attr.aria-label]="'Rate ' + star + ' out of 5'"
+    >
+      <mat-icon>{{ isActive(star) ? "star" : "star_border" }}</mat-icon>
+    </button>
+    } @if (currentValue) {
+    <span class="rating-label">{{ currentValue }} / 5</span>
+    }
+  </div>
+
+  <input type="hidden" [formControlName]="question.id" />
+
+  @if (form.get(question.id)?.touched &&
+  form.get(question.id)?.hasError('required')) {
+  <mat-error class="standalone-error">Please select a rating</mat-error>
+  }
+</div>

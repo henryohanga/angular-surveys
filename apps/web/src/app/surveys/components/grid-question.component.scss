@@ -1,6 +1,98 @@
-.grid { display: grid; grid-template-columns: 200px repeat(4, 1fr); gap: 8px; }
-.header, .row { display: contents; }
-.cell { padding: 4px; }
-.row-label { font-weight: 600; }
-.radio-row { display: grid; grid-template-columns: repeat(4, 1fr); }
-.checkbox-row { display: grid; grid-template-columns: repeat(4, 1fr); }
+.grid-question {
+  .q-label {
+    display: block;
+    margin-bottom: 16px;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-primary);
+  }
+}
+
+.grid-table {
+  overflow-x: auto;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+}
+
+thead tr {
+  background: var(--supporting);
+}
+
+th,
+td {
+  padding: 12px 16px;
+  text-align: center;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+th.row-header {
+  min-width: 150px;
+}
+
+th.col-header {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-primary);
+  min-width: 80px;
+}
+
+td.row-label {
+  text-align: left;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--supporting);
+}
+
+td.cell-input {
+  padding: 8px;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover td {
+  background: var(--primary-ghost);
+}
+
+tbody tr:hover td.row-label {
+  background: var(--supporting);
+}
+
+:host ::ng-deep {
+  mat-radio-group {
+    display: flex;
+    justify-content: center;
+  }
+
+  mat-radio-button .mdc-radio {
+    padding: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  th.row-header {
+    min-width: 100px;
+  }
+
+  th.col-header {
+    min-width: 60px;
+    font-size: 12px;
+    padding: 8px 4px;
+  }
+
+  td {
+    padding: 8px 4px;
+  }
+
+  td.row-label {
+    font-size: 13px;
+  }
+}

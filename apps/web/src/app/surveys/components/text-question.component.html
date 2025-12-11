@@ -1,7 +1,28 @@
 <div [formGroup]="form">
   <mat-form-field appearance="outline" class="full">
-    <mat-label>{{ question.text }}</mat-label>
-    <input matInput [formControlName]="question.id" [type]="inputType()" [placeholder]="placeholder() || ''" [attr.min]="min()" [attr.max]="max()" [attr.step]="step()" />
+    <mat-label
+      >{{ question.text }}{{ question.required ? " *" : "" }}</mat-label
+    >
+    <input
+      matInput
+      [formControlName]="question.id"
+      [type]="inputType()"
+      [placeholder]="placeholder() || ''"
+      [attr.min]="min()"
+      [attr.max]="max()"
+      [attr.step]="step()"
+    />
+    @if (form.get(question.id)?.touched && form.get(question.id)?.invalid) {
+    <mat-error>
+      @if (form.get(question.id)?.hasError('required')) { This field is required
+      } @else if (form.get(question.id)?.hasError('email')) { Please enter a
+      valid email address } @else if
+      (form.get(question.id)?.hasError('pattern')) { Please enter a valid value
+      } @else if (form.get(question.id)?.hasError('min')) { Value must be at
+      least {{ min() }} } @else if (form.get(question.id)?.hasError('max')) {
+      Value must be at most {{ max() }}
+      }
+    </mat-error>
+    }
   </mat-form-field>
-  
 </div>

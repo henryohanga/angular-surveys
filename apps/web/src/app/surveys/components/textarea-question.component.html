@@ -1,6 +1,12 @@
 <div [formGroup]="form">
   <mat-form-field appearance="outline" class="full">
-    <mat-label>{{ question.text }}</mat-label>
+    <mat-label
+      >{{ question.text }}{{ question.required ? " *" : "" }}</mat-label
+    >
     <textarea matInput rows="4" [formControlName]="question.id"></textarea>
+    @if (form.get(question.id)?.touched &&
+    form.get(question.id)?.hasError('required')) {
+    <mat-error>This field is required</mat-error>
+    }
   </mat-form-field>
 </div>

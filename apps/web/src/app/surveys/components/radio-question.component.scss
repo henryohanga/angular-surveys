@@ -1,1 +1,26 @@
-.q-label { display:block; margin-bottom: 8px; font-weight: 600; }
+.q-label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+:host ::ng-deep mat-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+:host ::ng-deep mat-radio-button {
+  .mdc-form-field {
+    font-size: 14px;
+  }
+}
+
+.standalone-error {
+  display: block;
+  font-size: 12px;
+  margin-top: 8px;
+  color: #f44336;
+}

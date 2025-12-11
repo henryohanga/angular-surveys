@@ -1,2 +1,26 @@
-.q-label { display:block; margin-bottom: 8px; font-weight: 600; }
-.checkbox-group { display:flex; gap: 12px; flex-wrap: wrap; }
+.q-label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+:host ::ng-deep mat-checkbox {
+  .mdc-form-field {
+    font-size: 14px;
+  }
+}
+
+.standalone-error {
+  display: block;
+  font-size: 12px;
+  margin-top: 8px;
+  color: #f44336;
+}

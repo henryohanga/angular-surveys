@@ -1,38 +1,41 @@
 @if (grid; as g) {
-  <div [formGroup]="form">
-    <div class="grid">
-      <div class="header">
-        <div class="cell"></div>
-        @for (c of g.cols; track trackByCol($index, c)) {
-          <div class="cell">{{ c.label }}</div>
-        }
-      </div>
-      @for (r of g.rows; track trackByRow($index, r)) {
-        <div class="row">
-          <div class="cell row-label">{{ r.label }}</div>
-          @if (question && form.get(question.id); as rowGroup) {
-            <div class="cells" [formGroup]="rowGroup">
-              @switch (g.cellInputType) {
-                @case ('radio') {
-                  <mat-radio-group [formControlName]="r.id" class="radio-row">
-                    @for (c of g.cols; track c) {
-                      <mat-radio-button [value]="c.id"></mat-radio-button>
-                    }
-                  </mat-radio-group>
-                }
-                @case ('checkbox') {
-                  <div class="checkbox-row">
-                    @for (c of g.cols; track c) {
-                      <mat-checkbox
-                      (change)="toggleCheckboxRow(r.id, c.id, $event.checked)"></mat-checkbox>
-                    }
-                  </div>
-                }
-              }
-            </div>
+<div [formGroup]="form" class="grid-question">
+  <span class="q-label"
+    >{{ question.text }}{{ question.required ? " *" : "" }}</span
+  >
+
+  <div class="grid-table">
+    <table>
+      <thead>
+        <tr>
+          <th class="row-header"></th>
+          @for (c of g.cols; track trackByCol($index, c)) {
+          <th class="col-header">{{ c.label }}</th>
           }
-        </div>
-      }
-    </div>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of g.rows; track trackByRow($index, r)) {
+        <tr>
+          <td class="row-label">{{ r.label }}</td>
+          @if (question && form.get(question.id); as rowGroup) { @switch
+          (g.cellInputType) { @case ('radio') { @for (c of g.cols; track c) {
+          <td class="cell-input" [formGroup]="rowGroup">
+            <mat-radio-group [formControlName]="r.id">
+              <mat-radio-button [value]="c.id"></mat-radio-button>
+            </mat-radio-group>
+          </td>
+          } } @case ('checkbox') { @for (c of g.cols; track c) {
+          <td class="cell-input">
+            <mat-checkbox
+              (change)="toggleCheckboxRow(r.id, c.id, $event.checked)"
+            ></mat-checkbox>
+          </td>
+          } } } }
+        </tr>
+        }
+      </tbody>
+    </table>
   </div>
+</div>
 }

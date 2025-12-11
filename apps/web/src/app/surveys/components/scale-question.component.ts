@@ -7,7 +7,7 @@ import { MWQuestion } from '../models';
   selector: 'app-scale-question',
   templateUrl: './scale-question.component.html',
   styleUrls: ['./scale-question.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScaleQuestionComponent {
   @Input() question!: MWQuestion;
@@ -40,11 +40,15 @@ export class ScaleQuestionComponent {
     return points;
   }
 
-  get currentValue(): number {
-    return this.form.get(this.question.id)?.value ?? this.min();
+  get currentValue(): number | null {
+    return this.form.get(this.question.id)?.value ?? null;
   }
 
-  setValue(value: number) {
-    this.form.get(this.question.id)?.setValue(value);
+  setValue(value: number): void {
+    const control = this.form.get(this.question.id);
+    if (control) {
+      control.setValue(value);
+      control.markAsTouched();
+    }
   }
 }

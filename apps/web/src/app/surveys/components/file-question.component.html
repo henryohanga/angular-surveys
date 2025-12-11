@@ -1,0 +1,44 @@
+<div [formGroup]="form" class="file-question">
+  <span class="q-label"
+    >{{ question.text }}{{ question.required ? " *" : "" }}</span
+  >
+
+  <div
+    class="file-upload-area"
+    tabindex="0"
+    role="button"
+    (click)="fileInput.click()"
+    (keydown.enter)="fileInput.click()"
+    (keydown.space)="fileInput.click()"
+  >
+    <mat-icon>cloud_upload</mat-icon>
+    <span class="upload-text">Click to upload or drag files here</span>
+    <span class="upload-hint">Max {{ maxSize }}MB per file</span>
+    <input
+      #fileInput
+      type="file"
+      hidden
+      [accept]="accept"
+      [multiple]="multiple"
+      (change)="onFileSelect($event)"
+    />
+  </div>
+
+  @if (selectedFiles.length > 0) {
+  <div class="file-list">
+    @for (file of selectedFiles; track file.name; let i = $index) {
+    <div class="file-item">
+      <mat-icon>insert_drive_file</mat-icon>
+      <span class="file-name">{{ file.name }}</span>
+      <span class="file-size">{{ formatSize(file.size) }}</span>
+      <button mat-icon-button type="button" (click)="removeFile(i)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    }
+  </div>
+  } @if (form.get(question.id)?.touched &&
+  form.get(question.id)?.hasError('required')) {
+  <mat-error class="standalone-error">Please upload a file</mat-error>
+  }
+</div>

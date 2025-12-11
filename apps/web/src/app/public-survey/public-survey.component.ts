@@ -123,10 +123,7 @@ export class PublicSurveyComponent implements OnInit {
           }
 
           case 'scale':
-            this.form.addControl(
-              key,
-              new FormControl(q.scale?.min ?? 1, validators)
-            );
+            this.form.addControl(key, new FormControl(null, validators));
             break;
 
           case 'grid': {
@@ -156,6 +153,19 @@ export class PublicSurveyComponent implements OnInit {
             this.form.addControl(key, arr);
             break;
           }
+
+          case 'file': {
+            const arr = this.fb.array([]);
+            if (q.required) arr.addValidators(this.arrayLengthMinValidator(1));
+            this.form.addControl(key, arr);
+            break;
+          }
+
+          case 'rating':
+          case 'nps':
+          case 'signature':
+            this.form.addControl(key, new FormControl(null, validators));
+            break;
 
           default:
             this.form.addControl(key, new FormControl(''));

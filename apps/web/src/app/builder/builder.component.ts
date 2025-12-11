@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  OnDestroy,
+  inject,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { FormStateService } from './form-state.service';
@@ -14,7 +20,7 @@ import {
 import { StorageService, Survey } from '../core/services/storage.service';
 import { SurveyApiService } from '../core/services/survey-api.service';
 import { AuthService } from '../core/services/auth.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 
 interface ComponentItem {
   type: MWTextType;
@@ -49,7 +55,7 @@ interface ComponentItem {
     ]),
   ],
 })
-export class BuilderComponent implements OnInit {
+export class BuilderComponent implements OnInit, OnDestroy {
   private readonly state = inject(FormStateService);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
@@ -59,6 +65,7 @@ export class BuilderComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly destroy$ = new Subject<void>();
 
   protected formDef!: MWForm;
   protected survey: Survey | null = null;
@@ -186,7 +193,13 @@ export class BuilderComponent implements OnInit {
     },
   ];
 
-  async ngOnInit() {
+  async ngOnInit(): Promise<void> {
+    // Subscribe to form state changes for reactive updates
+    this.state.form$.pipe(takeUntil(this.destroy$)).subscribe((form) => {
+      this.formDef = form;
+      this.cdr.markForCheck();
+    });
+
     this.surveyId = this.route.snapshot.paramMap.get('id');
 
     if (this.surveyId) {
@@ -224,6 +237,11 @@ export class BuilderComponent implements OnInit {
     }
 
     this.isLoading = false;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   protected addPage(): void {
@@ -748,12 +766,11 @@ export class BuilderComponent implements OnInit {
 
   protected deletePage(index: number): void {
     if (this.formDef.pages.length > 1) {
-      this.formDef.pages.splice(index, 1);
-      // Renumber pages
-      this.formDef.pages.forEach((p, i) => (p.number = i + 1));
+      this.state.deletePage(index);
       if (this.selectedPage >= this.formDef.pages.length) {
         this.selectedPage = this.formDef.pages.length - 1;
       }
+      this.snackBar.open('Page deleted', 'Close', { duration: 2000 });
     }
   }
 

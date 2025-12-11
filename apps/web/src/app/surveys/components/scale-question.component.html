@@ -1,35 +1,37 @@
 <div [formGroup]="form" class="scale-question">
-  <label class="q-label" [attr.for]="question.id">{{ question.text }}</label>
+  <label class="q-label" [attr.for]="question.id"
+    >{{ question.text }}{{ question.required ? " *" : "" }}</label
+  >
 
   <div class="scale-container">
     @if (minLabel()) {
-      <span class="scale-label min-label">{{
-        minLabel()
-      }}</span>
+    <span class="scale-label min-label">{{ minLabel() }}</span>
     }
 
     <div class="scale-buttons">
       @for (point of scalePoints; track point) {
-        <button
-          type="button"
-          class="scale-point"
-          [class.selected]="currentValue === point"
-          (click)="setValue(point)"
-          [attr.aria-label]="'Select ' + point"
-          [attr.aria-pressed]="currentValue === point"
-          >
-          {{ point }}
-        </button>
+      <button
+        type="button"
+        class="scale-point"
+        [class.selected]="currentValue === point"
+        (click)="setValue(point)"
+        [attr.aria-label]="'Select ' + point"
+        [attr.aria-pressed]="currentValue === point"
+      >
+        {{ point }}
+      </button>
       }
     </div>
 
     @if (maxLabel()) {
-      <span class="scale-label max-label">{{
-        maxLabel()
-      }}</span>
+    <span class="scale-label max-label">{{ maxLabel() }}</span>
     }
   </div>
 
   <!-- Hidden input for form control -->
   <input type="hidden" [formControlName]="question.id" />
+  @if (form.get(question.id)?.touched &&
+  form.get(question.id)?.hasError('required')) {
+  <mat-error class="standalone-error">Please select a value</mat-error>
+  }
 </div>

@@ -1,0 +1,87 @@
+.file-question {
+  .q-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+}
+
+.file-upload-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  border: 2px dashed var(--surface-border);
+  border-radius: var(--radius-sm);
+  background: var(--supporting);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--primary);
+    background: var(--primary-ghost);
+  }
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .upload-text {
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .upload-hint {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+}
+
+.file-list {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--supporting);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+
+  mat-icon:first-child {
+    color: var(--primary);
+  }
+
+  .file-name {
+    flex: 1;
+    font-size: 14px;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .file-size {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+}
+
+.standalone-error {
+  display: block;
+  font-size: 12px;
+  margin-top: 8px;
+  color: #f44336;
+}

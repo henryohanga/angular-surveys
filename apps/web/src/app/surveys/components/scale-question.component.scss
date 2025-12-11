@@ -69,6 +69,13 @@
   }
 }
 
+.standalone-error {
+  display: block;
+  font-size: 12px;
+  margin-top: 8px;
+  color: #f44336;
+}
+
 @media (max-width: 600px) {
   .scale-container {
     flex-direction: column;

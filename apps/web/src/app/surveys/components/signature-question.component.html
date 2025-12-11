@@ -1,0 +1,28 @@
+<div [formGroup]="form" class="signature-question">
+  <span class="q-label"
+    >{{ question.text }}{{ question.required ? " *" : "" }}</span
+  >
+
+  <div class="signature-area">
+    <canvas #canvas width="400" height="150" class="signature-canvas"></canvas>
+    <div class="signature-actions">
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="clear()"
+        [disabled]="!hasSignature"
+      >
+        <mat-icon>refresh</mat-icon>
+        Clear
+      </button>
+    </div>
+    <span class="signature-hint">Draw your signature above</span>
+  </div>
+
+  <input type="hidden" [formControlName]="question.id" />
+
+  @if (form.get(question.id)?.touched &&
+  form.get(question.id)?.hasError('required')) {
+  <mat-error class="standalone-error">Please provide your signature</mat-error>
+  }
+</div>

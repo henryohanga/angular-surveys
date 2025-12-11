@@ -1,15 +1,23 @@
 <div [formGroup]="form">
-  <label class="q-label" [attr.for]="question.id">{{ question.text }}</label>
-  <mat-radio-group [formControlName]="question.id" (change)="onRadioChange($event.value)">
+  <label class="q-label" [attr.for]="question.id"
+    >{{ question.text }}{{ question.required ? " *" : "" }}</label
+  >
+  <mat-radio-group
+    [formControlName]="question.id"
+    (change)="onRadioChange($event.value)"
+  >
     @for (a of answers(); track a) {
-      <mat-radio-button [value]="a.value">{{ a.value }}</mat-radio-button>
-    }
-    @if (question.otherAnswer) {
-      <mat-radio-button [value]="'__other__'">Other</mat-radio-button>
-      <mat-form-field appearance="outline" class="full">
-        <mat-label>Other</mat-label>
-        <input matInput [value]="otherValue" (input)="onOtherInput($event)" />
-      </mat-form-field>
+    <mat-radio-button [value]="a.value">{{ a.value }}</mat-radio-button>
+    } @if (question.otherAnswer) {
+    <mat-radio-button [value]="'__other__'">Other</mat-radio-button>
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Other</mat-label>
+      <input matInput [value]="otherValue" (input)="onOtherInput($event)" />
+    </mat-form-field>
     }
   </mat-radio-group>
+  @if (form.get(question.id)?.touched &&
+  form.get(question.id)?.hasError('required')) {
+  <mat-error class="standalone-error">Please select an option</mat-error>
+  }
 </div>

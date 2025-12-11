@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SurveyComponent } from './survey.component';
 import { TextQuestionComponent } from './components/text-question.component';
@@ -27,6 +28,10 @@ import { SelectQuestionComponent } from './components/select-question.component'
 import { DateQuestionComponent } from './components/date-question.component';
 import { TimeQuestionComponent } from './components/time-question.component';
 import { ScaleQuestionComponent } from './components/scale-question.component';
+import { FileQuestionComponent } from './components/file-question.component';
+import { RatingQuestionComponent } from './components/rating-question.component';
+import { NpsQuestionComponent } from './components/nps-question.component';
+import { SignatureQuestionComponent } from './components/signature-question.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +48,10 @@ import { ScaleQuestionComponent } from './components/scale-question.component';
     DateQuestionComponent,
     TimeQuestionComponent,
     ScaleQuestionComponent,
+    FileQuestionComponent,
+    RatingQuestionComponent,
+    NpsQuestionComponent,
+    SignatureQuestionComponent,
   ],
   imports: [
     CommonModule,
@@ -59,6 +68,7 @@ import { ScaleQuestionComponent } from './components/scale-question.component';
     MatToolbarModule,
     MatIconModule,
     MatProgressBarModule,
+    RouterModule,
   ],
   exports: [
     // Main components for routing
@@ -85,6 +95,10 @@ import { ScaleQuestionComponent } from './components/scale-question.component';
         date: DateQuestionComponent,
         time: TimeQuestionComponent,
         scale: ScaleQuestionComponent,
+        file: FileQuestionComponent,
+        rating: RatingQuestionComponent,
+        nps: NpsQuestionComponent,
+        signature: SignatureQuestionComponent,
       },
     },
   ],

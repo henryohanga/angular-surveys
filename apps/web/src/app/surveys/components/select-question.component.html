@@ -1,12 +1,16 @@
 <div [formGroup]="form">
-  <label class="q-label" [attr.for]="question.id">{{ question.text }}</label>
   <mat-form-field appearance="outline" class="full">
-    <mat-label>{{ question.text }}</mat-label>
+    <mat-label
+      >{{ question.text }}{{ question.required ? " *" : "" }}</mat-label
+    >
     <mat-select [formControlName]="question.id">
       @for (a of answers(); track a) {
-        <mat-option [value]="a.value">{{ a.value }}</mat-option>
+      <mat-option [value]="a.value">{{ a.value }}</mat-option>
       }
     </mat-select>
+    @if (form.get(question.id)?.touched &&
+    form.get(question.id)?.hasError('required')) {
+    <mat-error>Please select an option</mat-error>
+    }
   </mat-form-field>
 </div>
-
