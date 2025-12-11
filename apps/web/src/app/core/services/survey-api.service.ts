@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { MWForm } from '../../surveys/models';
 
 export interface ApiSurvey {
@@ -65,55 +64,44 @@ export interface SurveyAnalytics {
   providedIn: 'root',
 })
 export class SurveyApiService {
-  private apiUrl = environment.apiUrl || '/api';
-
   constructor(private http: HttpClient) {}
 
   // ==================== SURVEYS ====================
 
   getAllSurveys(): Observable<ApiSurvey[]> {
-    return this.http.get<ApiSurvey[]>(`${this.apiUrl}/surveys`);
+    return this.http.get<ApiSurvey[]>(`/surveys`);
   }
 
   getSurvey(id: string): Observable<ApiSurvey> {
-    return this.http.get<ApiSurvey>(`${this.apiUrl}/surveys/${id}`);
+    return this.http.get<ApiSurvey>(`/surveys/${id}`);
   }
 
   getPublicSurvey(id: string): Observable<ApiSurvey> {
-    return this.http.get<ApiSurvey>(`${this.apiUrl}/surveys/${id}/public`);
+    return this.http.get<ApiSurvey>(`/surveys/${id}/public`);
   }
 
   createSurvey(data: CreateSurveyDto): Observable<ApiSurvey> {
-    return this.http.post<ApiSurvey>(`${this.apiUrl}/surveys`, data);
+    return this.http.post<ApiSurvey>(`/surveys`, data);
   }
 
   updateSurvey(id: string, data: UpdateSurveyDto): Observable<ApiSurvey> {
-    return this.http.put<ApiSurvey>(`${this.apiUrl}/surveys/${id}`, data);
+    return this.http.put<ApiSurvey>(`/surveys/${id}`, data);
   }
 
   publishSurvey(id: string): Observable<ApiSurvey> {
-    return this.http.post<ApiSurvey>(
-      `${this.apiUrl}/surveys/${id}/publish`,
-      {}
-    );
+    return this.http.post<ApiSurvey>(`/surveys/${id}/publish`, {});
   }
 
   unpublishSurvey(id: string): Observable<ApiSurvey> {
-    return this.http.post<ApiSurvey>(
-      `${this.apiUrl}/surveys/${id}/unpublish`,
-      {}
-    );
+    return this.http.post<ApiSurvey>(`/surveys/${id}/unpublish`, {});
   }
 
   duplicateSurvey(id: string): Observable<ApiSurvey> {
-    return this.http.post<ApiSurvey>(
-      `${this.apiUrl}/surveys/${id}/duplicate`,
-      {}
-    );
+    return this.http.post<ApiSurvey>(`/surveys/${id}/duplicate`, {});
   }
 
   deleteSurvey(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/surveys/${id}`);
+    return this.http.delete<void>(`/surveys/${id}`);
   }
 
   // ==================== RESPONSES ====================
@@ -122,30 +110,25 @@ export class SurveyApiService {
     surveyId: string,
     data: SubmitResponseDto
   ): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(
-      `${this.apiUrl}/responses/${surveyId}`,
-      data
-    );
+    return this.http.post<ApiResponse>(`/responses/${surveyId}`, data);
   }
 
   getResponses(surveyId: string): Observable<ApiResponse[]> {
-    return this.http.get<ApiResponse[]>(
-      `${this.apiUrl}/responses/survey/${surveyId}`
-    );
+    return this.http.get<ApiResponse[]>(`/responses/survey/${surveyId}`);
   }
 
   getAnalytics(surveyId: string): Observable<SurveyAnalytics> {
     return this.http.get<SurveyAnalytics>(
-      `${this.apiUrl}/responses/survey/${surveyId}/analytics`
+      `/responses/survey/${surveyId}/analytics`
     );
   }
 
   getResponse(id: string): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(`${this.apiUrl}/responses/${id}`);
+    return this.http.get<ApiResponse>(`/responses/${id}`);
   }
 
   deleteResponse(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/responses/${id}`);
+    return this.http.delete<void>(`/responses/${id}`);
   }
 
   // ==================== HELPERS ====================

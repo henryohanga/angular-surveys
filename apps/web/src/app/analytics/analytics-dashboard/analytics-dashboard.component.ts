@@ -2,7 +2,6 @@ import { Component, OnInit, Input, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
-import { environment } from '../../../environments/environment';
 
 interface ApiResponse {
   id: string;
@@ -153,10 +152,10 @@ export class AnalyticsDashboardComponent implements OnInit {
     // Load analytics and individual responses in parallel
     forkJoin({
       analytics: this.http.get<SurveyAnalytics>(
-        `${environment.apiUrl}/responses/survey/${this.surveyId}/analytics`
+        `/responses/survey/${this.surveyId}/analytics`
       ),
       responses: this.http.get<ApiResponse[]>(
-        `${environment.apiUrl}/responses/survey/${this.surveyId}`
+        `/responses/survey/${this.surveyId}`
       ),
     }).subscribe({
       next: ({ analytics, responses }) => {
