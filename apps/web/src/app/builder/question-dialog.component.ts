@@ -248,7 +248,7 @@ export class QuestionDialogComponent implements OnInit {
     if (q.offeredAnswers) {
       q.offeredAnswers.forEach((a, idx) => {
         this.offeredAnswers.push(
-          this.createAnswerGroup(a.id, idx + 1, a.value)
+          this.createAnswerGroup(a.id, idx + 1, a.value, a.pageFlow?.goToPage)
         );
       });
     }
@@ -371,12 +371,28 @@ export class QuestionDialogComponent implements OnInit {
     return this.questionTypes.filter((t) => t.category === this.activeCategory);
   }
 
+  // Helper to check if page flow should be shown
+  get showPageFlow(): boolean {
+    return (
+      ['radio', 'select'].includes(this.currentType) &&
+      this.data.pageNumbers.length > 1
+    );
+  }
+
   // Helper methods
-  createAnswerGroup(id: string, orderNo: number, value = ''): FormGroup {
+  createAnswerGroup(
+    id: string,
+    orderNo: number,
+    value = '',
+    goToPage?: number
+  ): FormGroup {
     return this.fb.group({
       id: [id],
       orderNo: [orderNo],
       value: [value],
+      pageFlow: this.fb.group({
+        goToPage: [goToPage || null],
+      }),
     });
   }
 
@@ -567,10 +583,29 @@ export class QuestionDialogComponent implements OnInit {
 
     // Add options for choice types
     if (this.showOptions && this.offeredAnswers.length > 0) {
-      question.offeredAnswers = formValue.offeredAnswers.filter(
-        (a: { value: string }) => a.value?.trim()
-      );
+      question.offeredAnswers = formValue.offeredAnswers
+        .filter((a: { value: string }) => a.value?.trim())
+        .map(
+          (a: {
+            id: string;
+            orderNo: number;
+            value: string;
+            pageFlow?: { goToPage: number | null };
+          }) => ({
+            id: a.id,
+            orderNo: a.orderNo,
+            value: a.value,
+            ...(a.pageFlow?.goToPage
+              ? { pageFlow: { goToPage: a.pageFlow.goToPage } }
+              : {}),
+          })
+        );
       question.otherAnswer = formValue.otherAnswer;
+      // Set pageFlowModifier if any answer has page flow
+      question.pageFlowModifier =
+        question.offeredAnswers?.some(
+          (a: { pageFlow?: { goToPage?: number } }) => a.pageFlow?.goToPage
+        ) ?? false;
     }
 
     // Add scale config
