@@ -567,11 +567,11 @@ export class WebhooksService {
 
   private applyQuestionMappings(
     answers: Record<string, unknown>,
-    mappings: Array<{
+    mappings: {
       questionId: string;
       externalId: string;
       fieldName?: string;
-    }>
+    }[]
   ): Record<string, unknown> {
     const mappedAnswers: Record<string, unknown> = {};
 
