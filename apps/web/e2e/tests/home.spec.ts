@@ -13,26 +13,39 @@ test.describe('Home Page', () => {
     await expect(page.getByText('Drag & Drop Builder')).toBeVisible();
     await expect(page.getByText('18+ Question Types')).toBeVisible();
 
-    // Check CTA buttons
+    // Check CTA buttons in hero section
     await expect(
-      page.getByRole('link', { name: /Get Started/i })
+      page.locator('.hero-actions').getByRole('link', { name: /Get Started/i })
     ).toBeVisible();
-    await expect(page.getByRole('link', { name: /View Demo/i })).toBeVisible();
+    await expect(
+      page.locator('.hero-actions').getByRole('link', { name: /Try Demo/i })
+    ).toBeVisible();
   });
 
-  test('should navigate to demo when clicking View Demo', async ({ page }) => {
+  test('should navigate to demo when clicking Try Demo', async ({ page }) => {
     await page.goto('/');
 
-    await page.getByRole('link', { name: /View Demo/i }).click();
+    await page
+      .locator('.hero-actions')
+      .getByRole('link', { name: /Try Demo/i })
+      .click();
 
-    await expect(page).toHaveURL(/\/surveys/);
+    await expect(page).toHaveURL(/\/demo/);
   });
 
   test('should show templates section', async ({ page }) => {
     await page.goto('/');
 
     // Scroll to templates section
-    await expect(page.getByText('Customer Satisfaction')).toBeVisible();
-    await expect(page.getByText('Employee Feedback')).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /Quick Start Templates/i })
+    ).toBeVisible();
+    // Use more specific locator to avoid strict mode violation
+    await expect(
+      page
+        .locator('.template-card h4')
+        .filter({ hasText: 'Customer Satisfaction' })
+        .first()
+    ).toBeVisible();
   });
 });

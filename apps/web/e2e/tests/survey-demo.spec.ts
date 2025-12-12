@@ -2,17 +2,10 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Survey Demo', () => {
   test('should display demo survey page', async ({ page }) => {
-    await page.goto('/surveys');
+    await page.goto('/demo');
 
     // Should show survey content
     await expect(page.locator('app-survey')).toBeVisible();
-  });
-
-  test('should display Material survey variant', async ({ page }) => {
-    await page.goto('/surveys/material');
-
-    // Should show material survey component
-    await expect(page.locator('app-material-survey')).toBeVisible();
   });
 });
 

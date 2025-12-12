@@ -1,6 +1,8 @@
 import { defineConfig } from '@playwright/test';
+import { nxE2EPreset } from '@nx/playwright/preset';
 
 export default defineConfig({
+  ...nxE2EPreset(__filename, { testDir: './tests' }),
   testDir: './tests',
   outputDir: '../../../test-results/e2e',
   use: {

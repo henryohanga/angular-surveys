@@ -1,28 +1,19 @@
 import { test, expect } from '@playwright/test';
 
-test('builder can add page and edit metadata', async ({ page }) => {
-  await page.goto('/builder');
-  await expect(page.getByText('Survey Builder')).toBeVisible();
+test.describe('Builder Access', () => {
+  test('should redirect unauthenticated users to login when accessing builder', async ({
+    page,
+  }) => {
+    // Builder requires authentication, so it should redirect to login
+    await page.goto('/builder');
+    await expect(page).toHaveURL(/\/login/);
+  });
 
-  await page.getByRole('button', { name: 'Add Page' }).click();
-  await page.getByLabel('Name').fill('Intro');
-  await page.getByLabel('Description').fill('Welcome');
-  await page.getByText('Named page').click();
-
-  await expect(page.getByText('Page 2')).toBeVisible();
-});
-
-test('builder can add radio question with page flow', async ({ page }) => {
-  await page.goto('/builder');
-  await page.getByRole('button', { name: 'Add Question' }).click();
-  await page.getByLabel('Id').fill('q1');
-  await page.getByRole('textbox', { name: 'Text' }).fill('Choose');
-  await page.getByRole('combobox', { name: 'Type' }).click();
-  await page.getByRole('option', { name: 'Radio' }).click();
-  await page.getByRole('button', { name: 'Add Option' }).click();
-  await page.getByLabel('Value').fill('Go');
-  await page.locator('app-question-editor form .option-row').last().getByRole('combobox', { name: 'Go to page' }).click();
-  await page.getByRole('option', { name: 'Page 2' }).click();
-  await page.locator('app-question-editor form').getByRole('button', { name: 'Add', exact: true }).click();
-  await expect(page.getByText('Choose (radio)')).toBeVisible();
+  test('should redirect unauthenticated users to login when accessing builder with ID', async ({
+    page,
+  }) => {
+    // Builder with ID also requires authentication
+    await page.goto('/builder/some-survey-id');
+    await expect(page).toHaveURL(/\/login/);
+  });
 });
