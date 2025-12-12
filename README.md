@@ -47,6 +47,14 @@ A modern, full-stack survey platform built with Angular and NestJS. Create beaut
 - **Auto-Save** - Automatic progress saving as you build
 - **Survey Templates** - Quick start with pre-built templates
 
+### Developer Integration
+
+- **Developer Mode** - Enable API access and webhook integrations at workspace level
+- **Webhooks** - Real-time notifications when survey responses are submitted
+- **External ID Mappings** - Map questions to your own field names for API payloads
+- **API Credentials** - Secure API key/secret for webhook signature verification
+- **Signature Verification** - HMAC-SHA256 signed webhook payloads for security
+
 ### Modern UI
 
 - **Material Design 3** - Clean, accessible UI with Angular Material components
@@ -123,13 +131,15 @@ docker compose -f docker-compose.dev.yml up
 
 ### Routes
 
-| Route          | Description                           |
-| -------------- | ------------------------------------- |
-| `/`            | Landing page with features overview   |
-| `/dashboard`   | Survey management dashboard           |
-| `/builder`     | Survey builder interface (new survey) |
-| `/builder/:id` | Edit existing survey                  |
-| `/surveys`     | Demo survey runner/preview            |
+| Route            | Description                             |
+| ---------------- | --------------------------------------- |
+| `/`              | Landing page with features overview     |
+| `/dashboard`     | Survey management dashboard             |
+| `/builder`       | Survey builder interface (new survey)   |
+| `/builder/:id`   | Edit existing survey                    |
+| `/settings`      | User settings & developer configuration |
+| `/s/:id`         | Public survey URL for respondents       |
+| `/responses/:id` | View survey responses and analytics     |
 
 ### Building a Survey
 
@@ -260,6 +270,7 @@ angular-surveys/
 │       │       ├── users/       # User management
 │       │       ├── surveys/     # Survey CRUD
 │       │       ├── responses/   # Response handling
+│       │       ├── webhooks/    # Webhook management
 │       │       └── health/      # Health checks
 │       └── Dockerfile           # API production build
 │
@@ -316,6 +327,66 @@ Please adhere to our [Code of Conduct](CODE_OF_CONDUCT.md).
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🔌 Developer Integration
+
+### Enabling Developer Mode
+
+1. Navigate to **Settings** → **Profile** tab
+2. Toggle **Enable Developer Mode**
+3. Access **Developer** tab for API credentials
+
+### Webhooks
+
+Configure webhooks to receive real-time notifications:
+
+```bash
+# Create a webhook for a survey
+POST /api/webhooks/survey/:surveyId
+{
+  "url": "https://your-server.com/webhook",
+  "events": ["response.submitted"],
+  "name": "My Webhook"
+}
+```
+
+### Webhook Payload
+
+```json
+{
+  "deliveryId": "uuid",
+  "event": "response.submitted",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "survey": {
+    "id": "survey-id",
+    "name": "Customer Feedback",
+    "status": "published"
+  },
+  "response": {
+    "id": "response-id",
+    "submittedAt": "2024-01-15T10:30:00Z",
+    "isComplete": true,
+    "answers": { "q-1": "John Doe" }
+  }
+}
+```
+
+### Webhook Headers
+
+| Header                | Description                             |
+| --------------------- | --------------------------------------- |
+| `X-Webhook-Signature` | HMAC signature for verification         |
+| `X-Webhook-Event`     | Event type (e.g., `response.submitted`) |
+| `X-Webhook-Delivery`  | Unique delivery ID                      |
+
+### Question Mappings
+
+Configure external IDs directly in the question editor:
+
+1. Open a question in the builder
+2. Expand **Developer Settings** section
+3. Set **External ID** and **Field Name**
+4. For choice questions, set **External Value** per option
 
 ## 🗺️ Roadmap
 

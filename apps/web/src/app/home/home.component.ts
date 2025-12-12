@@ -42,22 +42,22 @@ export class HomeComponent implements OnInit {
         'Text, email, phone, ratings, NPS, star ratings, file uploads, signatures, matrix grids, and more.',
     },
     {
-      icon: 'auto_awesome',
-      title: 'Premium Dialogs',
+      icon: 'webhook',
+      title: 'Webhooks & Integrations',
       description:
-        'Modern, categorized question editor with live configuration. Beautiful, responsive modal interfaces.',
+        'Real-time notifications when responses are submitted. Signed payloads with HMAC verification for security.',
     },
     {
-      icon: 'visibility',
-      title: 'Live Preview',
+      icon: 'code',
+      title: 'Developer Mode',
       description:
-        'Preview your survey in real-time with desktop/mobile toggle. Test the complete flow before publishing.',
+        'API credentials, external ID mappings, and webhook management. Built for seamless system integration.',
     },
     {
-      icon: 'dashboard',
-      title: 'Survey Dashboard',
+      icon: 'bar_chart',
+      title: 'Response Analytics',
       description:
-        'Manage all your surveys in one place. Save drafts, publish, and organize with IndexedDB storage.',
+        'View and analyze survey responses in real-time. Export data and track completion rates.',
     },
     {
       icon: 'devices',

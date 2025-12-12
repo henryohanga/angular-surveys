@@ -10,9 +10,9 @@
       <span class="highlight">Angular Surveys</span>
     </h1>
     <p class="hero-description">
-      A modern, component-based survey builder for Angular applications. Design
-      powerful forms with drag-and-drop ease, conditional logic, and real-time
-      preview.
+      A modern, full-stack survey platform with drag-and-drop builder, real-time
+      webhooks, developer API, and powerful analytics. Open source and free
+      forever.
     </p>
     <div class="hero-actions">
       @if ((isAuthenticated$ | async) === false) {
@@ -52,8 +52,8 @@
         <span class="stat-label">Question Types</span>
       </div>
       <div class="stat">
-        <span class="stat-value">∞</span>
-        <span class="stat-label">Pages & Surveys</span>
+        <span class="stat-value">Webhooks</span>
+        <span class="stat-label">Real-time Events</span>
       </div>
       <div class="stat">
         <span class="stat-value">100%</span>
@@ -218,11 +218,60 @@
   </div>
 </section>
 
+<!-- Developer Integration Section -->
+<section class="developer-section">
+  <div class="section-header">
+    <h2>Built for Developers</h2>
+    <p>Powerful APIs and webhooks for seamless integration</p>
+  </div>
+  <div class="developer-grid">
+    <div class="developer-card">
+      <div class="developer-icon">
+        <mat-icon>webhook</mat-icon>
+      </div>
+      <h3>Real-time Webhooks</h3>
+      <p>
+        Get instant notifications when responses are submitted. Configure
+        multiple webhooks per survey with custom events.
+      </p>
+      <div class="code-preview">
+        <code>POST https://your-api.com/webhook</code>
+      </div>
+    </div>
+    <div class="developer-card">
+      <div class="developer-icon">
+        <mat-icon>security</mat-icon>
+      </div>
+      <h3>Signed Payloads</h3>
+      <p>
+        Every webhook is signed with HMAC-SHA256. Verify authenticity with your
+        API secret to ensure data integrity.
+      </p>
+      <div class="code-preview">
+        <code>X-Webhook-Signature: t=...,v1=...</code>
+      </div>
+    </div>
+    <div class="developer-card">
+      <div class="developer-icon">
+        <mat-icon>swap_horiz</mat-icon>
+      </div>
+      <h3>Field Mappings</h3>
+      <p>
+        Map question IDs to your own field names. Get clean, predictable
+        payloads that match your data schema.
+      </p>
+      <div class="code-preview">
+        <code>{{ "{" }}"customer_name": "John"{{ "}" }}</code>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- How It Works Section -->
 <section class="how-it-works">
   <div class="section-header">
     <h2>How It Works</h2>
-    <p>Create professional surveys in three simple steps</p>
+    <p>Create professional surveys in four simple steps</p>
   </div>
   <div class="steps">
     <div class="step">
@@ -239,10 +288,10 @@
     <div class="step">
       <div class="step-number">2</div>
       <div class="step-content">
-        <h3>Add Logic & Flow</h3>
+        <h3>Configure Webhooks</h3>
         <p>
-          Set up conditional logic to show or hide questions based on responses.
-          Create branching paths.
+          Set up webhooks to receive real-time notifications when responses are
+          submitted. Map fields to your schema.
         </p>
       </div>
     </div>
@@ -250,10 +299,21 @@
     <div class="step">
       <div class="step-number">3</div>
       <div class="step-content">
-        <h3>Preview & Export</h3>
+        <h3>Publish & Share</h3>
         <p>
-          Test your survey with the live preview, then export as JSON or
-          integrate into your application.
+          Publish your survey and share the link. Collect responses from
+          anywhere with a beautiful, responsive form.
+        </p>
+      </div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <h3>Analyze & Integrate</h3>
+        <p>
+          View response analytics in real-time. Export data or receive it
+          instantly via webhooks.
         </p>
       </div>
     </div>
@@ -305,6 +365,20 @@
         <a routerLink="/dashboard">Dashboard</a>
         <a routerLink="/demo">Try Demo</a>
         <a href="#features">Features</a>
+      </div>
+      <div class="link-group">
+        <h5>Developers</h5>
+        <a
+          href="https://github.com/henryohanga/angular-surveys#-developer-integration"
+          target="_blank"
+          >Webhooks</a
+        >
+        <a
+          href="https://github.com/henryohanga/angular-surveys#-developer-integration"
+          target="_blank"
+          >API Docs</a
+        >
+        <a routerLink="/settings">Settings</a>
       </div>
       <div class="link-group">
         <h5>Resources</h5>
