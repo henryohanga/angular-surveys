@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, from, switchMap } from 'rxjs';
-import { environment } from '../../../environments/environment';
 
 export interface PresignedUrlResponse {
   uploadUrl: string;
@@ -23,7 +22,6 @@ export interface UploadResult {
 })
 export class UploadService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = environment.apiUrl || 'http://localhost:3000/api';
 
   getPresignedUrl(
     surveyId: string,
@@ -31,10 +29,12 @@ export class UploadService {
     mimeType: string,
     size: number
   ): Observable<PresignedUrlResponse> {
-    return this.http.post<PresignedUrlResponse>(
-      `${this.apiUrl}/uploads/presigned-url`,
-      { surveyId, filename, mimeType, size }
-    );
+    return this.http.post<PresignedUrlResponse>(`/uploads/presigned-url`, {
+      surveyId,
+      filename,
+      mimeType,
+      size,
+    });
   }
 
   uploadToS3(presignedUrl: string, file: File): Observable<void> {
@@ -57,10 +57,7 @@ export class UploadService {
     const formData = new FormData();
     formData.append('file', file);
 
-    return this.http.post<UploadResult>(
-      `${this.apiUrl}/uploads/${surveyId}`,
-      formData
-    );
+    return this.http.post<UploadResult>(`/uploads/${surveyId}`, formData);
   }
 
   uploadWithPresignedUrl(
@@ -84,8 +81,8 @@ export class UploadService {
   }
 
   deleteFile(key: string): Observable<{ success: boolean }> {
-    return this.http.delete<{ success: boolean }>(
-      `${this.apiUrl}/uploads/${encodeURIComponent(key)}`
-    );
+    return this.http.delete<{ success: boolean }>(`/uploads`, {
+      params: { key },
+    });
   }
 }

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Query,
   Body,
   UseGuards,
   UseInterceptors,
@@ -83,22 +84,22 @@ export class UploadsController {
     return this.uploadsService.uploadFile(surveyId, file);
   }
 
-  @Delete(':key(*)')
+  @Delete()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete uploaded file' })
   @ApiResponse({ status: 200, description: 'File deleted successfully' })
-  async deleteFile(@Param('key') key: string): Promise<{ success: boolean }> {
+  async deleteFile(@Query('key') key: string): Promise<{ success: boolean }> {
     await this.uploadsService.deleteFile(key);
     return { success: true };
   }
 
-  @Get('download/:key(*)')
+  @Get('download')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get signed download URL' })
   @ApiResponse({ status: 200, description: 'Returns signed download URL' })
-  async getDownloadUrl(@Param('key') key: string): Promise<{ url: string }> {
+  async getDownloadUrl(@Query('key') key: string): Promise<{ url: string }> {
     const url = await this.uploadsService.getSignedDownloadUrl(key);
     return { url };
   }

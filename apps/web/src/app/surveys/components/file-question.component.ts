@@ -5,7 +5,7 @@ import {
   Input,
   inject,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MWQuestion } from '../models';
 import { UploadService } from '../../core/services/upload.service';
 
@@ -105,7 +105,18 @@ export class FileQuestionComponent {
         key: f.key,
         cdnUrl: f.cdnUrl,
       }));
-    this.form.get(this.question.id)?.setValue(values.length ? values : null);
+    const ctrl = this.form.get(this.question.id);
+    if (!ctrl) return;
+    if (ctrl instanceof FormArray) {
+      ctrl.clear();
+      for (const v of values) {
+        ctrl.push(new FormControl(v));
+      }
+      ctrl.markAsTouched();
+      ctrl.updateValueAndValidity();
+    } else {
+      ctrl.setValue(values.length ? values : null);
+    }
   }
 
   removeFile(index: number): void {

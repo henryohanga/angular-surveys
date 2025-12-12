@@ -1,6 +1,6 @@
 <div [formGroup]="form">
-  <label class="q-label" [attr.for]="question.id"
-    >{{ question.text }}{{ question.required ? " *" : "" }}</label
+  <span class="q-label"
+    >{{ question.text }}{{ question.required ? " *" : "" }}</span
   >
   <mat-radio-group
     [formControlName]="question.id"
