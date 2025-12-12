@@ -388,6 +388,69 @@ Configure external IDs directly in the question editor:
 3. Set **External ID** and **Field Name**
 4. For choice questions, set **External Value** per option
 
+### File Uploads / Media (AWS S3 + CloudFront)
+
+File questions (`type: "file"`) support uploading media (images, documents, video, audio) to **AWS S3**, optionally served via **CloudFront**.
+
+#### Environment variables
+
+Backend uses these env vars (see `.env.example`):
+
+- `AWS_REGION` – AWS region for S3 (e.g. `us-east-1`)
+- `AWS_S3_BUCKET` – S3 bucket used for uploads (e.g. `angular-surveys-uploads`)
+- `AWS_CLOUDFRONT_DOMAIN` – optional CloudFront domain used to expose files
+- `MAX_FILE_SIZE_MB` – max file size per upload in MB (default: `10`)
+- `ALLOWED_MIME_TYPES` – comma-separated list of allowed mime types (supports wildcards like `image/*`)
+
+You must also configure AWS credentials (not in `.env.example`):
+
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+
+#### API endpoints
+
+- `POST /api/uploads/presigned-url`
+
+  - Auth: `Bearer` token (requires logged-in user)
+  - Body:
+
+    ```json
+    {
+      "surveyId": "uuid",
+      "filename": "photo.png",
+      "mimeType": "image/png",
+      "size": 123456
+    }
+    ```
+
+  - Response:
+
+    ```json
+    {
+      "uploadUrl": "https://s3.amazonaws.com/...",
+      "key": "surveys/survey-id/uuid-photo.png",
+      "cdnUrl": "https://your-cloudfront-domain/surveys/survey-id/uuid-photo.png"
+    }
+    ```
+
+- `POST /api/uploads/:surveyId`
+
+  - Multipart upload (`file` field) for direct API uploads.
+
+- `DELETE /api/uploads/:key(*)` – delete an uploaded file.
+- `GET /api/uploads/download/:key(*)` – get a signed download URL.
+
+#### Frontend behavior
+
+- The **file question component** uses the uploads API to:
+  - Request a presigned URL for each selected file.
+  - Upload files directly from the browser to S3.
+  - Store metadata on the response (filename, size, mime type, S3 key, CloudFront URL).
+- Validation respects `required` + `MAX_FILE_SIZE_MB` + `ALLOWED_MIME_TYPES`.
+- The UI shows upload progress, success (cloud icon), and error states per file.
+
+When building integrations that consume survey responses (via API or webhooks), you can use the stored `cdnUrl`/`key` to fetch or serve uploaded media.
+
 ## 🗺️ Roadmap
 
 See our [Roadmap](ROADMAP.md) for planned features and improvements:

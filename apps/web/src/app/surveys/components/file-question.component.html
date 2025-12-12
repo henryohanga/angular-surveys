@@ -5,6 +5,7 @@
 
   <div
     class="file-upload-area"
+    [class.uploading]="isUploading"
     tabindex="0"
     role="button"
     (click)="fileInput.click()"
@@ -24,14 +25,34 @@
     />
   </div>
 
-  @if (selectedFiles.length > 0) {
+  @if (uploadedFiles.length > 0) {
   <div class="file-list">
-    @for (file of selectedFiles; track file.name; let i = $index) {
-    <div class="file-item">
+    @for (file of uploadedFiles; track file.file.name; let i = $index) {
+    <div
+      class="file-item"
+      [class.error]="file.error"
+      [class.uploading]="file.uploading"
+    >
+      @if (file.uploading) {
+      <mat-spinner diameter="20"></mat-spinner>
+      } @else if (file.error) {
+      <mat-icon class="error-icon">error</mat-icon>
+      } @else if (file.cdnUrl) {
+      <mat-icon class="success-icon">cloud_done</mat-icon>
+      } @else {
       <mat-icon>insert_drive_file</mat-icon>
-      <span class="file-name">{{ file.name }}</span>
-      <span class="file-size">{{ formatSize(file.size) }}</span>
-      <button mat-icon-button type="button" (click)="removeFile(i)">
+      }
+      <span class="file-name">{{ file.file.name }}</span>
+      <span class="file-size">{{ formatSize(file.file.size) }}</span>
+      @if (file.error) {
+      <span class="file-error">{{ file.error }}</span>
+      }
+      <button
+        mat-icon-button
+        type="button"
+        (click)="removeFile(i)"
+        [disabled]="file.uploading"
+      >
         <mat-icon>close</mat-icon>
       </button>
     </div>

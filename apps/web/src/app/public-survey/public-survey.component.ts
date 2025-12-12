@@ -206,12 +206,23 @@ export class PublicSurveyComponent implements OnInit {
     for (const id of ids) {
       const control = this.form.get(id);
       if (control) {
-        control.markAsTouched();
+        this.markControlAndChildrenTouched(control);
         control.updateValueAndValidity();
         if (control.invalid) valid = false;
       }
     }
     return valid;
+  }
+
+  private markControlAndChildrenTouched(control: AbstractControl): void {
+    control.markAsTouched();
+    if (control instanceof FormGroup) {
+      Object.values(control.controls).forEach((c) =>
+        this.markControlAndChildrenTouched(c)
+      );
+    } else if (control instanceof FormArray) {
+      control.controls.forEach((c) => this.markControlAndChildrenTouched(c));
+    }
   }
 
   private answerFlowTarget(ans?: MWOfferedAnswer): number | null {

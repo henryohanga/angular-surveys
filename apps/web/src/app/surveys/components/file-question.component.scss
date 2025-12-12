@@ -64,6 +64,18 @@
     color: var(--primary);
   }
 
+  .success-icon {
+    color: var(--accent, #34a853);
+  }
+
+  .error-icon {
+    color: var(--danger, #ea4335);
+  }
+
+  mat-spinner {
+    flex-shrink: 0;
+  }
+
   .file-name {
     flex: 1;
     font-size: 14px;
@@ -77,6 +89,25 @@
     font-size: 12px;
     color: var(--text-secondary);
   }
+
+  .file-error {
+    font-size: 12px;
+    color: var(--danger, #ea4335);
+  }
+
+  &.uploading {
+    opacity: 0.7;
+  }
+
+  &.error {
+    border-color: var(--danger, #ea4335);
+    background: rgba(234, 67, 53, 0.05);
+  }
+}
+
+.file-upload-area.uploading {
+  pointer-events: none;
+  opacity: 0.6;
 }
 
 .standalone-error {

@@ -1,6 +1,21 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  inject,
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MWQuestion } from '../models';
+import { UploadService } from '../../core/services/upload.service';
+
+interface UploadedFile {
+  file: File;
+  key?: string;
+  cdnUrl?: string;
+  uploading: boolean;
+  error?: string;
+}
 
 @Component({
   standalone: false,
@@ -10,10 +25,14 @@ import { MWQuestion } from '../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileQuestionComponent {
+  private readonly uploadService = inject(UploadService);
+  private readonly cdr = inject(ChangeDetectorRef);
+
   @Input() question!: MWQuestion;
   @Input() form!: FormGroup;
+  @Input() surveyId?: string;
 
-  selectedFiles: File[] = [];
+  uploadedFiles: UploadedFile[] = [];
 
   get accept(): string {
     return this.question.fileConfig?.accept?.join(',') || '*';
@@ -27,22 +46,76 @@ export class FileQuestionComponent {
     return this.question.fileConfig?.maxSize ?? 10; // MB
   }
 
+  get isUploading(): boolean {
+    return this.uploadedFiles.some((f) => f.uploading);
+  }
+
   onFileSelect(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files) {
-      this.selectedFiles = Array.from(input.files);
-      const fileNames = this.selectedFiles.map((f) => f.name);
-      this.form.get(this.question.id)?.setValue(fileNames);
-      this.form.get(this.question.id)?.markAsTouched();
+    if (!input.files) return;
+
+    const files = Array.from(input.files);
+
+    for (const file of files) {
+      if (file.size > this.maxSize * 1024 * 1024) {
+        continue;
+      }
+
+      const uploadedFile: UploadedFile = {
+        file,
+        uploading: true,
+      };
+      this.uploadedFiles.push(uploadedFile);
+
+      if (this.surveyId) {
+        this.uploadService
+          .uploadWithPresignedUrl(this.surveyId, file)
+          .subscribe({
+            next: (result) => {
+              uploadedFile.key = result.key;
+              uploadedFile.cdnUrl = result.cdnUrl;
+              uploadedFile.uploading = false;
+              this.updateFormValue();
+              this.cdr.markForCheck();
+            },
+            error: (err) => {
+              uploadedFile.uploading = false;
+              uploadedFile.error = err.message || 'Upload failed';
+              this.cdr.markForCheck();
+            },
+          });
+      } else {
+        uploadedFile.uploading = false;
+        this.updateFormValue();
+      }
     }
+
+    this.form.get(this.question.id)?.markAsTouched();
+    this.cdr.markForCheck();
+    input.value = '';
+  }
+
+  private updateFormValue(): void {
+    const values = this.uploadedFiles
+      .filter((f) => !f.uploading && !f.error)
+      .map((f) => ({
+        filename: f.file.name,
+        size: f.file.size,
+        mimeType: f.file.type,
+        key: f.key,
+        cdnUrl: f.cdnUrl,
+      }));
+    this.form.get(this.question.id)?.setValue(values.length ? values : null);
   }
 
   removeFile(index: number): void {
-    this.selectedFiles.splice(index, 1);
-    const fileNames = this.selectedFiles.map((f) => f.name);
-    this.form
-      .get(this.question.id)
-      ?.setValue(fileNames.length ? fileNames : null);
+    const file = this.uploadedFiles[index];
+    if (file.key) {
+      this.uploadService.deleteFile(file.key).subscribe();
+    }
+    this.uploadedFiles.splice(index, 1);
+    this.updateFormValue();
+    this.cdr.markForCheck();
   }
 
   formatSize(bytes: number): string {

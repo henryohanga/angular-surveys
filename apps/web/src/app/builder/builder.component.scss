@@ -458,9 +458,35 @@
 .question-actions button {
   width: 32px;
   height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--supporting);
+  border: 1px solid var(--surface-border);
+  transition: all 0.2s ease;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &:hover {
+    background: var(--primary-ghost);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
 }
 
 .question-actions .delete-btn:hover {
+  background: rgba(234, 67, 53, 0.1);
+  border-color: var(--danger);
   color: var(--danger);
 }
 
