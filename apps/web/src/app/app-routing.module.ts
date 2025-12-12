@@ -9,6 +9,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { AnalyticsDashboardComponent } from './analytics/analytics-dashboard/analytics-dashboard.component';
 import { AuthGuard, GuestGuard } from './core/guards/auth.guard';
+import { SettingsComponent } from './settings/settings.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -33,6 +34,11 @@ const routes: Routes = [
   {
     path: 'responses/:id',
     component: AnalyticsDashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'settings',
+    component: SettingsComponent,
     canActivate: [AuthGuard],
   },
 

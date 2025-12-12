@@ -42,6 +42,13 @@ export class User {
   @Column({ nullable: true })
   lastLoginAt?: Date;
 
+  @Column({ type: 'jsonb', nullable: true })
+  developerSettings?: {
+    enabled: boolean;
+    apiKey?: string;
+    apiSecret?: string;
+  };
+
   @OneToMany(() => Survey, (survey) => survey.owner)
   surveys!: Survey[];
 }

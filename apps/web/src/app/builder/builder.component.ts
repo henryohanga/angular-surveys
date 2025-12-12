@@ -861,7 +861,6 @@ export class BuilderComponent implements OnInit, OnDestroy {
 
     const dialogData: DeveloperPanelData = {
       surveyId: this.surveyId,
-      form: this.formDef,
     };
 
     this.dialog.open(DeveloperPanelComponent, {

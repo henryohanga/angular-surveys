@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,11 +11,9 @@ import {
 } from '@angular/material/dialog';
 import { DeveloperSettingsComponent } from '../developer-settings/developer-settings.component';
 import { WebhookManagementComponent } from '../webhook-management/webhook-management.component';
-import { MWForm } from '../../surveys/models';
 
 export interface DeveloperPanelData {
   surveyId: string;
-  form: MWForm;
 }
 
 @Component({
@@ -22,6 +21,7 @@ export interface DeveloperPanelData {
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     MatTabsModule,
     MatIconModule,
     MatButtonModule,
@@ -48,10 +48,7 @@ export interface DeveloperPanelData {
             <span>Settings & Mappings</span>
           </ng-template>
           <div class="tab-content">
-            <app-developer-settings
-              [surveyId]="data.surveyId"
-              [form]="data.form"
-            ></app-developer-settings>
+            <app-developer-settings></app-developer-settings>
           </div>
         </mat-tab>
 
@@ -82,8 +79,9 @@ export interface DeveloperPanelData {
                   Authentication
                 </h4>
                 <p>
-                  When developer mode is enabled, each survey gets unique API
-                  credentials. Use these to verify webhook signatures.
+                  API credentials are managed at the workspace level in your
+                  <a routerLink="/settings" (click)="close()">Settings</a>. Use
+                  these to verify webhook signatures.
                 </p>
                 <div class="code-block">
                   <code>

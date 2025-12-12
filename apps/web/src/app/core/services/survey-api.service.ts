@@ -40,18 +40,6 @@ export interface UpdateSurveyDto {
   description?: string;
   form?: MWForm;
   status?: 'draft' | 'published';
-  developerSettings?: {
-    enabled?: boolean;
-    apiKey?: string;
-    apiSecret?: string;
-    questionMappings?: {
-      questionId: string;
-      externalId: string;
-      fieldName?: string;
-      description?: string;
-    }[];
-    customMetadataFields?: string[];
-  };
 }
 
 export interface SubmitResponseDto {

@@ -91,25 +91,14 @@ export interface UpdateWebhookDto {
   useQuestionMappings?: boolean;
 }
 
-export interface QuestionMapping {
-  questionId: string;
-  externalId: string;
-  fieldName?: string;
-  description?: string;
-}
-
-export interface DeveloperSettings {
+export interface WorkspaceDeveloperSettings {
   enabled: boolean;
   apiKey?: string;
   apiSecret?: string;
-  questionMappings?: QuestionMapping[];
-  customMetadataFields?: string[];
 }
 
-export interface UpdateDeveloperSettingsDto {
+export interface UpdateWorkspaceDeveloperSettingsDto {
   enabled?: boolean;
-  questionMappings?: QuestionMapping[];
-  customMetadataFields?: string[];
 }
 
 @Injectable({
@@ -190,5 +179,29 @@ export class DeveloperApiService {
 
   retryDelivery(logId: string): Observable<WebhookLog> {
     return this.http.post<WebhookLog>(`/webhooks/logs/${logId}/retry`, {});
+  }
+
+  // ==================== WORKSPACE DEVELOPER SETTINGS ====================
+
+  getWorkspaceDeveloperSettings(): Observable<WorkspaceDeveloperSettings> {
+    return this.http.get<WorkspaceDeveloperSettings>(
+      '/users/me/developer-settings'
+    );
+  }
+
+  updateWorkspaceDeveloperSettings(
+    data: UpdateWorkspaceDeveloperSettingsDto
+  ): Observable<WorkspaceDeveloperSettings> {
+    return this.http.patch<WorkspaceDeveloperSettings>(
+      '/users/me/developer-settings',
+      data
+    );
+  }
+
+  regenerateWorkspaceCredentials(): Observable<WorkspaceDeveloperSettings> {
+    return this.http.post<WorkspaceDeveloperSettings>(
+      '/users/me/developer-settings/regenerate',
+      {}
+    );
   }
 }

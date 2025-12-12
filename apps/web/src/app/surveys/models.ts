@@ -29,17 +29,20 @@ export interface MWOfferedAnswer {
   orderNo: number;
   value: string;
   pageFlow?: MWPageFlow;
+  externalValue?: string;
 }
 
 export interface MWGridRow {
   id: string;
   orderNo: number;
   label: string;
+  externalValue?: string;
 }
 export interface MWGridCol {
   id: string;
   orderNo: number;
   label: string;
+  externalValue?: string;
 }
 
 export interface MWGrid {
@@ -52,6 +55,7 @@ export interface MWPriorityItem {
   id: string;
   orderNo: number;
   value: string;
+  externalValue?: string;
 }
 
 export interface MWFileConfig {
@@ -88,6 +92,8 @@ export interface MWQuestion {
   fileConfig?: MWFileConfig;
   numberConfig?: MWNumberConfig;
   placeholder?: string;
+  externalId?: string;
+  externalFieldName?: string;
 }
 
 export interface MWElement {

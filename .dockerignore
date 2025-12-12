@@ -55,3 +55,6 @@ test-results
 
 # Editor directories
 .history
+
+# Vercel
+.vercel

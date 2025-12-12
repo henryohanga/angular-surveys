@@ -540,6 +540,43 @@
           >
         </div>
       </div>
+
+      <!-- Developer Settings (collapsible) -->
+      <div class="form-section developer-section">
+        <mat-expansion-panel class="developer-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon>code</mat-icon>
+              Developer Settings
+            </mat-panel-title>
+            <mat-panel-description>
+              External ID mapping for integrations
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="developer-fields">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>External ID</mat-label>
+              <input
+                matInput
+                formControlName="externalId"
+                placeholder="e.g., customer_name"
+              />
+              <mat-hint>Unique identifier for webhook payloads</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Field Name (optional)</mat-label>
+              <input
+                matInput
+                formControlName="externalFieldName"
+                placeholder="e.g., name"
+              />
+              <mat-hint>Alternative field name for API responses</mat-hint>
+            </mat-form-field>
+          </div>
+        </mat-expansion-panel>
+      </div>
     </form>
   </div>
 

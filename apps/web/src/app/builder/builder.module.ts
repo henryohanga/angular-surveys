@@ -18,6 +18,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BuilderComponent } from './builder.component';
 import { QuestionEditorComponent } from './question-editor.component';
@@ -55,6 +56,7 @@ import { WebhookManagementComponent } from './webhook-management/webhook-managem
     MatSliderModule,
     MatRadioModule,
     MatSlideToggleModule,
+    MatExpansionModule,
     DragDropModule,
     DeveloperPanelComponent,
     DeveloperSettingsComponent,

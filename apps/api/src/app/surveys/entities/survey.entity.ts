@@ -64,18 +64,4 @@ export class Survey {
     startDate?: string;
     endDate?: string;
   };
-
-  @Column({ type: 'jsonb', nullable: true })
-  developerSettings?: {
-    enabled?: boolean;
-    apiKey?: string;
-    apiSecret?: string;
-    questionMappings?: {
-      questionId: string;
-      externalId: string;
-      fieldName?: string;
-      description?: string;
-    }[];
-    customMetadataFields?: string[];
-  };
 }

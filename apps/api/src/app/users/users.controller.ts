@@ -2,6 +2,8 @@ import {
   Controller,
   Get,
   Put,
+  Patch,
+  Post,
   Delete,
   Body,
   Param,
@@ -58,5 +60,31 @@ export class UsersController {
       throw new Error('Forbidden');
     }
     return this.usersService.remove(id);
+  }
+
+  // ==================== DEVELOPER SETTINGS ====================
+
+  @Get('me/developer-settings')
+  @ApiOperation({ summary: 'Get developer settings for current user' })
+  @ApiResponse({ status: 200, description: 'Developer settings' })
+  async getDeveloperSettings(@Request() req: { user: RequestUser }) {
+    return this.usersService.getDeveloperSettings(req.user.id);
+  }
+
+  @Patch('me/developer-settings')
+  @ApiOperation({ summary: 'Update developer settings for current user' })
+  @ApiResponse({ status: 200, description: 'Developer settings updated' })
+  async updateDeveloperSettings(
+    @Request() req: { user: RequestUser },
+    @Body() dto: { enabled?: boolean }
+  ) {
+    return this.usersService.updateDeveloperSettings(req.user.id, dto);
+  }
+
+  @Post('me/developer-settings/regenerate')
+  @ApiOperation({ summary: 'Regenerate API credentials' })
+  @ApiResponse({ status: 200, description: 'Credentials regenerated' })
+  async regenerateCredentials(@Request() req: { user: RequestUser }) {
+    return this.usersService.regenerateCredentials(req.user.id);
   }
 }

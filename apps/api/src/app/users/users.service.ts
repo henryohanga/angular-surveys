@@ -46,4 +46,81 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
   }
+
+  // ==================== DEVELOPER SETTINGS ====================
+
+  async getDeveloperSettings(userId: string): Promise<{
+    enabled: boolean;
+    apiKey?: string;
+    apiSecret?: string;
+  }> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user.developerSettings || { enabled: false };
+  }
+
+  async updateDeveloperSettings(
+    userId: string,
+    dto: { enabled?: boolean }
+  ): Promise<{ enabled: boolean; apiKey?: string; apiSecret?: string }> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const currentSettings = user.developerSettings || { enabled: false };
+
+    if (dto.enabled && !currentSettings.apiKey) {
+      // Generate credentials when enabling for the first time
+      currentSettings.apiKey = this.generateApiKey();
+      currentSettings.apiSecret = this.generateApiSecret();
+    }
+
+    currentSettings.enabled = dto.enabled ?? currentSettings.enabled;
+    user.developerSettings = currentSettings;
+
+    await this.usersRepository.save(user);
+    return user.developerSettings;
+  }
+
+  async regenerateCredentials(userId: string): Promise<{
+    enabled: boolean;
+    apiKey?: string;
+    apiSecret?: string;
+  }> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const settings = user.developerSettings || { enabled: false };
+    settings.apiKey = this.generateApiKey();
+    settings.apiSecret = this.generateApiSecret();
+    user.developerSettings = settings;
+
+    await this.usersRepository.save(user);
+    return user.developerSettings;
+  }
+
+  private generateApiKey(): string {
+    const chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = 'ask_';
+    for (let i = 0; i < 32; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
+
+  private generateApiSecret(): string {
+    const chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = 'ass_';
+    for (let i = 0; i < 48; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
 }

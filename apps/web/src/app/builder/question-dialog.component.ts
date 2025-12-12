@@ -197,6 +197,8 @@ export class QuestionDialogComponent implements OnInit {
       placeholder: [''],
       pageFlowModifier: [false],
       otherAnswer: [false],
+      externalId: [''],
+      externalFieldName: [''],
       offeredAnswers: this.fb.array([]),
       grid: this.fb.group({
         cellInputType: ['radio'],
@@ -235,6 +237,8 @@ export class QuestionDialogComponent implements OnInit {
       placeholder: q.placeholder || '',
       pageFlowModifier: !!q.pageFlowModifier,
       otherAnswer: !!q.otherAnswer,
+      externalId: q.externalId || '',
+      externalFieldName: q.externalFieldName || '',
     });
 
     // Set active category based on type
@@ -248,7 +252,13 @@ export class QuestionDialogComponent implements OnInit {
     if (q.offeredAnswers) {
       q.offeredAnswers.forEach((a, idx) => {
         this.offeredAnswers.push(
-          this.createAnswerGroup(a.id, idx + 1, a.value, a.pageFlow?.goToPage)
+          this.createAnswerGroup(
+            a.id,
+            idx + 1,
+            a.value,
+            a.pageFlow?.goToPage,
+            a.externalValue
+          )
         );
       });
     }
@@ -259,10 +269,14 @@ export class QuestionDialogComponent implements OnInit {
       this.gridRows.clear();
       this.gridCols.clear();
       q.grid.rows.forEach((r, idx) => {
-        this.gridRows.push(this.createGridItemGroup(r.id, idx + 1, r.label));
+        this.gridRows.push(
+          this.createGridItemGroup(r.id, idx + 1, r.label, r.externalValue)
+        );
       });
       q.grid.cols.forEach((c, idx) => {
-        this.gridCols.push(this.createGridItemGroup(c.id, idx + 1, c.label));
+        this.gridCols.push(
+          this.createGridItemGroup(c.id, idx + 1, c.label, c.externalValue)
+        );
       });
     }
 
@@ -271,7 +285,7 @@ export class QuestionDialogComponent implements OnInit {
     if (q.priorityList) {
       q.priorityList.forEach((p, idx) => {
         this.priorityList.push(
-          this.createPriorityGroup(p.id, idx + 1, p.value)
+          this.createPriorityGroup(p.id, idx + 1, p.value, p.externalValue)
         );
       });
     }
@@ -384,31 +398,45 @@ export class QuestionDialogComponent implements OnInit {
     id: string,
     orderNo: number,
     value = '',
-    goToPage?: number
+    goToPage?: number,
+    externalValue?: string
   ): FormGroup {
     return this.fb.group({
       id: [id],
       orderNo: [orderNo],
       value: [value],
+      externalValue: [externalValue || ''],
       pageFlow: this.fb.group({
         goToPage: [goToPage || null],
       }),
     });
   }
 
-  createGridItemGroup(id: string, orderNo: number, label = ''): FormGroup {
+  createGridItemGroup(
+    id: string,
+    orderNo: number,
+    label = '',
+    externalValue?: string
+  ): FormGroup {
     return this.fb.group({
       id: [id],
       orderNo: [orderNo],
       label: [label],
+      externalValue: [externalValue || ''],
     });
   }
 
-  createPriorityGroup(id: string, orderNo: number, value = ''): FormGroup {
+  createPriorityGroup(
+    id: string,
+    orderNo: number,
+    value = '',
+    externalValue?: string
+  ): FormGroup {
     return this.fb.group({
       id: [id],
       orderNo: [orderNo],
       value: [value],
+      externalValue: [externalValue || ''],
     });
   }
 

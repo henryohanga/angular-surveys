@@ -1,6 +1,7 @@
-import { Component, Input, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,33 +12,19 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatChipsModule } from '@angular/material/chips';
 import { Subject, firstValueFrom } from 'rxjs';
-import { SurveyApiService } from '../../core/services/survey-api.service';
-import { MWForm, MWQuestion } from '../../surveys/models';
-
-interface QuestionMapping {
-  questionId: string;
-  externalId: string;
-  fieldName?: string;
-  description?: string;
-}
-
-interface DeveloperSettings {
-  enabled: boolean;
-  apiKey?: string;
-  apiSecret?: string;
-  questionMappings?: QuestionMapping[];
-  customMetadataFields?: string[];
-}
+import {
+  DeveloperApiService,
+  WorkspaceDeveloperSettings,
+} from '../../core/services/developer-api.service';
 
 @Component({
   selector: 'app-developer-settings',
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     FormsModule,
-    ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -48,7 +35,6 @@ interface DeveloperSettings {
     MatTooltipModule,
     MatSnackBarModule,
     MatDividerModule,
-    MatChipsModule,
   ],
   template: `
     <div class="developer-settings">
@@ -72,7 +58,9 @@ interface DeveloperSettings {
             </mat-slide-toggle>
             <p class="hint">
               Developer mode allows you to configure custom question IDs,
-              webhooks, and API integrations.
+              webhooks, and API integrations. Visit
+              <a routerLink="/settings">Settings</a> to manage all your
+              developer preferences.
             </p>
           </div>
 
@@ -159,80 +147,35 @@ interface DeveloperSettings {
             </div>
           </mat-expansion-panel>
 
-          <!-- Question Mappings Section -->
-          <mat-expansion-panel class="section-panel" [expanded]="true">
+          <!-- Question Mappings Info -->
+          <mat-expansion-panel class="section-panel">
             <mat-expansion-panel-header>
               <mat-panel-title>
                 <mat-icon>swap_horiz</mat-icon>
                 Question Mappings
               </mat-panel-title>
               <mat-panel-description>
-                Map questions to external system identifiers
+                Configure external IDs in the question editor
               </mat-panel-description>
             </mat-expansion-panel-header>
 
             <div class="mappings-section">
-              <p class="section-description">
-                Assign custom external IDs to questions for easier integration
-                with your systems. These IDs will be used in webhook payloads
-                when question mappings are enabled.
-              </p>
-
-              @if (allQuestions.length === 0) {
-              <div class="empty-state">
-                <mat-icon>help_outline</mat-icon>
-                <p>Add questions to your survey to configure mappings.</p>
-              </div>
-              } @else {
-              <div class="mappings-list">
-                @for (question of allQuestions; track question.id) {
-                <div class="mapping-row">
-                  <div class="question-info">
-                    <span class="question-text">{{ question.text }}</span>
-                    <span class="question-type">{{ question.type }}</span>
-                  </div>
-                  <div class="mapping-fields">
-                    <mat-form-field appearance="outline" class="mapping-field">
-                      <mat-label>External ID</mat-label>
-                      <input
-                        matInput
-                        [value]="getMapping(question.id)?.externalId || ''"
-                        (blur)="
-                          updateMapping(question.id, 'externalId', $event)
-                        "
-                        placeholder="e.g., customer_name"
-                      />
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" class="mapping-field">
-                      <mat-label>Field Name (optional)</mat-label>
-                      <input
-                        matInput
-                        [value]="getMapping(question.id)?.fieldName || ''"
-                        (blur)="updateMapping(question.id, 'fieldName', $event)"
-                        placeholder="e.g., name"
-                      />
-                    </mat-form-field>
-                  </div>
+              <div class="info-box">
+                <mat-icon>info</mat-icon>
+                <div>
+                  <p><strong>External IDs are now inline!</strong></p>
+                  <p>
+                    Configure external IDs directly in the question editor by
+                    expanding the "Developer Settings" section on each question.
+                    This includes:
+                  </p>
+                  <ul>
+                    <li>External ID for webhook payloads</li>
+                    <li>External values for choice options</li>
+                    <li>Field names for API responses</li>
+                  </ul>
                 </div>
-                }
               </div>
-
-              <div class="actions-row">
-                <button
-                  mat-stroked-button
-                  color="primary"
-                  (click)="saveMappings()"
-                  [disabled]="isSaving"
-                >
-                  <mat-icon>save</mat-icon>
-                  {{ isSaving ? 'Saving...' : 'Save Mappings' }}
-                </button>
-                <button mat-stroked-button (click)="clearMappings()">
-                  <mat-icon>clear_all</mat-icon>
-                  Clear All
-                </button>
-              </div>
-              }
             </div>
           </mat-expansion-panel>
           }
@@ -273,6 +216,16 @@ interface DeveloperSettings {
         margin-top: 8px;
         color: rgba(0, 0, 0, 0.6);
         font-size: 13px;
+      }
+
+      .toggle-section .hint a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .toggle-section .hint a:hover {
+        text-decoration: underline;
       }
 
       .section-panel {
@@ -372,40 +325,49 @@ interface DeveloperSettings {
         flex: 1;
       }
 
-      .actions-row {
+      .info-box {
         display: flex;
-        gap: 12px;
-        margin-top: 16px;
-        padding-top: 16px;
-        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        gap: 16px;
+        padding: 16px;
+        background: rgba(102, 126, 234, 0.1);
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
       }
 
-      @media (max-width: 600px) {
-        .mapping-fields {
-          flex-direction: column;
-        }
+      .info-box mat-icon {
+        color: #667eea;
+        flex-shrink: 0;
+      }
+
+      .info-box p {
+        margin: 0 0 8px 0;
+        color: rgba(0, 0, 0, 0.7);
+      }
+
+      .info-box ul {
+        margin: 0;
+        padding-left: 20px;
+        color: rgba(0, 0, 0, 0.6);
+      }
+
+      .info-box li {
+        margin-bottom: 4px;
       }
     `,
   ],
 })
 export class DeveloperSettingsComponent implements OnInit, OnDestroy {
-  @Input() surveyId!: string;
-  @Input() form!: MWForm;
-
   private readonly snackBar = inject(MatSnackBar);
-  private readonly surveyApi = inject(SurveyApiService);
+  private readonly developerApi = inject(DeveloperApiService);
   private readonly destroy$ = new Subject<void>();
 
-  developerSettings: DeveloperSettings = { enabled: false };
-  allQuestions: MWQuestion[] = [];
+  developerSettings: WorkspaceDeveloperSettings = { enabled: false };
   showSecret = false;
   isSaving = false;
   isRegenerating = false;
-
-  private mappingsMap = new Map<string, QuestionMapping>();
+  isLoading = true;
 
   ngOnInit(): void {
-    this.extractQuestions();
     this.loadSettings();
   }
 
@@ -414,103 +376,51 @@ export class DeveloperSettingsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private extractQuestions(): void {
-    this.allQuestions = [];
-    if (this.form?.pages) {
-      for (const page of this.form.pages) {
-        for (const element of page.elements) {
-          if (element.type === 'question' && element.question) {
-            this.allQuestions.push(element.question);
-          }
-        }
-      }
-    }
-  }
-
   private async loadSettings(): Promise<void> {
-    if (!this.surveyId) return;
-
+    this.isLoading = true;
     try {
-      const survey = await firstValueFrom(
-        this.surveyApi.getSurvey(this.surveyId)
+      this.developerSettings = await firstValueFrom(
+        this.developerApi.getWorkspaceDeveloperSettings()
       );
-      const settings = (
-        survey as unknown as { developerSettings?: DeveloperSettings }
-      ).developerSettings;
-      if (settings) {
-        this.developerSettings = settings;
-        if (settings.questionMappings) {
-          for (const mapping of settings.questionMappings) {
-            this.mappingsMap.set(mapping.questionId, mapping);
-          }
-        }
-      }
     } catch {
-      // Survey might not have developer settings yet
+      // User might not have developer settings yet
+      this.developerSettings = { enabled: false };
+    } finally {
+      this.isLoading = false;
     }
   }
 
   async toggleDeveloperMode(enabled: boolean): Promise<void> {
-    this.developerSettings.enabled = enabled;
-
-    if (enabled && !this.developerSettings.apiKey) {
-      // Generate initial credentials
-      this.developerSettings.apiKey = this.generateApiKey();
-      this.developerSettings.apiSecret = this.generateApiSecret();
+    this.isSaving = true;
+    try {
+      this.developerSettings = await firstValueFrom(
+        this.developerApi.updateWorkspaceDeveloperSettings({ enabled })
+      );
+      this.snackBar.open(
+        enabled ? 'Developer mode enabled' : 'Developer mode disabled',
+        'Close',
+        { duration: 2000 }
+      );
+    } catch {
+      this.snackBar.open('Failed to update settings', 'Close', {
+        duration: 3000,
+      });
+    } finally {
+      this.isSaving = false;
     }
-
-    await this.saveSettings();
-  }
-
-  getMapping(questionId: string): QuestionMapping | undefined {
-    return this.mappingsMap.get(questionId);
-  }
-
-  updateMapping(
-    questionId: string,
-    field: 'externalId' | 'fieldName',
-    event: Event
-  ): void {
-    const value = (event.target as HTMLInputElement).value.trim();
-
-    let mapping = this.mappingsMap.get(questionId);
-    if (!mapping) {
-      mapping = { questionId, externalId: '' };
-      this.mappingsMap.set(questionId, mapping);
-    }
-
-    if (field === 'externalId') {
-      mapping.externalId = value;
-    } else {
-      mapping.fieldName = value || undefined;
-    }
-
-    // Remove mapping if empty
-    if (!mapping.externalId && !mapping.fieldName) {
-      this.mappingsMap.delete(questionId);
-    }
-  }
-
-  async saveMappings(): Promise<void> {
-    this.developerSettings.questionMappings = Array.from(
-      this.mappingsMap.values()
-    ).filter((m) => m.externalId);
-    await this.saveSettings();
-  }
-
-  clearMappings(): void {
-    this.mappingsMap.clear();
-    this.developerSettings.questionMappings = [];
-    this.saveSettings();
   }
 
   async regenerateCredentials(): Promise<void> {
     this.isRegenerating = true;
     try {
-      this.developerSettings.apiKey = this.generateApiKey();
-      this.developerSettings.apiSecret = this.generateApiSecret();
-      await this.saveSettings();
+      this.developerSettings = await firstValueFrom(
+        this.developerApi.regenerateWorkspaceCredentials()
+      );
       this.snackBar.open('Credentials regenerated', 'Close', {
+        duration: 3000,
+      });
+    } catch {
+      this.snackBar.open('Failed to regenerate credentials', 'Close', {
         duration: 3000,
       });
     } finally {
@@ -523,45 +433,5 @@ export class DeveloperSettingsComponent implements OnInit, OnDestroy {
       navigator.clipboard.writeText(value);
       this.snackBar.open('Copied to clipboard', 'Close', { duration: 2000 });
     }
-  }
-
-  private async saveSettings(): Promise<void> {
-    if (!this.surveyId) return;
-
-    this.isSaving = true;
-    try {
-      await firstValueFrom(
-        this.surveyApi.updateSurvey(this.surveyId, {
-          developerSettings: this.developerSettings,
-        } as unknown as Parameters<typeof this.surveyApi.updateSurvey>[1])
-      );
-      this.snackBar.open('Settings saved', 'Close', { duration: 2000 });
-    } catch {
-      this.snackBar.open('Failed to save settings', 'Close', {
-        duration: 3000,
-      });
-    } finally {
-      this.isSaving = false;
-    }
-  }
-
-  private generateApiKey(): string {
-    const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = 'ask_';
-    for (let i = 0; i < 32; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-  }
-
-  private generateApiSecret(): string {
-    const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = 'ass_';
-    for (let i = 0; i < 48; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
   }
 }
