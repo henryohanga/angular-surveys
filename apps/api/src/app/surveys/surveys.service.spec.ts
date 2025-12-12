@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { SurveysService } from './surveys.service';
+import { WebhooksService } from '../webhooks/webhooks.service';
 import { Survey } from './entities/survey.entity';
 
 describe('SurveysService', () => {
@@ -29,11 +30,15 @@ describe('SurveysService', () => {
       delete: jest.fn(),
       increment: jest.fn(),
     };
+    const mockWebhooksService = {
+      triggerWebhooks: jest.fn().mockResolvedValue(undefined),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SurveysService,
         { provide: getRepositoryToken(Survey), useValue: mockRepository },
+        { provide: WebhooksService, useValue: mockWebhooksService },
       ],
     }).compile();
 
