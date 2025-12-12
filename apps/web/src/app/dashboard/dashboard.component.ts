@@ -353,7 +353,9 @@ export class DashboardComponent implements OnInit {
 
   protected copyShareLink(survey: Survey): void {
     if (survey.shareUrl) {
-      navigator.clipboard.writeText(survey.shareUrl);
+      const completeShareUrl = `${window.location.origin}${survey.shareUrl}`;
+
+      navigator.clipboard.writeText(completeShareUrl);
       this.snackBar.open('Link copied to clipboard!', 'Close', {
         duration: 2000,
       });

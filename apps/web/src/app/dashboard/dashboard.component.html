@@ -19,11 +19,11 @@
         type="text"
         placeholder="Search surveys and templates..."
         [(ngModel)]="searchQuery"
-        />
+      />
       @if (searchQuery) {
-        <button mat-icon-button (click)="searchQuery = ''">
-          <mat-icon>close</mat-icon>
-        </button>
+      <button mat-icon-button (click)="searchQuery = ''">
+        <mat-icon>close</mat-icon>
+      </button>
       }
     </div>
     <div class="tabs">
@@ -31,7 +31,7 @@
         class="tab"
         [class.active]="activeTab === 'surveys'"
         (click)="activeTab = 'surveys'"
-        >
+      >
         <mat-icon>folder</mat-icon>
         My Surveys ({{ surveys.length }})
       </button>
@@ -39,7 +39,7 @@
         class="tab"
         [class.active]="activeTab === 'templates'"
         (click)="activeTab = 'templates'"
-        >
+      >
         <mat-icon>auto_awesome</mat-icon>
         Templates ({{ templates.length }})
       </button>
@@ -48,213 +48,211 @@
 
   <!-- Loading State -->
   @if (isLoading) {
-    <div class="loading">
-      <mat-spinner diameter="40"></mat-spinner>
-      <p>Loading...</p>
-    </div>
+  <div class="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading...</p>
+  </div>
   }
 
   <!-- Surveys Tab -->
   @if (!isLoading && activeTab === 'surveys') {
-    <div class="content">
-      <!-- Empty State -->
-      @if (filteredSurveys.length === 0) {
-        <div class="empty-state">
-          <mat-icon>assignment</mat-icon>
-          @if (!searchQuery) {
-            <h3>No surveys yet</h3>
-          }
-          @if (searchQuery) {
-            <h3>No surveys found</h3>
-          }
-          @if (!searchQuery) {
-            <p>
-              Create your first survey or start from a template
-            </p>
-          }
-          @if (searchQuery) {
-            <p>Try adjusting your search terms</p>
-          }
-          @if (!searchQuery) {
-            <div class="empty-actions">
-              <button mat-raised-button color="primary" (click)="createFromScratch()">
-                <mat-icon>add</mat-icon>
-                Create Survey
-              </button>
-              <button mat-stroked-button (click)="activeTab = 'templates'">
-                <mat-icon>auto_awesome</mat-icon>
-                Browse Templates
-              </button>
-            </div>
-          }
-        </div>
-      }
-      <!-- Survey Grid -->
-      @if (filteredSurveys.length > 0) {
-        <div class="survey-grid">
-          @for (survey of filteredSurveys; track trackBySurvey($index, survey)) {
-            <div
-              class="survey-card"
-              (click)="editSurvey(survey)"
-              (keyup.enter)="editSurvey(survey)"
-              tabindex="0"
-              role="button"
-              [attr.aria-label]="'Edit survey: ' + survey.form.name"
-              >
-              <div class="card-header">
-                <div
-                  class="status-badge"
-                  [class.published]="survey.status === 'published'"
-                  >
-                  {{ survey.status === "published" ? "Published" : "Draft" }}
-                </div>
-                <div class="card-actions">
-                  <button
-                    mat-icon-button
-                    [matMenuTriggerFor]="surveyMenu"
-                    (click)="$event.stopPropagation()"
-                    >
-                    <mat-icon>more_vert</mat-icon>
-                  </button>
-                  <mat-menu #surveyMenu="matMenu">
-                    <button mat-menu-item (click)="previewSurvey(survey, $event)">
-                      <mat-icon>visibility</mat-icon>
-                      <span>Preview</span>
-                    </button>
-                    <button mat-menu-item (click)="duplicateSurvey(survey, $event)">
-                      <mat-icon>content_copy</mat-icon>
-                      <span>Duplicate</span>
-                    </button>
-                    <button mat-menu-item (click)="exportResponsesCSV(survey, $event)">
-                      <mat-icon>download</mat-icon>
-                      <span>Export Responses (CSV)</span>
-                    </button>
-                    <button mat-menu-item (click)="viewResponses(survey, $event)">
-                      <mat-icon>bar_chart</mat-icon>
-                      <span>View Responses ({{ survey.responseCount }})</span>
-                    </button>
-                    <mat-divider></mat-divider>
-                    <button
-                      mat-menu-item
-                      class="danger"
-                      (click)="deleteSurvey(survey, $event)"
-                      >
-                      <mat-icon>delete</mat-icon>
-                      <span>Delete</span>
-                    </button>
-                  </mat-menu>
-                </div>
-              </div>
-              <div class="card-body">
-                <h3>{{ survey.form.name || "Untitled Survey" }}</h3>
-                <p class="description">
-                  {{ survey.form.description || "No description" }}
-                </p>
-              </div>
-              <div class="card-meta">
-                <span class="meta-item">
-                  <mat-icon>help_outline</mat-icon>
-                  {{ getQuestionCount(survey) }} questions
-                </span>
-                <span class="meta-item">
-                  <mat-icon>layers</mat-icon>
-                  {{ survey.form.pages.length }} pages
-                </span>
-                <span class="meta-item">
-                  <mat-icon>schedule</mat-icon>
-                  {{ formatDate(survey.updatedAt) }}
-                </span>
-              </div>
-              <div class="card-footer">
-                <button
-                  mat-stroked-button
-                  [color]="survey.status === 'published' ? 'warn' : 'primary'"
-                  (click)="togglePublish(survey, $event)"
-                  >
-                  <mat-icon>{{
-                    survey.status === "published" ? "unpublished" : "publish"
-                  }}</mat-icon>
-                  {{ survey.status === "published" ? "Unpublish" : "Publish" }}
-                </button>
-                @if (survey.shareUrl) {
-                  <button
-                    mat-icon-button
-                    (click)="copyShareLink(survey); $event.stopPropagation()"
-                    matTooltip="Copy share link"
-                    >
-                    <mat-icon>link</mat-icon>
-                  </button>
-                }
-              </div>
-            </div>
-          }
-        </div>
+  <div class="content">
+    <!-- Empty State -->
+    @if (filteredSurveys.length === 0) {
+    <div class="empty-state">
+      <mat-icon>assignment</mat-icon>
+      @if (!searchQuery) {
+      <h3>No surveys yet</h3>
+      } @if (searchQuery) {
+      <h3>No surveys found</h3>
+      } @if (!searchQuery) {
+      <p>Create your first survey or start from a template</p>
+      } @if (searchQuery) {
+      <p>Try adjusting your search terms</p>
+      } @if (!searchQuery) {
+      <div class="empty-actions">
+        <button mat-raised-button color="primary" (click)="createFromScratch()">
+          <mat-icon>add</mat-icon>
+          Create Survey
+        </button>
+        <button mat-stroked-button (click)="activeTab = 'templates'">
+          <mat-icon>auto_awesome</mat-icon>
+          Browse Templates
+        </button>
+      </div>
       }
     </div>
+    }
+    <!-- Survey Grid -->
+    @if (filteredSurveys.length > 0) {
+    <div class="survey-grid">
+      @for (survey of filteredSurveys; track trackBySurvey($index, survey)) {
+      <div
+        class="survey-card"
+        (click)="editSurvey(survey)"
+        (keyup.enter)="editSurvey(survey)"
+        tabindex="0"
+        role="button"
+        [attr.aria-label]="'Edit survey: ' + survey.form.name"
+      >
+        <div class="card-header">
+          <div
+            class="status-badge"
+            [class.published]="survey.status === 'published'"
+          >
+            {{ survey.status === "published" ? "Published" : "Draft" }}
+          </div>
+          <div class="card-actions">
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="surveyMenu"
+              (click)="$event.stopPropagation()"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #surveyMenu="matMenu">
+              <button mat-menu-item (click)="previewSurvey(survey, $event)">
+                <mat-icon>visibility</mat-icon>
+                <span>Preview</span>
+              </button>
+              <button mat-menu-item (click)="duplicateSurvey(survey, $event)">
+                <mat-icon>content_copy</mat-icon>
+                <span>Duplicate</span>
+              </button>
+              <button
+                mat-menu-item
+                (click)="exportResponsesCSV(survey, $event)"
+              >
+                <mat-icon>download</mat-icon>
+                <span>Export Responses (CSV)</span>
+              </button>
+              <button mat-menu-item (click)="viewResponses(survey, $event)">
+                <mat-icon>bar_chart</mat-icon>
+                <span>View Responses ({{ survey.responseCount }})</span>
+              </button>
+              <mat-divider></mat-divider>
+              <button
+                mat-menu-item
+                class="danger"
+                (click)="deleteSurvey(survey, $event)"
+              >
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3>{{ survey.form.name || "Untitled Survey" }}</h3>
+          <p class="description">
+            {{ survey.form.description || "No description" }}
+          </p>
+        </div>
+        <div class="card-meta">
+          <span class="meta-item">
+            <mat-icon>help_outline</mat-icon>
+            {{ getQuestionCount(survey) }} questions
+          </span>
+          <span class="meta-item">
+            <mat-icon>layers</mat-icon>
+            {{ survey.form.pages.length }} pages
+          </span>
+          <span class="meta-item">
+            <mat-icon>schedule</mat-icon>
+            {{ formatDate(survey.updatedAt) }}
+          </span>
+        </div>
+        <div class="card-footer">
+          <button
+            mat-stroked-button
+            [color]="survey.status === 'published' ? 'warn' : 'primary'"
+            (click)="togglePublish(survey, $event)"
+          >
+            <mat-icon>{{
+              survey.status === "published" ? "unpublished" : "publish"
+            }}</mat-icon>
+            {{ survey.status === "published" ? "Unpublish" : "Publish" }}
+          </button>
+          @if (survey.status === 'published' && survey.shareUrl) {
+          <button
+            mat-icon-button
+            (click)="copyShareLink(survey); $event.stopPropagation()"
+            matTooltip="Copy share link"
+          >
+            <mat-icon>link</mat-icon>
+          </button>
+          }
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
   }
 
   <!-- Templates Tab -->
   @if (!isLoading && activeTab === 'templates') {
-    <div class="content">
-      <div class="templates-intro">
-        <h2>Start with a Template</h2>
-        <p>
-          Choose from our collection of pre-built survey templates or create your
-          own
-        </p>
-      </div>
-      <!-- Template Categories -->
-      <div class="template-grid">
-        @for (template of filteredTemplates; track trackByTemplate($index, template)) {
-          <div
-            class="template-card"
-            (click)="createFromTemplate(template)"
-            tabindex="0"
-            role="button"
-            (keyup.enter)="createFromTemplate(template)"
-            >
-            <div
-              class="template-icon"
-              [style.backgroundColor]="template.color + '15'"
-              [style.color]="template.color"
-              >
-              <mat-icon>{{ template.icon }}</mat-icon>
-            </div>
-            <div class="template-content">
-              <div class="template-header">
-                <h4>{{ template.name }}</h4>
-                <span class="category-badge">{{ template.category }}</span>
-              </div>
-              <p>{{ template.description }}</p>
-              <div class="template-meta">
-                <span>{{ template.form.pages.length }} pages</span>
-                <span>•</span>
-                <span>{{ getTemplateQuestionCount(template) }} questions</span>
-                @if (template.isCustom) {
-                  <span class="custom-badge">Custom</span>
-                }
-              </div>
-            </div>
-            <div class="template-actions">
-              <button
-                mat-icon-button
-                (click)="createFromTemplate(template); $event.stopPropagation()"
-                >
-                <mat-icon>arrow_forward</mat-icon>
-              </button>
-              @if (template.isCustom) {
-                <button
-                  mat-icon-button
-                  (click)="deleteTemplate(template, $event)"
-                  matTooltip="Delete template"
-                  >
-                  <mat-icon>delete_outline</mat-icon>
-                </button>
-              }
-            </div>
-          </div>
-        }
-      </div>
+  <div class="content">
+    <div class="templates-intro">
+      <h2>Start with a Template</h2>
+      <p>
+        Choose from our collection of pre-built survey templates or create your
+        own
+      </p>
     </div>
+    <!-- Template Categories -->
+    <div class="template-grid">
+      @for (template of filteredTemplates; track trackByTemplate($index,
+      template)) {
+      <div
+        class="template-card"
+        (click)="createFromTemplate(template)"
+        tabindex="0"
+        role="button"
+        (keyup.enter)="createFromTemplate(template)"
+      >
+        <div
+          class="template-icon"
+          [style.backgroundColor]="template.color + '15'"
+          [style.color]="template.color"
+        >
+          <mat-icon>{{ template.icon }}</mat-icon>
+        </div>
+        <div class="template-content">
+          <div class="template-header">
+            <h4>{{ template.name }}</h4>
+            <span class="category-badge">{{ template.category }}</span>
+          </div>
+          <p>{{ template.description }}</p>
+          <div class="template-meta">
+            <span>{{ template.form.pages.length }} pages</span>
+            <span>•</span>
+            <span>{{ getTemplateQuestionCount(template) }} questions</span>
+            @if (template.isCustom) {
+            <span class="custom-badge">Custom</span>
+            }
+          </div>
+        </div>
+        <div class="template-actions">
+          <button
+            mat-icon-button
+            (click)="createFromTemplate(template); $event.stopPropagation()"
+          >
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+          @if (template.isCustom) {
+          <button
+            mat-icon-button
+            (click)="deleteTemplate(template, $event)"
+            matTooltip="Delete template"
+          >
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+          }
+        </div>
+      </div>
+      }
+    </div>
+  </div>
   }
 </div>
