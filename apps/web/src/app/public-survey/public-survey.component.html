@@ -58,7 +58,37 @@
 <!-- Survey Form -->
 @if (!isLoading && !error && !isSubmitted) {
 <div class="survey-wrapper">
-  @if (!showSummary) {
+  <!-- Premium Question-by-Question Flow Notice -->
+  @if (answeringFlow === 'question-by-question' && !isPremiumFlowAvailable) {
+  <div class="premium-notice">
+    <mat-icon>auto_awesome</mat-icon>
+    <span
+      >Question-by-question flow requires the premium module. Showing continuous
+      flow.</span
+    >
+  </div>
+  }
+
+  <!-- Premium Flow Container (when available) -->
+  @if (usePremiumFlow) {
+  <div class="premium-flow-container">
+    <!-- Premium flow component will be rendered here when submodule is installed -->
+    <div class="premium-placeholder">
+      <mat-icon>format_list_numbered</mat-icon>
+      <h3>Premium Question Flow</h3>
+      <p>
+        The premium question-by-question flow module is configured but not yet
+        installed.
+      </p>
+      <p class="hint">
+        Install the premium-flow submodule to enable this feature.
+      </p>
+    </div>
+  </div>
+  }
+
+  <!-- Standard Continuous Flow -->
+  @if (!usePremiumFlow && !showSummary) {
   <div class="survey-container">
     <!-- Header -->
     <div class="survey-header">

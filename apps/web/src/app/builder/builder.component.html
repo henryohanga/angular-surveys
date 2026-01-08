@@ -521,6 +521,50 @@
 
     <hr />
 
+    <!-- Answering Flow Section -->
+    <div class="settings-section">
+      <div class="settings-label" id="answering-flow-label">Answering Flow</div>
+      <div class="flow-options">
+        <div
+          class="flow-option"
+          [class.selected]="getAnsweringFlow() === 'continuous'"
+          (click)="updateAnsweringFlow('continuous')"
+          (keydown.enter)="updateAnsweringFlow('continuous')"
+          (keydown.space)="updateAnsweringFlow('continuous')"
+          tabindex="0"
+          role="radio"
+          [attr.aria-checked]="getAnsweringFlow() === 'continuous'"
+        >
+          <mat-icon>view_agenda</mat-icon>
+          <div class="flow-info">
+            <span class="flow-title">Continuous</span>
+            <span class="flow-desc">Page by page flow</span>
+          </div>
+        </div>
+        <div
+          class="flow-option premium"
+          [class.selected]="getAnsweringFlow() === 'question-by-question'"
+          (click)="updateAnsweringFlow('question-by-question')"
+          (keydown.enter)="updateAnsweringFlow('question-by-question')"
+          (keydown.space)="updateAnsweringFlow('question-by-question')"
+          tabindex="0"
+          role="radio"
+          [attr.aria-checked]="getAnsweringFlow() === 'question-by-question'"
+        >
+          <mat-icon>format_list_numbered</mat-icon>
+          <div class="flow-info">
+            <span class="flow-title">
+              Question by Question
+              <span class="premium-badge">Premium</span>
+            </span>
+            <span class="flow-desc">One question at a time</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
     <!-- Import/Export Section -->
     <details class="io-section">
       <summary>

@@ -1,0 +1,4 @@
+[submodule "apps/premium-flow"]
+	path = apps/premium-flow
+	url = git@github.com:henryohanga/angular-surveys-premium-flow.git
+	branch = main

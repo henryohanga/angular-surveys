@@ -113,8 +113,21 @@ export interface MWPage {
   namedPage?: boolean;
 }
 
+export type AnsweringFlow = 'continuous' | 'question-by-question';
+
+export interface SurveySettings {
+  showProgressBar?: boolean;
+  allowSaveProgress?: boolean;
+  shuffleQuestions?: boolean;
+  limitResponses?: number;
+  startDate?: string;
+  endDate?: string;
+  answeringFlow?: AnsweringFlow;
+}
+
 export interface MWForm {
   name: string;
   description?: string;
   pages: MWPage[];
+  settings?: SurveySettings;
 }

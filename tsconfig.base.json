@@ -15,7 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@angular-surveys/shared-types": ["libs/shared-types/src/index.ts"]
+      "@angular-surveys/shared-types": ["libs/shared-types/src/index.ts"],
+      "@angular-surveys/premium-flow-interface": [
+        "libs/premium-flow-interface/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

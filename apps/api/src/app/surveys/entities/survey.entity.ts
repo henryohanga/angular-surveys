@@ -63,5 +63,6 @@ export class Survey {
     limitResponses?: number;
     startDate?: string;
     endDate?: string;
+    answeringFlow?: 'continuous' | 'question-by-question';
   };
 }

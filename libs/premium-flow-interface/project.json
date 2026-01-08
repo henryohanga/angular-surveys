@@ -1,0 +1,25 @@
+{
+  "name": "premium-flow-interface",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/premium-flow-interface/src",
+  "projectType": "library",
+  "tags": ["scope:shared", "type:util"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/premium-flow-interface",
+        "main": "libs/premium-flow-interface/src/index.ts",
+        "tsConfig": "libs/premium-flow-interface/tsconfig.lib.json",
+        "assets": []
+      }
+    },
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": ["libs/premium-flow-interface/**/*.ts"]
+      }
+    }
+  }
+}

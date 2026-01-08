@@ -406,6 +406,20 @@ export class BuilderComponent implements OnInit, OnDestroy {
     this.state.importJson(JSON.stringify(this.formDef));
   }
 
+  protected updateAnsweringFlow(
+    flow: 'continuous' | 'question-by-question'
+  ): void {
+    if (!this.formDef.settings) {
+      this.formDef.settings = {};
+    }
+    this.formDef.settings.answeringFlow = flow;
+    this.state.importJson(JSON.stringify(this.formDef));
+  }
+
+  protected getAnsweringFlow(): 'continuous' | 'question-by-question' {
+    return this.formDef.settings?.answeringFlow ?? 'continuous';
+  }
+
   protected formatTimeAgo(date: Date): string {
     const now = new Date();
     const diffMs = now.getTime() - new Date(date).getTime();

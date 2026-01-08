@@ -111,6 +111,13 @@ export interface QuestionValidation {
   customMessage?: string;
 }
 
+/**
+ * Answering flow determines how respondents navigate through a survey:
+ * - 'continuous': Traditional page-by-page flow respecting page structure
+ * - 'question-by-question': Premium feature - one question at a time (respects jump rules)
+ */
+export type AnsweringFlow = 'continuous' | 'question-by-question';
+
 export interface SurveySettings {
   showProgressBar?: boolean;
   allowSaveProgress?: boolean;
@@ -119,6 +126,12 @@ export interface SurveySettings {
   startDate?: string;
   endDate?: string;
   customTheme?: SurveyTheme;
+  /**
+   * The answering flow for the survey.
+   * 'continuous' is the default (page-by-page).
+   * 'question-by-question' is a premium feature.
+   */
+  answeringFlow?: AnsweringFlow;
 }
 
 export interface SurveyTheme {
