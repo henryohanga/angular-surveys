@@ -10,7 +10,15 @@
     "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
     "noImplicitReturns": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "baseUrl": ".",
+    "paths": {
+      "@angular-surveys/shared-types": ["../../libs/shared-types/src/index.ts"],
+      "@angular-surveys/premium-flow-interface": [
+        "../../libs/premium-flow-interface/src/index.ts"
+      ],
+      "@angular-surveys/premium-flow": ["../../apps/premium-flow/src/index.ts"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -22,6 +30,7 @@
   "include": [],
   "references": [
     { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.spec.json" }
+    { "path": "./tsconfig.spec.json" },
+    { "path": "../../libs/premium-flow-interface/tsconfig.lib.json" }
   ]
 }

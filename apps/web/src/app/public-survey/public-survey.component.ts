@@ -32,7 +32,7 @@ export class PublicSurveyComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly storage = inject(StorageService);
   private readonly surveyApi = inject(SurveyApiService);
-  private readonly premiumFlowService = inject(PremiumFlowService);
+  private readonly premiumFlowService = inject(PremiumFlowService, );
 
   protected survey: Survey | null = null;
   protected formDef!: MWForm;

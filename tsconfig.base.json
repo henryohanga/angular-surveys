@@ -18,7 +18,8 @@
       "@angular-surveys/shared-types": ["libs/shared-types/src/index.ts"],
       "@angular-surveys/premium-flow-interface": [
         "libs/premium-flow-interface/src/index.ts"
-      ]
+      ],
+      "@angular-surveys/premium-flow": ["apps/premium-flow/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

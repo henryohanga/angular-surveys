@@ -3,17 +3,17 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "types": [],
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@angular-surveys/shared-types": ["../../libs/shared-types/src/index.ts"],
+      "@angular-surveys/premium-flow-interface": [
+        "../../libs/premium-flow-interface/src/index.ts"
+      ],
+      "@angular-surveys/premium-flow": ["../../apps/premium-flow/src/index.ts"]
+    }
   },
-  "files": [
-    "src/main.ts",
-    "src/polyfills.ts"
-  ],
-  "include": [
-    "src/**/*.d.ts"
-  ],
-  "exclude": [
-    "src/**/*.spec.ts",
-    "src/test.ts"
-  ]
+  "files": ["src/main.ts", "src/polyfills.ts"],
+  "include": ["src/**/*.d.ts"],
+  "exclude": ["src/**/*.spec.ts", "src/test.ts"]
 }

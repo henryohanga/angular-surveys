@@ -11,6 +11,7 @@
   "references": [
     { "path": "./apps/web/tsconfig.app.json" },
     { "path": "./apps/web/tsconfig.spec.json" },
-    { "path": "./libs/shared-types/tsconfig.lib.json" }
+    { "path": "./libs/shared-types/tsconfig.lib.json" },
+    { "path": "./libs/premium-flow-interface/tsconfig.lib.json" }
   ]
 }
