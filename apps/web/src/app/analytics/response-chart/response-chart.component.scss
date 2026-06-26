@@ -5,7 +5,7 @@
 .chart-title {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
   margin: 0 0 16px;
 }
 
@@ -26,7 +26,7 @@
 .bar-label {
   width: 120px;
   font-size: 13px;
-  color: #666;
+  color: var(--text-secondary);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -49,7 +49,7 @@
 
 .bar-value {
   font-size: 13px;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -111,12 +111,12 @@
 .pie-total {
   font-size: 28px;
   font-weight: 700;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .pie-label {
   font-size: 13px;
-  color: #888;
+  color: var(--text-secondary);
 }
 
 .pie-legend {
@@ -140,13 +140,13 @@
 
 .legend-label {
   font-size: 13px;
-  color: #333;
+  color: var(--text-primary);
   flex: 1;
 }
 
 .legend-value {
   font-size: 13px;
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -157,7 +157,7 @@
   align-items: center;
   justify-content: center;
   padding: 48px;
-  color: #999;
+  color: var(--text-secondary);
 
   mat-icon {
     font-size: 48px;

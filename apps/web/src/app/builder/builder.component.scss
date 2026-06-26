@@ -6,6 +6,7 @@
   padding: var(--spacing-sm) var(--spacing-md);
   background: var(--surface);
   border-bottom: 1px solid var(--surface-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   position: sticky;
   top: 56px;
   z-index: 50;
@@ -138,6 +139,7 @@
   gap: var(--spacing-md);
   padding: var(--spacing-md);
   min-height: calc(100vh - 120px);
+  background: var(--supporting);
 }
 
 .builder-layout.panel-collapsed {

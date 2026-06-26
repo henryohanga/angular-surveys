@@ -341,6 +341,7 @@ interface UserProfile {
       .settings {
         padding: var(--spacing-lg) var(--spacing-xl);
         min-height: calc(100vh - 64px);
+        background: var(--supporting);
       }
 
       /* Header */
@@ -349,13 +350,19 @@ interface UserProfile {
         justify-content: space-between;
         align-items: center;
         margin-bottom: var(--spacing-xl);
+        padding: var(--spacing-lg) var(--spacing-xl);
+        background: var(--surface);
+        border-bottom: 1px solid var(--surface-border);
+        margin: calc(-1 * var(--spacing-lg)) calc(-1 * var(--spacing-xl)) var(--spacing-xl);
+        box-shadow: 0 1px 0 var(--surface-border);
       }
 
       .header-content h1 {
         font-size: 28px;
-        font-weight: 600;
+        font-weight: 700;
         color: var(--text-primary);
         margin: 0 0 var(--spacing-xs);
+        letter-spacing: -0.5px;
       }
 
       .header-content p {
@@ -435,8 +442,10 @@ interface UserProfile {
       .settings-card {
         background: var(--surface);
         border: 1px solid var(--surface-border);
+        border-top: 3px solid var(--primary);
         border-radius: var(--radius-sm);
         overflow: hidden;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
       }
 
       .settings-card.wide {
@@ -449,7 +458,7 @@ interface UserProfile {
         align-items: center;
         padding: var(--spacing-md);
         border-bottom: 1px solid var(--surface-border);
-        background: var(--supporting);
+        background: transparent;
       }
 
       .card-title {

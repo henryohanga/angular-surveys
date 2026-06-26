@@ -11,6 +11,7 @@
   padding: var(--spacing-md) var(--spacing-lg);
   background: var(--surface);
   border-bottom: 1px solid var(--surface-border);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -28,6 +29,9 @@
   align-items: center;
   justify-content: center;
   color: var(--primary);
+  background: var(--primary-ghost);
+  border-radius: 8px;
+  padding: 4px;
 }
 
 .brand {

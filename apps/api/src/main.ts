@@ -78,6 +78,12 @@ async function bootstrap() {
     SwaggerModule.setup('api/docs', app, document);
   }
 
+  // Redirect bare root to the health endpoint so GET / doesn't 404
+  const httpAdapter = app.getHttpAdapter();
+  httpAdapter.get('/', (_req: unknown, res: { redirect: (url: string) => void }) => {
+    res.redirect('/api/health');
+  });
+
   // Graceful shutdown
   app.enableShutdownHooks();
 

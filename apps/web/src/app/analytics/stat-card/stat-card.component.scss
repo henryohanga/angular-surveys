@@ -50,8 +50,8 @@
   }
 
   &__title {
-    font-size: 14px;
-    color: #666;
+    font-size: 13px;
+    color: var(--text-secondary);
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -60,14 +60,14 @@
   &__value {
     font-size: 32px;
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--text-primary);
     line-height: 1.2;
     margin: 4px 0;
   }
 
   &__subtitle {
     font-size: 13px;
-    color: #888;
+    color: var(--text-secondary);
   }
 
   &__trend {
@@ -85,15 +85,15 @@
     }
 
     .trend-up {
-      color: #38ef7d;
+      color: var(--accent);
     }
 
     .trend-down {
-      color: #f5576c;
+      color: var(--danger);
     }
 
     .trend-label {
-      color: #888;
+      color: var(--text-secondary);
       font-weight: 400;
       margin-left: 4px;
     }

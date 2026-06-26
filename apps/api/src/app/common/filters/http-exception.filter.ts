@@ -17,6 +17,13 @@ interface ErrorResponse {
   error?: string;
 }
 
+// Paths that browsers probe automatically — not worth logging
+const SILENT_PATHS = [
+  '/.well-known/',
+  '/favicon.ico',
+  '/robots.txt',
+];
+
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(GlobalExceptionFilter.name);
@@ -43,17 +50,24 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       }
     }
 
-    // Log the error
-    const logMessage = {
+    // Silently drop browser-probe paths at 404
+    const isSilentPath = SILENT_PATHS.some((p) => request.url.startsWith(p));
+    if (status === 404 && isSilentPath) {
+      response.status(404).end();
+      return;
+    }
+
+    // Build log payload — stack traces only for server errors
+    const logMessage: Record<string, unknown> = {
       statusCode: status,
       path: request.url,
       method: request.method,
       message,
-      stack: exception instanceof Error ? exception.stack : undefined,
       timestamp: new Date().toISOString(),
     };
 
     if (status >= 500) {
+      logMessage['stack'] = exception instanceof Error ? exception.stack : undefined;
       this.logger.error(JSON.stringify(logMessage));
     } else {
       this.logger.warn(JSON.stringify(logMessage));

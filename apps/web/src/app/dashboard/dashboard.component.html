@@ -89,6 +89,7 @@
       @for (survey of filteredSurveys; track trackBySurvey($index, survey)) {
       <div
         class="survey-card"
+        [class.published-card]="survey.status === 'published'"
         (click)="editSurvey(survey)"
         (keyup.enter)="editSurvey(survey)"
         tabindex="0"

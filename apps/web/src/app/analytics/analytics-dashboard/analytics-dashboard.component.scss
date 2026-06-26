@@ -1,6 +1,7 @@
 .analytics-dashboard {
   padding: var(--spacing-lg) var(--spacing-xl);
   min-height: calc(100vh - 64px);
+  background: var(--supporting);
 }
 
 // Loading & Error States
@@ -17,18 +18,18 @@
     font-size: 64px;
     width: 64px;
     height: 64px;
-    color: #f5576c;
+    color: var(--danger);
     margin-bottom: 16px;
   }
 
   h3 {
     margin: 0 0 8px;
-    color: #333;
+    color: var(--text-primary);
   }
 
   p {
     margin: 0 0 24px;
-    color: #666;
+    color: var(--text-secondary);
   }
 }
 
@@ -37,20 +38,27 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 32px;
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: var(--surface);
+  border-bottom: 1px solid var(--surface-border);
+  margin: calc(-1 * var(--spacing-lg)) calc(-1 * var(--spacing-xl)) var(--spacing-xl);
+  box-shadow: 0 1px 0 var(--surface-border);
 
   .header-title {
     h1 {
       margin: 0 0 12px;
       font-size: 28px;
       font-weight: 700;
-      color: #1a1a1a;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
     }
   }
 
   .header-actions {
     display: flex;
     gap: 8px;
+    padding-top: 4px;
   }
 }
 
@@ -167,7 +175,7 @@
   h2 {
     font-size: 20px;
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
     margin: 0 0 16px;
   }
 }

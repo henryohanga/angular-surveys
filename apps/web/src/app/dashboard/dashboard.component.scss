@@ -1,6 +1,7 @@
 .dashboard {
   padding: var(--spacing-lg) var(--spacing-xl);
   min-height: calc(100vh - 64px);
+  background: var(--supporting);
 }
 
 /* Header */
@@ -9,13 +10,19 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: var(--surface);
+  border-bottom: 1px solid var(--surface-border);
+  margin: calc(-1 * var(--spacing-lg)) calc(-1 * var(--spacing-xl)) var(--spacing-xl);
+  box-shadow: 0 1px 0 var(--surface-border);
 }
 
 .header-content h1 {
   font-size: 28px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   margin: 0 0 var(--spacing-xs);
+  letter-spacing: -0.5px;
 }
 
 .header-content p {
@@ -157,15 +164,19 @@
 .survey-card {
   background: var(--surface);
   border: 1px solid var(--surface-border);
+  border-top: 3px solid var(--surface-border);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s ease;
   overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
 .survey-card:hover {
   border-color: var(--primary);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-top-color: var(--primary);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
 .survey-card:focus {
@@ -173,13 +184,22 @@
   outline-offset: 2px;
 }
 
+.survey-card.published-card {
+  border-top-color: var(--accent);
+}
+
+.survey-card.published-card:hover {
+  border-color: var(--accent);
+  border-top-color: var(--accent);
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
   border-bottom: 1px solid var(--surface-border);
-  background: var(--supporting);
+  background: transparent;
 }
 
 .status-badge {
@@ -228,7 +248,7 @@
   display: flex;
   gap: var(--spacing-md);
   padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--supporting);
+  background: transparent;
   border-top: 1px solid var(--surface-border);
 }
 
@@ -289,11 +309,13 @@
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
 .template-card:hover {
   border-color: var(--primary);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
 }
 
 .template-card:focus {
