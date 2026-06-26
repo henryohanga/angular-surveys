@@ -1,3 +1,10 @@
+/* Hero Background */
+.hero-section {
+  background:
+    radial-gradient(ellipse at 18% 0%, rgba(26, 115, 232, 0.09) 0%, transparent 52%),
+    radial-gradient(ellipse at 82% 100%, rgba(26, 115, 232, 0.05) 0%, transparent 44%);
+}
+
 /* Hero Section */
 .hero {
   display: grid;
@@ -174,6 +181,11 @@
   border-radius: 4px;
 }
 
+.mockup-item.active {
+  background: var(--primary-ghost);
+  border-left: 3px solid var(--primary);
+}
+
 .mockup-item.short {
   width: 70%;
 }
@@ -202,6 +214,11 @@
   width: 80%;
 }
 
+.mockup-line.accent {
+  background: linear-gradient(90deg, rgba(26, 115, 232, 0.5) 0%, rgba(26, 115, 232, 0.15) 100%);
+  width: 85%;
+}
+
 .mockup-options {
   display: flex;
   flex-direction: column;
@@ -216,11 +233,22 @@
   width: 70%;
 }
 
+.mockup-option.selected {
+  background: var(--primary-ghost);
+  border: 1.5px solid var(--primary);
+  width: 65%;
+}
+
 .mockup-input {
   height: 32px;
   background: var(--surface);
   border-radius: 4px;
   border: 1px solid var(--surface-border);
+}
+
+.mockup-input.focused {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.12);
 }
 
 /* Features Section */
