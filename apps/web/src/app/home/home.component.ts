@@ -63,7 +63,7 @@ export class HomeComponent implements OnInit {
       icon: 'devices',
       title: 'Responsive Design',
       description:
-        'Surveys and builder look great on any device. Premium UI with Material Design 3 components.',
+        'Surveys and builder look great on any device. Beautiful UI with Material Design 3 components.',
     },
   ];
 
