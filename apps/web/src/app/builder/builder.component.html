@@ -542,7 +542,7 @@
           </div>
         </div>
         <div
-          class="flow-option premium"
+          class="flow-option"
           [class.selected]="getAnsweringFlow() === 'question-by-question'"
           (click)="updateAnsweringFlow('question-by-question')"
           (keydown.enter)="updateAnsweringFlow('question-by-question')"
@@ -553,10 +553,7 @@
         >
           <mat-icon>format_list_numbered</mat-icon>
           <div class="flow-info">
-            <span class="flow-title">
-              Question by Question
-              <span class="premium-badge">Premium</span>
-            </span>
+            <span class="flow-title">Question by Question</span>
             <span class="flow-desc">One question at a time</span>
           </div>
         </div>

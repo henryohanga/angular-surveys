@@ -18,7 +18,6 @@ import {
   AnsweringFlow,
 } from '../surveys/models';
 import { firstValueFrom } from 'rxjs';
-import { PremiumFlowService } from '@angular-surveys/premium-flow-interface';
 
 @Component({
   standalone: false,
@@ -32,7 +31,6 @@ export class PublicSurveyComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly storage = inject(StorageService);
   private readonly surveyApi = inject(SurveyApiService);
-  private readonly premiumFlowService = inject(PremiumFlowService, );
 
   protected survey: Survey | null = null;
   protected formDef!: MWForm;
@@ -44,8 +42,6 @@ export class PublicSurveyComponent implements OnInit {
   protected error: string | null = null;
   protected isPreview = false;
   protected answeringFlow: AnsweringFlow = 'continuous';
-  protected isPremiumFlowAvailable = false;
-  protected usePremiumFlow = false;
 
   async ngOnInit() {
     const surveyId = this.route.snapshot.paramMap.get('id');
@@ -102,13 +98,6 @@ export class PublicSurveyComponent implements OnInit {
 
       // Determine answering flow
       this.answeringFlow = this.formDef.settings?.answeringFlow ?? 'continuous';
-      this.isPremiumFlowAvailable =
-        this.premiumFlowService.isPremiumFlowAvailable();
-
-      // Use premium flow if selected and available
-      this.usePremiumFlow =
-        this.answeringFlow === 'question-by-question' &&
-        this.isPremiumFlowAvailable;
 
       this.isLoading = false;
     } catch {

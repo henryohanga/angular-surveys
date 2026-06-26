@@ -185,7 +185,7 @@ hr {
   background: var(--text-secondary);
 }
 
-/* Premium Dialog Styles */
+/* Dialog Styles */
 .mat-mdc-dialog-container {
   --mat-dialog-container-shape: 16px;
   --mat-dialog-container-elevation: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -207,7 +207,7 @@ hr {
   }
 }
 
-/* Premium Button Styles */
+/* Button Styles */
 .mat-mdc-raised-button.mat-primary {
   --mat-button-protected-container-shape: 8px;
   font-weight: 600;
@@ -222,7 +222,7 @@ hr {
   --mat-icon-button-state-layer-size: 40px;
 }
 
-/* Premium Form Field Styles */
+/* Form Field Styles */
 .mat-mdc-form-field {
   --mat-form-field-outlined-container-shape: 10px;
 }
@@ -231,7 +231,7 @@ hr {
   margin-top: 4px;
 }
 
-/* Premium Checkbox & Toggle */
+/* Checkbox & Toggle */
 .mat-mdc-checkbox {
   --mat-checkbox-state-layer-size: 36px;
 }
@@ -240,7 +240,7 @@ hr {
   --mat-slide-toggle-handle-shape: 50%;
 }
 
-/* Premium Select */
+/* Select */
 .mat-mdc-select-panel {
   --mat-select-panel-background-color: var(--surface);
   border-radius: 12px !important;
@@ -254,7 +254,7 @@ hr {
   min-height: 44px;
 }
 
-/* Premium Snackbar */
+/* Snackbar */
 .mat-mdc-snack-bar-container {
   --mat-snackbar-container-shape: 12px;
   --mat-snackbar-supporting-text-size: 14px;
