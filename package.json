@@ -9,6 +9,7 @@
     "build": "nx build web",
     "build:api": "nx build api",
     "build:all": "nx run-many --target=build --projects=web,api,shared-types,survey-renderer,api-modules",
+    "publish:libs": "npm publish dist/libs/shared-types --access public && npm publish dist/libs/survey-renderer --access public && npm publish dist/libs/api-modules --access public",
     "test": "nx test web",
     "test:api": "nx test api",
     "test:all": "nx run-many --target=test --projects=web,api",
