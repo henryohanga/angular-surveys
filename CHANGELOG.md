@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/henryohanga/angular-surveys/compare/v1.3.0...v1.3.1) (2026-07-20)
+
+
+### Bug Fixes
+
+* **libs:** redirect npm publish to compiled dist via publishConfig.directory ([8cacd67](https://github.com/henryohanga/angular-surveys/commit/8cacd6794bb819c21910ab3102a207c301349649))
+
 # [1.3.0](https://github.com/henryohanga/angular-surveys/compare/v1.2.1...v1.3.0) (2026-07-20)
 
 
