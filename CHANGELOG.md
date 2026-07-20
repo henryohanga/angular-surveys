@@ -1,5 +1,13 @@
 # Changelog
 
+# [1.5.0](https://github.com/henryohanga/angular-surveys/compare/v1.4.0...v1.5.0) (2026-07-20)
+
+
+### Features
+
+* add question dialog component with styling and functionality ([711630c](https://github.com/henryohanga/angular-surveys/commit/711630c34662d866bddba0889dc5d7ea2cdd5b12))
+* update toolbar styles and enhance panel positioning in survey builder ([0461ba6](https://github.com/henryohanga/angular-surveys/commit/0461ba683bde045c24850076943390b032a133d8))
+
 # [1.4.0](https://github.com/henryohanga/angular-surveys/compare/v1.3.2...v1.4.0) (2026-07-20)
 
 
