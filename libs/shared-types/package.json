@@ -1,6 +1,6 @@
 {
   "name": "@angular-surveys/shared-types",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Shared TypeScript interfaces and types for Angular Surveys — auth, workspace, capabilities, question types, and UI extension seams",
   "keywords": [
     "angular",

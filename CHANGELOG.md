@@ -1,5 +1,20 @@
 # Changelog
 
+# [1.3.0](https://github.com/henryohanga/angular-surveys/compare/v1.2.1...v1.3.0) (2026-07-20)
+
+
+### Bug Fixes
+
+* **ci:** resolve lint and test failures blocking release pipeline ([2c299ef](https://github.com/henryohanga/angular-surveys/commit/2c299ef47a94f85624743b4f74964b37513ecda5))
+* **libs:** enable partial compilation and public publish config ([e96f385](https://github.com/henryohanga/angular-surveys/commit/e96f3859b6921442df3f5e6ebaeeeb7495fb22b0))
+
+
+### Features
+
+* add survey renderer components and services ([94d2257](https://github.com/henryohanga/angular-surveys/commit/94d225747847a67554c7f54746e13a38088da7fe))
+* **auth:** enhance authentication flow with workspace support and identity validation ([2fba392](https://github.com/henryohanga/angular-surveys/commit/2fba392ba5c8efcb31c755baa59f4ed48c0751b4))
+* **shared-types:** add shared TypeScript interfaces and types for Angular Surveys ([a8e9d9b](https://github.com/henryohanga/angular-surveys/commit/a8e9d9b15c5fe7208e9f1a69832eeed6b5e56444))
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
