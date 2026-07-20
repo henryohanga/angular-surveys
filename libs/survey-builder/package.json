@@ -1,6 +1,6 @@
 {
   "name": "@angular-surveys/survey-builder",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "description": "Angular survey builder — drag-and-drop editor for building surveys with 18+ question types",
   "license": "MIT",
   "publishConfig": {

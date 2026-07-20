@@ -34,6 +34,10 @@
         {
           "file": "libs/api-modules/package.json",
           "path": "version"
+        },
+        {
+          "file": "libs/survey-builder/package.json",
+          "path": "version"
         }
       ]
     }
