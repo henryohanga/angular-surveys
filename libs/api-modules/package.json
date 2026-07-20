@@ -4,7 +4,8 @@
   "description": "NestJS modules for surveys, responses, and webhooks — mountable in any NestJS app",
   "license": "MIT",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "directory": "../../dist/libs/api-modules"
   },
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
