@@ -1,0 +1,22 @@
+{
+  "name": "@angular-surveys/shared-types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript interfaces and types for Angular Surveys — auth, workspace, capabilities, question types, and UI extension seams",
+  "keywords": ["angular", "surveys", "forms", "typescript", "shared-types"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/henryohanga/angular-surveys.git",
+    "directory": "libs/shared-types"
+  },
+  "main": "./src/index.js",
+  "module": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    }
+  },
+  "sideEffects": false
+}
