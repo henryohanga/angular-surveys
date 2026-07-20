@@ -1,5 +1,8 @@
 import { Observable } from 'rxjs';
 
+/** CP-Auth Organization plugin roles — maps to Kaguzi capability tiers */
+export type CpAuthOrgRole = 'owner' | 'admin' | 'member' | 'viewer';
+
 export interface CurrentUser {
   id: string;
   email: string;
@@ -7,6 +10,10 @@ export interface CurrentUser {
   role: 'admin' | 'user' | 'viewer';
   workspaceId?: string;
   externalId?: string;
+  /** Set when CP-Auth org plugin is active; takes precedence over role for capability checks */
+  orgRole?: CpAuthOrgRole;
+  /** Seat limit enforced by checking this against the subscription tier */
+  orgMemberCount?: number;
 }
 
 export interface LoginRequest {
