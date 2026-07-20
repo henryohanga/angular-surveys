@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.4.0](https://github.com/henryohanga/angular-surveys/compare/v1.3.2...v1.4.0) (2026-07-20)
+
+
+### Features
+
+* **auth:** add CP-Auth organization roles and update CurrentUser interface ([202e958](https://github.com/henryohanga/angular-surveys/commit/202e9584abfe63951e7afafa52da19d69131cb0f))
+
 ## [1.3.2](https://github.com/henryohanga/angular-surveys/compare/v1.3.1...v1.3.2) (2026-07-20)
 
 
