@@ -4,11 +4,13 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-sm) var(--spacing-md);
+  height: var(--builder-toolbar-height);
+  box-sizing: border-box;
   background: var(--surface);
   border-bottom: 1px solid var(--surface-border);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   position: sticky;
-  top: 56px;
+  top: var(--builder-toolbar-top, 56px);
   z-index: 50;
 }
 
@@ -156,7 +158,7 @@
   flex-direction: column;
   height: fit-content;
   position: sticky;
-  top: 120px;
+  top: var(--builder-panels-top, 120px);
 }
 
 .panel-header {
@@ -757,10 +759,10 @@
   border-radius: var(--radius-sm);
   padding: var(--spacing-md);
   height: fit-content;
-  max-height: calc(100vh - 140px);
+  max-height: calc(100vh - var(--builder-panels-top, 120px) - 20px);
   overflow-y: auto;
   position: sticky;
-  top: 120px;
+  top: var(--builder-panels-top, 120px);
   min-width: 0; /* Prevents flex overflow */
 }
 
