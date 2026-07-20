@@ -1,0 +1,12 @@
+<div [formGroup]="form">
+  <label class="q-label" [attr.for]="question.id">{{ question.text }}</label>
+  <div cdkDropList (cdkDropListDropped)="drop($event)" class="priority-list">
+    @for (it of items(); track it) {
+      <div class="priority-item" cdkDrag>
+        <span class="handle">⋮⋮</span>
+        {{ it.value }}
+      </div>
+    }
+  </div>
+</div>
+

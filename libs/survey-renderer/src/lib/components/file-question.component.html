@@ -1,0 +1,65 @@
+<div [formGroup]="form" class="file-question">
+  <span class="q-label"
+    >{{ question.text }}{{ question.required ? " *" : "" }}</span
+  >
+
+  <div
+    class="file-upload-area"
+    [class.uploading]="isUploading"
+    tabindex="0"
+    role="button"
+    (click)="fileInput.click()"
+    (keydown.enter)="fileInput.click()"
+    (keydown.space)="fileInput.click()"
+  >
+    <mat-icon>cloud_upload</mat-icon>
+    <span class="upload-text">Click to upload or drag files here</span>
+    <span class="upload-hint">Max {{ maxSize }}MB per file</span>
+    <input
+      #fileInput
+      type="file"
+      hidden
+      [accept]="accept"
+      [multiple]="multiple"
+      (change)="onFileSelect($event)"
+    />
+  </div>
+
+  @if (uploadedFiles.length > 0) {
+  <div class="file-list">
+    @for (file of uploadedFiles; track file.file.name; let i = $index) {
+    <div
+      class="file-item"
+      [class.error]="file.error"
+      [class.uploading]="file.uploading"
+    >
+      @if (file.uploading) {
+      <mat-spinner diameter="20"></mat-spinner>
+      } @else if (file.error) {
+      <mat-icon class="error-icon">error</mat-icon>
+      } @else if (file.cdnUrl) {
+      <mat-icon class="success-icon">cloud_done</mat-icon>
+      } @else {
+      <mat-icon>insert_drive_file</mat-icon>
+      }
+      <span class="file-name">{{ file.file.name }}</span>
+      <span class="file-size">{{ formatSize(file.file.size) }}</span>
+      @if (file.error) {
+      <span class="file-error">{{ file.error }}</span>
+      }
+      <button
+        mat-icon-button
+        type="button"
+        (click)="removeFile(i)"
+        [disabled]="file.uploading"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    }
+  </div>
+  } @if (form.get(question.id)?.touched &&
+  form.get(question.id)?.hasError('required')) {
+  <mat-error class="standalone-error">Please upload a file</mat-error>
+  }
+</div>

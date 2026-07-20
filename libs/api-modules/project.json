@@ -1,0 +1,33 @@
+{
+  "name": "api-modules",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/api-modules/src",
+  "tags": ["type:lib", "scope:shared", "platform:node"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/api-modules",
+        "main": "libs/api-modules/src/index.ts",
+        "tsConfig": "libs/api-modules/tsconfig.lib.json",
+        "assets": []
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["libs/api-modules/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/api-modules/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

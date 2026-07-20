@@ -1,0 +1,49 @@
+name: Publish Libraries
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    name: Build & Publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared-types
+        run: npx nx build shared-types
+
+      - name: Build survey-renderer
+        run: npx nx build survey-renderer
+
+      - name: Build api-modules
+        run: npx nx build api-modules
+
+      - name: Publish @angular-surveys/shared-types
+        run: npm publish dist/libs/shared-types --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @angular-surveys/survey-renderer
+        run: npm publish dist/libs/survey-renderer --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @angular-surveys/api-modules
+        run: npm publish dist/libs/api-modules --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

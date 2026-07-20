@@ -1,0 +1,15 @@
+{
+  "name": "@angular-surveys/survey-renderer",
+  "version": "1.0.0",
+  "description": "Angular survey renderer — 18+ question type components for embedding surveys",
+  "license": "MIT",
+  "peerDependencies": {
+    "@angular/common": ">=21.0.0",
+    "@angular/core": ">=21.0.0",
+    "@angular/forms": ">=21.0.0",
+    "@angular/router": ">=21.0.0",
+    "@angular/material": ">=21.0.0",
+    "@angular/cdk": ">=21.0.0"
+  },
+  "sideEffects": false
+}

@@ -1,0 +1,34 @@
+<div [formGroup]="form" class="nps-question">
+  <span class="q-label"
+    >{{ question.text }}{{ question.required ? " *" : "" }}</span
+  >
+
+  <div class="nps-scale">
+    <div class="nps-buttons">
+      @for (score of scores; track score) {
+      <button
+        type="button"
+        class="nps-btn"
+        [class.selected]="isSelected(score)"
+        [class]="getScoreClass(score)"
+        (click)="setScore(score)"
+        [attr.aria-label]="'Score ' + score"
+        [attr.aria-pressed]="isSelected(score)"
+      >
+        {{ score }}
+      </button>
+      }
+    </div>
+    <div class="nps-labels">
+      <span class="label-left">Not at all likely</span>
+      <span class="label-right">Extremely likely</span>
+    </div>
+  </div>
+
+  <input type="hidden" [formControlName]="question.id" />
+
+  @if (form.get(question.id)?.touched &&
+  form.get(question.id)?.hasError('required')) {
+  <mat-error class="standalone-error">Please select a score</mat-error>
+  }
+</div>
