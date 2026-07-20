@@ -3,6 +3,9 @@
   "version": "1.2.1",
   "description": "Angular survey renderer — 18+ question type components for embedding surveys",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@angular/common": ">=21.0.0",
     "@angular/core": ">=21.0.0",

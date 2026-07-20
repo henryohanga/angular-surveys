@@ -3,6 +3,9 @@
   "version": "1.2.1",
   "description": "NestJS modules for surveys, responses, and webhooks — mountable in any NestJS app",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "exports": {
