@@ -17,7 +17,8 @@
     "paths": {
       "@angular-surveys/shared-types": ["libs/shared-types/src/index.ts"],
       "@angular-surveys/survey-renderer": ["libs/survey-renderer/src/index.ts"],
-      "@angular-surveys/api-modules": ["libs/api-modules/src/index.ts"]
+      "@angular-surveys/api-modules": ["libs/api-modules/src/index.ts"],
+      "@angular-surveys/survey-builder": ["libs/survey-builder/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

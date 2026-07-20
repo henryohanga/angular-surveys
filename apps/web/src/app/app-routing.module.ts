@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SurveyComponent } from './surveys/survey.component';
-import { BuilderComponent } from './builder/builder.component';
 import { HomeComponent } from './home/home.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PublicSurveyComponent } from './public-survey/public-survey.component';
@@ -24,12 +23,11 @@ const routes: Routes = [
     component: DashboardComponent,
     canActivate: [AuthGuard],
   },
-  // Builder requires a survey ID - redirect bare /builder to dashboard
   { path: 'builder', redirectTo: 'dashboard', pathMatch: 'full' },
   {
     path: 'builder/:id',
-    component: BuilderComponent,
     canActivate: [AuthGuard],
+    loadComponent: () => import('./builder/builder-page.component').then((m) => m.BuilderPageComponent),
   },
   {
     path: 'responses/:id',

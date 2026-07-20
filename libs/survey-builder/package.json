@@ -1,0 +1,19 @@
+{
+  "name": "@angular-surveys/survey-builder",
+  "version": "1.0.0",
+  "description": "Angular survey builder — drag-and-drop editor for building surveys with 18+ question types",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "directory": "../../dist/libs/survey-builder"
+  },
+  "peerDependencies": {
+    "@angular/common": ">=21.0.0",
+    "@angular/core": ">=21.0.0",
+    "@angular/forms": ">=21.0.0",
+    "@angular/material": ">=21.0.0",
+    "@angular/cdk": ">=21.0.0",
+    "@angular-surveys/survey-renderer": ">=1.0.0"
+  },
+  "sideEffects": false
+}
