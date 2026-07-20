@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/henryohanga/angular-surveys/compare/v1.3.1...v1.3.2) (2026-07-20)
+
+
+### Bug Fixes
+
+* **libs:** add publish:libs script for correct npm publish from dist ([eace2cf](https://github.com/henryohanga/angular-surveys/commit/eace2cfc7f926e81493ba2a4912f792fe526fb88))
+
 ## [1.3.1](https://github.com/henryohanga/angular-surveys/compare/v1.3.0...v1.3.1) (2026-07-20)
 
 
