@@ -1,5 +1,14 @@
-export const environment = {
+import { AppEnvironment } from '@angular-surveys/shared-types';
+
+export const environment: AppEnvironment = {
   production: true,
-  apiUrl: '/api', // Relative URL for production (same domain)
-  sentryDsn: '', // Set this to your Sentry DSN for production error monitoring
+  apiUrl: '/api',
+  sentryDsn: '',
+  authProviderUrl: undefined,
+  features: {
+    workspaces: false,
+    externalAuth: false,
+    customQuestionTypes: false,
+    uiExtensions: false,
+  },
 };

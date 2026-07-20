@@ -23,7 +23,7 @@ import {
 } from './developer-panel/developer-panel.component';
 import { StorageService, Survey } from '../core/services/storage.service';
 import { SurveyApiService } from '../core/services/survey-api.service';
-import { AuthService } from '../core/services/auth.service';
+import { AUTH_SERVICE } from '../core/tokens';
 import { firstValueFrom, Subject, takeUntil, debounceTime, skip } from 'rxjs';
 
 interface ComponentItem {
@@ -65,7 +65,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
   private readonly snackBar = inject(MatSnackBar);
   private readonly storage = inject(StorageService);
   private readonly surveyApi = inject(SurveyApiService);
-  private readonly authService = inject(AuthService);
+  private readonly authService = inject(AUTH_SERVICE);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);

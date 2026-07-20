@@ -52,6 +52,9 @@ export class Survey {
   @JoinColumn({ name: 'ownerId' })
   owner?: User;
 
+  @Column({ nullable: true })
+  workspaceId?: string;
+
   @OneToMany(() => SurveyResponse, (response) => response.survey)
   responses!: SurveyResponse[];
 

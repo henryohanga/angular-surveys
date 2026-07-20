@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService, User } from '../core/services/auth.service';
+import { CurrentUser } from '@angular-surveys/shared-types';
+import { AUTH_SERVICE } from '../core/tokens';
 import { Observable } from 'rxjs';
 
 interface Feature {
@@ -26,7 +27,7 @@ interface Template {
 })
 export class HomeComponent implements OnInit {
   private readonly router = inject(Router);
-  private readonly authService = inject(AuthService);
+  private readonly authService = inject(AUTH_SERVICE);
 
   protected readonly features: Feature[] = [
     {
@@ -104,7 +105,7 @@ export class HomeComponent implements OnInit {
 
   protected readonly isAuthenticated$: Observable<boolean> =
     this.authService.isAuthenticated$;
-  protected readonly currentUser$: Observable<User | null> =
+  protected readonly currentUser$: Observable<CurrentUser | null> =
     this.authService.currentUser$;
 
   ngOnInit(): void {

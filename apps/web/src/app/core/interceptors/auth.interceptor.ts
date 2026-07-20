@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, Optional } from '@angular/core';
 import {
   HttpRequest,
   HttpHandler,
@@ -8,19 +8,24 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { IAuthService, IWorkspaceService } from '@angular-surveys/shared-types';
+import { AUTH_SERVICE, WORKSPACE_SERVICE, AUTH_ROUTES, DEFAULT_AUTH_ROUTES } from '../tokens';
 import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    @Inject(AUTH_SERVICE) private authService: IAuthService,
+    @Optional() @Inject(WORKSPACE_SERVICE) private workspaceService: IWorkspaceService | null,
+    @Optional() @Inject(AUTH_ROUTES) private routes: typeof DEFAULT_AUTH_ROUTES | null,
+    private router: Router
+  ) {}
 
   intercept(
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
-    // Prepend API base for relative API paths
     const isAbsolute = /^https?:\/\//i.test(request.url);
     const base = (environment.apiUrl || '/api').replace(/\/+$/, '');
     if (!isAbsolute) {
@@ -28,28 +33,33 @@ export class AuthInterceptor implements HttpInterceptor {
       request = request.clone({ url: `${base}/${path}` });
     }
 
-    const token = this.authService.token;
+    const headers: Record<string, string> = {};
 
-    // Add auth header if token exists
+    const token = this.authService.token;
     if (token) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      headers['Authorization'] = `Bearer ${token}`;
     }
+
+    const workspaceId = this.workspaceService?.workspaceId;
+    if (workspaceId) {
+      headers['X-Workspace-Id'] = workspaceId;
+    }
+
+    if (Object.keys(headers).length > 0) {
+      request = request.clone({ setHeaders: headers });
+    }
+
+    const loginRoute = this.routes?.login ?? DEFAULT_AUTH_ROUTES.login;
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Handle 401 Unauthorized
         if (error.status === 401) {
           this.authService.logout();
-          this.router.navigate(['/login'], {
+          this.router.navigate([loginRoute], {
             queryParams: { returnUrl: this.router.url },
           });
         }
 
-        // Handle 403 Forbidden
         if (error.status === 403) {
           this.router.navigate(['/']);
         }

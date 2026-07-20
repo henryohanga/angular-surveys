@@ -1,7 +1,8 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { AuthService, User } from './core/services/auth.service';
 import { Observable, Subject, takeUntil } from 'rxjs';
+import { CurrentUser } from '@angular-surveys/shared-types';
+import { AUTH_SERVICE } from './core/tokens';
 
 @Component({ standalone: false,
   selector: 'app-root',
@@ -10,13 +11,13 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 })
 export class AppComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
-  private readonly authService = inject(AuthService);
+  private readonly authService = inject(AUTH_SERVICE);
   private readonly destroy$ = new Subject<void>();
 
   public readonly title = 'angular-surveys';
   protected isHome = true;
   protected readonly isAuthenticated$: Observable<boolean>;
-  protected readonly currentUser$: Observable<User | null>;
+  protected readonly currentUser$: Observable<CurrentUser | null>;
 
   constructor() {
     this.isAuthenticated$ = this.authService.isAuthenticated$;

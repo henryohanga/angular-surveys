@@ -8,14 +8,15 @@ import {
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { AuthService } from '../services/auth.service';
+import { AUTH_SERVICE, AUTH_ROUTES, DEFAULT_AUTH_ROUTES } from '../tokens';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  private readonly authService = inject(AuthService);
+  private readonly authService = inject(AUTH_SERVICE);
   private readonly router = inject(Router);
+  private readonly routes = inject(AUTH_ROUTES, { optional: true }) ?? DEFAULT_AUTH_ROUTES;
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -29,20 +30,17 @@ export class AuthGuard implements CanActivate {
       take(1),
       map((isAuthenticated) => {
         if (isAuthenticated) {
-          // Check for required roles
           const requiredRoles = route.data['roles'] as string[] | undefined;
           if (requiredRoles && requiredRoles.length > 0) {
             const userRole = this.authService.currentUser?.role;
             if (!userRole || !requiredRoles.includes(userRole)) {
-              // User doesn't have required role
               return this.router.createUrlTree(['/']);
             }
           }
           return true;
         }
 
-        // Not authenticated, redirect to login
-        return this.router.createUrlTree(['/login'], {
+        return this.router.createUrlTree([this.routes.login], {
           queryParams: { returnUrl: state.url },
         });
       })
@@ -54,16 +52,16 @@ export class AuthGuard implements CanActivate {
   providedIn: 'root',
 })
 export class GuestGuard implements CanActivate {
-  private readonly authService = inject(AuthService);
+  private readonly authService = inject(AUTH_SERVICE);
   private readonly router = inject(Router);
+  private readonly routes = inject(AUTH_ROUTES, { optional: true }) ?? DEFAULT_AUTH_ROUTES;
 
   canActivate(): Observable<boolean | UrlTree> {
     return this.authService.isAuthenticated$.pipe(
       take(1),
       map((isAuthenticated) => {
         if (isAuthenticated) {
-          // Already logged in, redirect to dashboard
-          return this.router.createUrlTree(['/dashboard']);
+          return this.router.createUrlTree([this.routes.dashboard]);
         }
         return true;
       })

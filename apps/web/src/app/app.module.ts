@@ -17,9 +17,22 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { GlobalErrorHandler } from './core/error-handler';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { LocalAuthService } from './core/services/auth.service';
+import { NullWorkspaceService } from './core/services/null-workspace.service';
+import { NullCapabilityService } from './core/services/null-capability.service';
+import { IfCapableDirective } from './core/directives/if-capable.directive';
+import {
+  AUTH_SERVICE,
+  WORKSPACE_SERVICE,
+  CAPABILITY_SERVICE,
+  AUTH_ROUTES,
+  DEFAULT_AUTH_ROUTES,
+  QUESTION_TYPE_REGISTRY,
+  UI_EXTENSIONS,
+} from './core/tokens';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, IfCapableDirective],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -39,6 +52,12 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
     provideAnimationsAsync(),
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: AUTH_SERVICE, useClass: LocalAuthService },
+    { provide: WORKSPACE_SERVICE, useClass: NullWorkspaceService },
+    { provide: CAPABILITY_SERVICE, useClass: NullCapabilityService },
+    { provide: AUTH_ROUTES, useValue: DEFAULT_AUTH_ROUTES },
+    { provide: QUESTION_TYPE_REGISTRY, useValue: [] },
+    { provide: UI_EXTENSIONS, useValue: [] },
   ],
   bootstrap: [AppComponent],
 })

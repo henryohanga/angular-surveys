@@ -18,8 +18,11 @@ export class User {
   @Column({ unique: true })
   email!: string;
 
-  @Column()
-  password!: string;
+  @Column({ nullable: true })
+  password?: string;
+
+  @Column({ nullable: true })
+  externalId?: string;
 
   @Column()
   name!: string;

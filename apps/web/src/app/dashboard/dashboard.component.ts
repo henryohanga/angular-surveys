@@ -8,7 +8,7 @@ import {
   SurveyTemplate,
 } from '../core/services/storage.service';
 import { SurveyApiService } from '../core/services/survey-api.service';
-import { AuthService } from '../core/services/auth.service';
+import { AUTH_SERVICE } from '../core/tokens';
 import { BUILT_IN_TEMPLATES } from '../core/data/templates.data';
 import { MWForm } from '../surveys/models';
 import { firstValueFrom } from 'rxjs';
@@ -22,7 +22,7 @@ import { firstValueFrom } from 'rxjs';
 export class DashboardComponent implements OnInit {
   private readonly storage = inject(StorageService);
   private readonly surveyApi = inject(SurveyApiService);
-  private readonly authService = inject(AuthService);
+  private readonly authService = inject(AUTH_SERVICE);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly dialog = inject(MatDialog);

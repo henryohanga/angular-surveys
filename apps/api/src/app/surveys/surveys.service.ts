@@ -44,8 +44,8 @@ export class SurveysService {
     return this.surveysRepository.save(survey);
   }
 
-  async findAll(ownerId?: string): Promise<Survey[]> {
-    const where = ownerId ? { ownerId } : {};
+  async findAll(ownerId?: string, workspaceId?: string): Promise<Survey[]> {
+    const where = workspaceId ? { workspaceId } : ownerId ? { ownerId } : {};
     return this.surveysRepository.find({
       where,
       order: { updatedAt: 'DESC' },

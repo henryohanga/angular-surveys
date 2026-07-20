@@ -17,7 +17,7 @@ import {
   DeveloperApiService,
   WorkspaceDeveloperSettings,
 } from '../core/services/developer-api.service';
-import { AuthService } from '../core/services/auth.service';
+import { AUTH_SERVICE } from '../core/tokens';
 import { HttpClient } from '@angular/common/http';
 
 interface UserProfile {
@@ -709,7 +709,7 @@ interface UserProfile {
 export class SettingsComponent implements OnInit, OnDestroy {
   private readonly snackBar = inject(MatSnackBar);
   private readonly developerApi = inject(DeveloperApiService);
-  private readonly authService = inject(AuthService);
+  private readonly authService = inject(AUTH_SERVICE);
   private readonly http = inject(HttpClient);
   private readonly destroy$ = new Subject<void>();
 

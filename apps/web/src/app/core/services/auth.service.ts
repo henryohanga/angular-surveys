@@ -2,42 +2,28 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, catchError, of } from 'rxjs';
 import { Router } from '@angular/router';
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: 'admin' | 'user' | 'viewer';
-}
+import {
+  IAuthService,
+  CurrentUser,
+  LoginRequest,
+  RegisterRequest,
+} from '@angular-surveys/shared-types';
 
 export interface AuthResponse {
-  user: User;
+  user: CurrentUser;
   accessToken: string;
   tokenType: string;
-}
-
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-export interface RegisterData {
-  email: string;
-  password: string;
-  name: string;
 }
 
 const TOKEN_KEY = 'auth_token';
 const USER_KEY = 'auth_user';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class AuthService {
+@Injectable()
+export class LocalAuthService implements IAuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
 
-  private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
+  private readonly currentUserSubject = new BehaviorSubject<CurrentUser | null>(null);
   private readonly isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
 
   readonly currentUser$ = this.currentUserSubject.asObservable();
@@ -53,7 +39,7 @@ export class AuthService {
 
     if (token && userJson) {
       try {
-        const user = JSON.parse(userJson) as User;
+        const user = JSON.parse(userJson) as CurrentUser;
         this.currentUserSubject.next(user);
         this.isAuthenticatedSubject.next(true);
       } catch {
@@ -80,7 +66,7 @@ export class AuthService {
     return localStorage.getItem(TOKEN_KEY);
   }
 
-  get currentUser(): User | null {
+  get currentUser(): CurrentUser | null {
     return this.currentUserSubject.value;
   }
 
@@ -88,7 +74,7 @@ export class AuthService {
     return this.isAuthenticatedSubject.value;
   }
 
-  register(data: RegisterData): Observable<AuthResponse> {
+  register(data: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`/auth/register`, data).pipe(
       tap((response) => {
         this.storeAuth(response);
@@ -96,10 +82,7 @@ export class AuthService {
     );
   }
 
-  login(
-    credentials: LoginCredentials & { rememberMe?: boolean }
-  ): Observable<AuthResponse> {
-    // Only send email and password to API (backend rejects extra fields)
+  login(credentials: LoginRequest): Observable<AuthResponse> {
     const { email, password } = credentials;
     return this.http
       .post<AuthResponse>(`/auth/login`, { email, password })
@@ -115,12 +98,12 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
-  refreshProfile(): Observable<User | null> {
+  refreshProfile(): Observable<CurrentUser | null> {
     if (!this.token) {
       return of(null);
     }
 
-    return this.http.get<User>(`/auth/me`).pipe(
+    return this.http.get<CurrentUser>(`/auth/me`).pipe(
       tap((user) => {
         localStorage.setItem(USER_KEY, JSON.stringify(user));
         this.currentUserSubject.next(user);
@@ -132,12 +115,10 @@ export class AuthService {
     );
   }
 
-  // Check if user has a specific role
   hasRole(role: string): boolean {
     return this.currentUser?.role === role;
   }
 
-  // Check if user is admin
   isAdmin(): boolean {
     return this.hasRole('admin');
   }

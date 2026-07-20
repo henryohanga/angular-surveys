@@ -6,3 +6,4 @@ export * from './lib/user.types';
 export * from './lib/response.types';
 export * from './lib/api.types';
 export * from './lib/developer.types';
+export * from './lib/auth.types';

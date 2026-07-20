@@ -24,6 +24,7 @@ import { OptionalAuthGuard } from '../auth/guards/optional-auth.guard';
 interface RequestUser {
   id: string;
   email: string;
+  workspaceId?: string;
 }
 
 @ApiTags('surveys')
@@ -49,7 +50,7 @@ export class SurveysController {
   @ApiOperation({ summary: 'Get all surveys for current user' })
   @ApiResponse({ status: 200, description: 'List of surveys' })
   async findAll(@Request() req: { user: RequestUser }) {
-    return this.surveysService.findAll(req.user.id);
+    return this.surveysService.findAll(req.user.id, req.user.workspaceId);
   }
 
   @Get(':id')

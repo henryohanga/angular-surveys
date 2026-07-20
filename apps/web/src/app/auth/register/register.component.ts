@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AuthService } from '../../core/services/auth.service';
+import { AUTH_SERVICE } from '../../core/tokens';
 
 @Component({
   standalone: false,
@@ -17,7 +17,7 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class RegisterComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
+  private readonly authService = inject(AUTH_SERVICE);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
 
