@@ -5,7 +5,6 @@ import { Component } from '@angular/core';
 import { IAuthService, ICapabilityService, CurrentUser } from '@angular-surveys/shared-types';
 import {
   AUTH_SERVICE,
-  WORKSPACE_SERVICE,
   CAPABILITY_SERVICE,
   AUTH_ROUTES,
   DEFAULT_AUTH_ROUTES,
@@ -21,11 +20,12 @@ class MockAuthService implements IAuthService {
 
   get currentUser$(): Observable<CurrentUser | null> { return this._user$.asObservable(); }
   get isAuthenticated$(): Observable<boolean> { return this._auth$.asObservable(); }
-  get token(): string | null { return null; }
+  readonly token: string | null = null;
   get currentUser(): CurrentUser | null { return this._user$.value; }
   get isAuthenticated(): boolean { return this._auth$.value; }
 
-  login(_c: { email: string; password: string }): Observable<unknown> { return of({}); }
+  login(_: { email: string; password: string }): Observable<unknown> { return of({}); }
+  register(_: { email: string; password: string; name: string }): Observable<unknown> { return of({}); }
   logout(): void { this._auth$.next(false); this._user$.next(null); }
   refreshProfile(): Observable<CurrentUser | null> { return of(null); }
 
@@ -36,8 +36,8 @@ class MockAuthService implements IAuthService {
 }
 
 class AlwaysCapableService implements ICapabilityService {
-  isCapable(_cap: string): Observable<boolean> { return of(true); }
-  isCapableSync(_cap: string): boolean { return true; }
+  isCapable(_: string): Observable<boolean> { return of(true); }
+  isCapableSync(_: string): boolean { return true; }
 }
 
 @Component({ template: '<span *ifCapable="\'premium\'">premium content</span>', standalone: false })

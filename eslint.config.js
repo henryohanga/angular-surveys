@@ -20,7 +20,7 @@ module.exports = defineConfig([
         "error",
         {
           type: "attribute",
-          prefix: "app",
+          prefix: ["app", "ifCapable"],
           style: "camelCase",
         },
       ],
@@ -34,6 +34,7 @@ module.exports = defineConfig([
       ],
       "@angular-eslint/prefer-inject": "off",
       "@angular-eslint/prefer-standalone": "off",
+      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     },
   },
   // Angular web app (HTML templates)
