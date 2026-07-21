@@ -192,9 +192,16 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
   }
 
   protected deleteQuestion(i: number): void {
-    this.state.deleteQuestion(this.selectedPage, i);
-    this.snackBar.open('Question deleted', 'Undo', { duration: 3000 });
+    const pageIndex = this.selectedPage;
+    const deleted = this.formDef.pages[pageIndex].elements[i];
+    this.state.deleteQuestion(pageIndex, i);
     this.cdr.detectChanges();
+
+    const ref = this.snackBar.open('Question deleted', 'Undo', { duration: 3000 });
+    ref.onAction().subscribe(() => {
+      this.state.insertQuestion(pageIndex, i, deleted);
+      this.cdr.detectChanges();
+    });
   }
 
   protected drop(e: CdkDragDrop<MWElement[]>): void {
@@ -296,11 +303,20 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
   protected toggleComponentPanel(): void { this.showComponentPanel = !this.showComponentPanel; }
 
   protected deletePage(index: number): void {
-    if (this.formDef.pages.length > 1) {
-      this.state.deletePage(index);
-      if (this.selectedPage >= this.formDef.pages.length) this.selectedPage = this.formDef.pages.length - 1;
-      this.snackBar.open('Page deleted', 'Close', { duration: 2000 });
-    }
+    if (this.formDef.pages.length <= 1) return;
+
+    const deleted = this.formDef.pages[index];
+    const wasSelected = this.selectedPage;
+    this.state.deletePage(index);
+    if (this.selectedPage >= this.formDef.pages.length) this.selectedPage = this.formDef.pages.length - 1;
+    this.cdr.detectChanges();
+
+    const ref = this.snackBar.open('Page deleted', 'Undo', { duration: 3000 });
+    ref.onAction().subscribe(() => {
+      this.state.insertPage(index, deleted);
+      this.selectedPage = wasSelected;
+      this.cdr.detectChanges();
+    });
   }
 
   protected getQuestionIcon(type: MWTextType): string {

@@ -149,10 +149,13 @@ $background-light: #f8f9fa;
 }
 
 .auth-branding::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.15) 1px,
+    transparent 1px
+  );
   background-size: 24px 24px;
   pointer-events: none;
   z-index: 1;
@@ -213,7 +216,9 @@ $background-light: #f8f9fa;
   background: white;
   border-radius: 20px;
   padding: 48px;
-  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 8px 48px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
 
   @media (max-width: 968px) {
     padding: 0;

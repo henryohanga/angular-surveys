@@ -13,7 +13,8 @@
   padding: var(--spacing-lg) var(--spacing-xl);
   background: var(--surface);
   border-bottom: 1px solid var(--surface-border);
-  margin: calc(-1 * var(--spacing-lg)) calc(-1 * var(--spacing-xl)) var(--spacing-xl);
+  margin: calc(-1 * var(--spacing-lg)) calc(-1 * var(--spacing-xl))
+    var(--spacing-xl);
   box-shadow: 0 1px 0 var(--surface-border);
 }
 

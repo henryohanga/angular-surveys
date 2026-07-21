@@ -106,6 +106,17 @@ export class FormStateService {
     this.notifyChange();
   }
 
+  /** Restores a previously-deleted element at a specific index — used to back a real Undo action. */
+  insertQuestion(pageIndex: number, index: number, el: MWElement): void {
+    const page = this.state.pages[pageIndex];
+    if (!page) return;
+    const elements = [...page.elements];
+    elements.splice(index, 0, el);
+    page.elements = elements.map((e, i) => ({ ...e, orderNo: i + 1 }));
+    this.saveToLocalStorage();
+    this.notifyChange();
+  }
+
   reorderQuestion(pageIndex: number, from: number, to: number): void {
     const page = this.state.pages[pageIndex];
     const elements = [...page.elements];
@@ -137,6 +148,15 @@ export class FormStateService {
     this.state.pages = this.state.pages
       .filter((_, i) => i !== pageIndex)
       .map((p, i) => ({ ...p, number: i + 1 }));
+    this.saveToLocalStorage();
+    this.notifyChange();
+  }
+
+  /** Restores a previously-deleted page at a specific index — used to back a real Undo action. */
+  insertPage(index: number, page: MWPage): void {
+    const pages = [...this.state.pages];
+    pages.splice(index, 0, page);
+    this.state.pages = pages.map((p, i) => ({ ...p, number: i + 1 }));
     this.saveToLocalStorage();
     this.notifyChange();
   }
