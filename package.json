@@ -113,7 +113,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "^2.1.0",
     "ng-packagr": "^21.2.5",
-    "nx": "22.2.0",
+    "nx": "22.7.2",
     "release-it": "^20.2.1",
     "supertest": "^7.1.4",
     "ts-jest": "29.4.6",
